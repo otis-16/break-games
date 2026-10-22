@@ -102,8 +102,8 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--rose); outline-
 }
 .cards::-webkit-scrollbar { display: none; }
 @media (min-width: 760px) { .cards { padding-inline: calc(50vw - 200px); scroll-padding-inline: calc(50vw - 200px); } }
-.card { flex: 0 0 78vw; max-width: 400px; scroll-snap-align: center; scroll-snap-stop: always; transition: transform .35s ease, opacity .35s ease; transform: scale(.9); opacity: .55; }
-.card.cur { transform: none; opacity: 1; }
+.card { flex: 0 0 78vw; max-width: 400px; scroll-snap-align: center; transform: scale(.94); transition: transform .45s cubic-bezier(.2, .8, .2, 1); will-change: transform; }
+.card.cur { transform: none; }
 .dots { display: flex; justify-content: center; gap: 8px; padding-top: 4px; }
 .dots i { width: 7px; height: 7px; border-radius: 999px; background: var(--blush); transition: width .3s ease, background .3s ease; }
 .dots i.on { width: 22px; background: var(--rose); }
@@ -111,9 +111,8 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--rose); outline-
 .arrow.prev { left: 16px; } .arrow.next { right: 16px; }
 @media (hover: hover) and (pointer: fine) { .arrow { display: grid; place-items: center; } }
 .card { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.card .ph { position: relative; aspect-ratio: 4 / 5; max-width: 100%; border-radius: 22px; overflow: hidden; background: var(--blush); box-shadow: 0 14px 30px rgba(226, 54, 122, .14); margin-bottom: 10px; }
-.card .ph img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; }
-.card:hover .ph img { transform: scale(1.06); }
+.card .ph { position: relative; aspect-ratio: 4 / 5; max-width: 100%; border-radius: 22px; overflow: hidden; background: var(--blush); box-shadow: 0 10px 22px rgba(226, 54, 122, .12); margin-bottom: 10px; transform: translateZ(0); }
+.card .ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .card:active .ph { transform: scale(.98); }
 .card .no { position: absolute; left: 12px; bottom: 8px; font-family: var(--f-display); font-size: 40px; line-height: 1; color: var(--white); text-shadow: 0 2px 12px rgba(43, 23, 32, .3); }
 .card .new { position: absolute; top: 10px; right: 10px; font-family: var(--f-latin); font-weight: 800; font-size: 10px; letter-spacing: .18em; padding: 4px 10px; border-radius: 999px; background: var(--white); color: var(--rose); }
@@ -205,9 +204,9 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--rose); outline-
   <div class="carousel">
   <button class="arrow prev" type="button" aria-label="上一款">←</button>
   <div class="cards" id="deck">
-    <a class="card" href="tea/" data-key="tea" data-unit="分" data-name="倒剛好"><div class="ph"><img src="lux/s/tea.jpg" alt="" loading="lazy" decoding="async" width="560" height="560"><span class="no">01</span></div><h3>Just Pour</h3><p class="zh">倒剛好</p><p class="how">按住出茶，停在紅線上</p><span class="best"></span></a>
-    <a class="card" href="circle/" data-key="circle" data-unit="%" data-name="一筆畫正圓"><div class="ph"><img src="lux/s/circle.jpg" alt="" loading="lazy" decoding="async" width="560" height="560"><span class="no">02</span></div><h3>Perfect Circle</h3><p class="zh">一筆畫正圓</p><p class="how">畫一圈，看有幾 % 圓</p><span class="best"></span></a>
-    <a class="card" href="cake/" data-key="cake" data-unit="分" data-name="蛋糕切一半"><div class="ph"><img src="lux/s/cake.jpg" alt="" loading="lazy" decoding="async" width="560" height="560"><span class="no">03</span></div><h3>Fair Slice</h3><p class="zh">蛋糕切一半</p><p class="how">歪蛋糕，一刀平分</p><span class="best"></span></a>
+    <a class="card" href="tea/" data-key="tea" data-unit="分" data-name="倒剛好"><div class="ph"><img src="lux/s/tea.jpg" alt="" decoding="async" width="560" height="560"><span class="no">01</span></div><h3>Just Pour</h3><p class="zh">倒剛好</p><p class="how">按住出茶，停在紅線上</p><span class="best"></span></a>
+    <a class="card" href="circle/" data-key="circle" data-unit="%" data-name="一筆畫正圓"><div class="ph"><img src="lux/s/circle.jpg" alt="" decoding="async" width="560" height="560"><span class="no">02</span></div><h3>Perfect Circle</h3><p class="zh">一筆畫正圓</p><p class="how">畫一圈，看有幾 % 圓</p><span class="best"></span></a>
+    <a class="card" href="cake/" data-key="cake" data-unit="分" data-name="蛋糕切一半"><div class="ph"><img src="lux/s/cake.jpg" alt="" decoding="async" width="560" height="560"><span class="no">03</span></div><h3>Fair Slice</h3><p class="zh">蛋糕切一半</p><p class="how">歪蛋糕，一刀平分</p><span class="best"></span></a>
     <a class="card" href="stack/" data-key="stack" data-unit="片" data-name="雞排疊疊樂"><div class="ph"><img src="lux/s/stack.jpg" alt="" loading="lazy" decoding="async" width="560" height="560"><span class="no">04</span></div><h3>Crispy Tower</h3><p class="zh">雞排疊疊樂</p><p class="how">點一下放，對不準會被切</p><span class="best"></span></a>
     <a class="card" href="claw/" data-key="claw" data-unit="隻" data-name="夾娃娃機"><div class="ph"><img src="lux/s/claw.jpg" alt="" loading="lazy" decoding="async" width="560" height="560"><span class="no">05</span></div><h3>Claw Machine</h3><p class="zh">夾娃娃機</p><p class="how">五次機會，看準再下爪</p><span class="best"></span></a>
     <a class="card" href="goldfish/" data-key="goldfish" data-unit="分" data-name="撈金魚"><div class="ph"><img src="lux/s/goldfish.jpg" alt="" loading="lazy" decoding="async" width="560" height="560"><span class=new>NEW</span><span class="no">06</span></div><h3>Paper Scoop</h3><p class="zh">撈金魚</p><p class="how">紙網動太快會破</p><span class="best"></span></a>
