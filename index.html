@@ -3,199 +3,147 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#140d0a">
+<meta name="theme-color" content="#ff5fa2">
 <title>KEWEI遊戲室</title>
 <meta name="description" content="KEWEI遊戲室：一根手指就能玩的小遊戲。倒奶茶、畫正圓、切蛋糕、疊雞排、夾娃娃、撈金魚、吹泡泡糖、載阿嬤回家。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Manrope:wght@500;700;800&family=Noto+Serif+TC:wght@600;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+TC:wght@400;500;700;900&family=Manrope:wght@600;800&display=swap">
 <style>
-/* Immersive lobby: glossy 3D props from the games (boba cup, gum bubble, strawberry, plush, ring, ice, pearls) float in warm studio light behind everything; headline sits low in the hero; game cards scroll over it as frosted glass. Single dark look by choice. */
+/* Plush sky: a hot-pink fur burst fills the first screen; a striped balloon carries our kitten; hearts drift up. Below, a soft pink-white shelf of games. Single light-pink look by choice. */
 :root {
-  --bg: #140d0a;
-  --fg: #f7ecdc;
-  --muted: #b29a85;
-  --accent: #e2b46c;
-  --glass: rgba(255, 255, 255, .055);
-  --line: rgba(255, 255, 255, .11);
+  --fur: #ff5fa2;
+  --pink: #ff6f9c;
+  --pink-deep: #e2367a;
+  --blush: #ffe3ee;
+  --cream: #fff7fa;
+  --ink: #4a2132;
+  --muted: #a3718a;
+  --white: #ffffff;
+  --f-display: "Anton", "Noto Sans TC", Impact, sans-serif;
   --f-body: "Noto Sans TC", "PingFang TC", system-ui, sans-serif;
   --f-latin: "Manrope", "Noto Sans TC", system-ui, sans-serif;
-  --f-serif: "Noto Serif TC", serif;
-  color-scheme: dark;
+  color-scheme: light;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  background: var(--bg);
-  background-image: radial-gradient(70% 45% at 50% 32%, #3a2419 0%, #1f140f 45%, var(--bg) 80%);
-  color: var(--fg);
-  font-family: var(--f-body);
-  line-height: 1.6;
-  -webkit-tap-highlight-color: transparent;
-}
+body { margin: 0; background: var(--cream); color: var(--ink); font-family: var(--f-body); line-height: 1.6; -webkit-tap-highlight-color: transparent; }
 a { color: inherit; text-decoration: none; }
-a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 12px; }
-#bg { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; pointer-events: none; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 12px; }
+
+.hero { position: relative; height: 100svh; min-height: 560px; overflow: hidden; background: var(--fur); color: var(--white); }
+#fur { position: absolute; left: 50%; top: 44%; translate: -50% -50%; pointer-events: none; animation: spin 140s linear infinite; }
+@keyframes spin { to { rotate: 360deg; } }
+#sky { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
 .nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 10;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  position: absolute; top: 0; left: 0; right: 0; z-index: 3;
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
   padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
-  padding-bottom: 14px;
-  padding-left: max(20px, env(safe-area-inset-left, 0px));
-  padding-right: max(20px, env(safe-area-inset-right, 0px));
-  background: linear-gradient(rgba(20, 13, 10, .75), rgba(20, 13, 10, 0));
+  padding-left: max(18px, env(safe-area-inset-left, 0px));
+  padding-right: max(18px, env(safe-area-inset-right, 0px));
 }
-.logo { font-family: var(--f-latin); font-weight: 800; font-size: 18px; letter-spacing: .02em; }
-.logo span { color: var(--muted); font-family: var(--f-body); font-weight: 500; font-size: 14px; margin-left: 6px; }
-.nav nav { display: flex; gap: 18px; font-size: 14px; color: var(--muted); }
-.nav nav a:hover { color: var(--fg); }
+.nav nav { display: flex; gap: 8px; }
+.nav nav a { font-size: 13px; font-weight: 700; padding: 7px 14px; border-radius: 999px; background: rgba(255, 255, 255, .22); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.mark { font-family: var(--f-display); font-size: 28px; line-height: .9; text-align: right; letter-spacing: .01em; color: var(--ink); }
+.mark small { display: block; font-family: var(--f-body); font-weight: 900; font-size: 13px; letter-spacing: .3em; margin-top: 4px; }
 
-main { position: relative; z-index: 1; }
-.hero {
-  min-height: 100svh;
-  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-  text-align: center;
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12vh);
-  padding-left: max(20px, env(safe-area-inset-left, 0px));
-  padding-right: max(20px, env(safe-area-inset-right, 0px));
-  gap: 14px;
+.copy {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 28px);
+  padding-left: max(18px, env(safe-area-inset-left, 0px));
+  padding-right: max(18px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 10px;
+  pointer-events: none;
 }
-.eyebrow { margin: 0; font-family: var(--f-latin); font-size: 12px; letter-spacing: .28em; color: var(--muted); }
-h1 {
+.copy > * { pointer-events: auto; }
+.copy h1 {
   margin: 0;
-  font-weight: 900;
-  font-size: clamp(34px, 9.5vw, 64px);
-  line-height: 1.2;
-  letter-spacing: .02em;
-  text-wrap: balance;
-  text-shadow: 0 2px 30px rgba(20, 13, 10, .85);
-  font-family: var(--f-serif);
+  font-family: var(--f-display); font-weight: 400;
+  font-size: clamp(64px, 19vw, 150px);
+  line-height: .86; letter-spacing: .005em;
+  text-transform: uppercase;
+  text-shadow: 0 4px 0 var(--pink-deep), 0 10px 30px rgba(140, 20, 70, .35);
 }
-h1 u { text-decoration: none; background: linear-gradient(transparent 82%, var(--accent) 82%, var(--accent) 92%, transparent 92%); padding: 0 .05em; }
-.sub { margin: 0; color: var(--muted); font-size: 15px; max-width: 26em; }
-.cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 8px; }
-.chip {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 11px 16px; border-radius: 10px;
-  background: var(--glass); border: 1px solid var(--line);
-  font-size: 14px; color: var(--fg);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-}
-.chip small { color: var(--muted); font-size: 12px; }
-.btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 11px 20px; border-radius: 10px;
-  background: var(--accent); color: #1a0d0a; font-weight: 700; font-size: 14px;
-  box-shadow: 0 6px 24px rgba(226, 180, 108, .3);
-  transition: transform .15s ease;
-}
-.btn:active, .chip:active { transform: scale(.97); }
-.cue { margin-top: 18px; width: 22px; height: 34px; border: 1.5px solid var(--line); border-radius: 12px; position: relative; }
-.cue::after { content: ""; position: absolute; left: 50%; top: 7px; width: 3px; height: 7px; margin-left: -1.5px; border-radius: 2px; background: var(--muted); animation: cue 1.8s ease-in-out infinite; }
-@keyframes cue { 50% { transform: translateY(8px); opacity: .3; } }
+.copy .zh { margin: 0; font-weight: 900; font-size: clamp(20px, 5.4vw, 30px); letter-spacing: .08em; font-family: var(--f-latin); font-weight: 800; text-shadow: 0 2px 12px rgba(140, 20, 70, .35); }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 12px 22px; border-radius: 999px; background: var(--white); color: var(--pink-deep); font-weight: 900; font-size: 15px; box-shadow: 0 8px 24px rgba(140, 20, 70, .25); transition: transform .15s ease; }
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px; border-radius: 999px; background: rgba(255, 255, 255, .22); border: 1.5px solid rgba(255, 255, 255, .6); font-size: 14px; font-weight: 700; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: transform .15s ease; }
+.chip small { font-weight: 500; opacity: .85; }
+.btn:active, .chip:active { transform: scale(.96); }
 
 .games {
-  max-width: 760px; margin: 0 auto;
-  padding-top: 40px;
+  max-width: 820px; margin: 0 auto;
+  padding-top: 48px;
   padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 48px);
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
-  display: flex; flex-direction: column; gap: 18px;
+  display: flex; flex-direction: column; gap: 20px;
 }
-.games-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.games-h h2 { margin: 0; font-size: 26px; font-weight: 900; }
-.games-h span { font-family: var(--f-latin); font-size: 12px; letter-spacing: .2em; color: var(--muted); }
-.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-@media (min-width: 680px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.games-h { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.games-h h2 { margin: 0; font-size: 28px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+.games-h h2 svg { width: 26px; height: 26px; }
+.games-h span { font-family: var(--f-display); font-size: 22px; color: var(--pink); letter-spacing: .02em; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (min-width: 700px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .tile {
-  position: relative;
-  display: flex; flex-direction: column; gap: 2px;
-  padding: 10px 10px 14px;
-  background: var(--glass);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-  transition: transform .2s ease, border-color .2s ease, background .2s ease;
+  position: relative; display: flex; flex-direction: column; gap: 2px;
+  padding: 8px 8px 14px; background: var(--white);
+  border-radius: 22px; border: 2px solid var(--blush);
+  box-shadow: 0 8px 22px rgba(226, 54, 122, .08);
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
   min-width: 0;
 }
-.tile:hover { transform: translateY(-4px); border-color: rgba(226, 180, 108, .55); background: rgba(255, 255, 255, .08); }
+.tile:hover { transform: translateY(-4px) rotate(-.6deg); border-color: var(--pink); box-shadow: 0 14px 30px rgba(226, 54, 122, .18); }
 .tile:active { transform: scale(.98); }
-.art { aspect-ratio: 4 / 3; max-width: 100%; border-radius: 12px; margin-bottom: 10px; display: grid; place-items: center; overflow: hidden; }
-.art svg { width: 80%; height: 80%; }
-.no { font-family: var(--f-latin); font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--muted); padding: 0 4px; }
-.tile h3 { margin: 0; font-size: 17px; font-weight: 900; line-height: 1.35; padding: 0 4px; }
-.tile p { margin: 0; font-size: 12px; color: var(--muted); padding: 0 4px; }
-.new { position: absolute; top: 16px; right: 16px; font-family: var(--f-latin); font-size: 10px; font-weight: 800; letter-spacing: .14em; padding: 2px 8px; border-radius: 999px; background: var(--accent); color: #1a0d0a; }
-.best { margin-top: 4px; font-size: 12px; color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; min-height: 1.4em; padding: 0 4px; }
-footer { text-align: center; font-size: 12px; color: var(--muted); padding-top: 16px; }
-footer b { font-family: var(--f-latin); color: var(--fg); }
-@media (prefers-reduced-motion: reduce) { .cue::after { animation: none; } .tile, .btn { transition: none; } html { scroll-behavior: auto; } }
+.art { aspect-ratio: 1 / 1; max-width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 10px; background: var(--blush); }
+.art img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s ease; }
+.tile:hover .art img { transform: scale(1.05); }
+.no { font-family: var(--f-latin); font-size: 11px; font-weight: 800; letter-spacing: .14em; color: var(--pink); padding: 0 6px; }
+.tile h3 { margin: 0; font-size: 17px; font-weight: 900; line-height: 1.35; padding: 0 6px; }
+.tile p { margin: 0; font-size: 12px; color: var(--muted); padding: 0 6px; }
+.new { position: absolute; top: 16px; left: 16px; font-family: var(--f-latin); font-size: 10px; font-weight: 800; letter-spacing: .14em; padding: 3px 9px; border-radius: 999px; background: var(--pink); color: var(--white); box-shadow: 0 2px 8px rgba(226, 54, 122, .3); }
+.best { margin-top: 4px; font-size: 12px; color: var(--pink-deep); font-weight: 700; font-variant-numeric: tabular-nums; min-height: 1.4em; padding: 0 6px; }
+footer { text-align: center; font-size: 12px; color: var(--muted); padding-top: 12px; }
+footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); font-size: 16px; letter-spacing: .04em; }
+@media (prefers-reduced-motion: reduce) { #fur { animation: none; } .tile, .btn, .chip, .art img { transition: none; } html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
-<canvas id="bg" aria-hidden="true"></canvas>
-
-<header class="nav">
-  <a class="logo" href="#top">KEWEI<span>遊戲室</span></a>
-  <nav><a href="#games">遊戲</a><a href="#" id="rand">隨機玩</a></nav>
+<header class="hero" id="top">
+  <canvas id="fur" aria-hidden="true"></canvas>
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="nav">
+    <nav><a href="#games">遊戲</a><a href="#" id="rand">隨機玩</a></nav>
+    <div class="mark">KEWEI<br>GAME<br>ROOM<small>遊戲室</small></div>
+  </div>
+  <div class="copy">
+    <h1>Drift up<br>&amp; play</h1>
+    <p class="zh">ONE FINGER · EIGHT GAMES</p>
+    <div class="cta">
+      <a class="btn" href="#games">開始玩 →</a>
+      <a class="chip" id="today" href="tea/"><small>今日推薦</small><span id="todayName">倒剛好</span></a>
+    </div>
+  </div>
 </header>
 
-<main id="top">
-  <section class="hero">
-    <p class="eyebrow">KEWEI GAME ROOM</p>
-    <h1>一根手指，<br>玩出<u>剛剛好</u>的瞬間。</h1>
-    <p class="sub">八個小遊戲，打開就玩。想玩得好，要練。</p>
-    <div class="cta">
-      <a class="chip" id="today" href="tea/"><small>今日推薦</small><b id="todayName">倒剛好</b></a>
-      <a class="btn" href="#games">開始玩 →</a>
-    </div>
-    <div class="cue" aria-hidden="true"></div>
-  </section>
-
-  <section class="games" id="games">
-    <div class="games-h"><h2>遊戲列表</h2><span>08 GAMES</span></div>
-    <div class="grid">
-      <a class="tile" href="tea/" data-key="tea" data-unit="分" data-name="倒剛好">
-        <div class="art" style="background:#efe2cf"><svg viewBox="0 0 100 75" aria-hidden="true"><ellipse cx="50" cy="70" rx="22" ry="3" fill="#3a2a20" opacity=".12"/><line x1="56" y1="4" x2="44" y2="62" stroke="#6f8f78" stroke-width="5" stroke-linecap="round"/><path d="M30 16 L70 16 L65 68 L35 68 Z" fill="#c4915f"/><path d="M30 16 L70 16 L68 28 L32 28 Z" fill="#f4ebdf" opacity=".55"/><g fill="#2a160e"><circle cx="41" cy="63" r="3.3"/><circle cx="48" cy="64" r="3.3"/><circle cx="55" cy="63" r="3.3"/><circle cx="60" cy="61" r="3.3"/><circle cx="44" cy="57" r="3.3"/><circle cx="52" cy="57" r="3.3"/></g><ellipse cx="50" cy="16" rx="20" ry="2.6" fill="#fff"/></svg></div>
-        <span class="no">NO.01</span><h3>倒剛好</h3><p>按住出茶，停在紅線上</p><span class="best"></span>
-      </a>
-      <a class="tile" href="circle/" data-key="circle" data-unit="%" data-name="一筆畫正圓">
-        <div class="art" style="background:#f7f1e6"><svg viewBox="0 0 100 75" aria-hidden="true"><g stroke="#e3d7c5" stroke-width=".6"><line x1="0" y1="15" x2="100" y2="15"/><line x1="0" y1="30" x2="100" y2="30"/><line x1="0" y1="45" x2="100" y2="45"/><line x1="0" y1="60" x2="100" y2="60"/></g><circle cx="50" cy="38" r="24" fill="none" stroke="#c2402a" stroke-width="1" stroke-dasharray="3 3"/><path d="M74 38 A24 24 0 1 1 70 25" fill="none" stroke="#24314f" stroke-width="3.2" stroke-linecap="round"/><circle cx="50" cy="38" r="1.6" fill="#c2402a"/></svg></div>
-        <span class="no">NO.02</span><h3>一筆畫正圓</h3><p>畫一圈，看有幾 % 圓</p><span class="best"></span>
-      </a>
-      <a class="tile" href="cake/" data-key="cake" data-unit="分" data-name="蛋糕切一半">
-        <div class="art" style="background:#f6e3e3"><svg viewBox="0 0 100 75" aria-hidden="true"><ellipse cx="50" cy="56" rx="38" ry="10" fill="#fff" opacity=".8"/><path d="M20 38 v14 a30 9 0 0 0 60 0 v-14" fill="#f3d9b8"/><path d="M20 44 a30 9 0 0 0 60 0" fill="none" stroke="#fff7ee" stroke-width="3"/><ellipse cx="50" cy="38" rx="30" ry="9" fill="#fff7ee"/><circle cx="40" cy="36" r="3.5" fill="#e23c52"/><circle cx="56" cy="35" r="3.5" fill="#e23c52"/><circle cx="64" cy="39" r="3" fill="#e23c52"/><line x1="50" y1="12" x2="50" y2="66" stroke="#3a2a20" stroke-width="1.4" stroke-dasharray="3 2"/></svg></div>
-        <span class="no">NO.03</span><h3>蛋糕切一半</h3><p>歪蛋糕，一刀平分</p><span class="best"></span>
-      </a>
-      <a class="tile" href="stack/" data-key="stack" data-unit="片" data-name="雞排疊疊樂">
-        <div class="art" style="background:#f6e6c8"><svg viewBox="0 0 100 75" aria-hidden="true"><ellipse cx="50" cy="66" rx="30" ry="4" fill="#3a2a20" opacity=".12"/><rect x="24" y="52" width="52" height="11" rx="5.5" fill="#b9681f"/><rect x="27" y="41" width="48" height="11" rx="5.5" fill="#d0852d"/><rect x="30" y="30" width="42" height="11" rx="5.5" fill="#e29c3b"/><rect x="44" y="12" width="34" height="11" rx="5.5" fill="#efb14d" transform="rotate(10 61 17)"/><path d="M40 24 q-3 -6 0 -12 M50 22 q-3 -6 0 -12" stroke="#fff" stroke-width="1.6" fill="none" opacity=".8"/></svg></div>
-        <span class="no">NO.04</span><h3>雞排疊疊樂</h3><p>點一下放，對不準會被切</p><span class="best"></span>
-      </a>
-      <a class="tile" href="claw/" data-key="claw" data-unit="隻" data-name="夾娃娃機">
-        <div class="art" style="background:#e6eef0"><svg viewBox="0 0 100 75" aria-hidden="true"><line x1="50" y1="0" x2="50" y2="18" stroke="#8a9296" stroke-width="1.5"/><rect x="43" y="16" width="14" height="7" rx="2" fill="#b7bec2"/><path d="M45 23 L38 34 L42 38 M55 23 L62 34 L58 38 M50 23 V36" stroke="#9aa2a6" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="34" cy="58" r="11" fill="#ffb4c6"/><circle cx="27" cy="49" r="4" fill="#ffb4c6"/><circle cx="41" cy="49" r="4" fill="#ffb4c6"/><circle cx="62" cy="60" r="12" fill="#a8d8cf"/><circle cx="54" cy="50" r="4" fill="#a8d8cf"/><circle cx="70" cy="50" r="4" fill="#a8d8cf"/><g fill="#3a2a20"><circle cx="30" cy="57" r="1.3"/><circle cx="38" cy="57" r="1.3"/><circle cx="58" cy="59" r="1.3"/><circle cx="66" cy="59" r="1.3"/></g></svg></div>
-        <span class="no">NO.05</span><h3>夾娃娃機</h3><p>五次機會，看準再下爪</p><span class="best"></span>
-      </a>
-      <a class="tile" href="goldfish/" data-key="goldfish" data-unit="分" data-name="撈金魚">
-        <span class="new">NEW</span>
-        <div class="art" style="background:#d9ecf2"><svg viewBox="0 0 100 75" aria-hidden="true"><path d="M8 20 q12 -6 24 0 t24 0 t24 0" stroke="#fff" stroke-width="1.4" fill="none" opacity=".8"/><g transform="translate(36 40) rotate(-20)"><ellipse cx="0" cy="0" rx="11" ry="6" fill="#ee6a3a"/><path d="M10 0 l10 -7 l-3 7 l3 7 z" fill="#f28b5c"/><circle cx="-6" cy="-1.5" r="1.3" fill="#3a2a20"/></g><g transform="translate(70 56) rotate(160)"><ellipse cx="0" cy="0" rx="8" ry="4.5" fill="#f2b33d"/><path d="M7 0 l8 -5 l-2 5 l2 5 z" fill="#f6c86a"/></g><circle cx="62" cy="30" r="15" fill="#fff" opacity=".55" stroke="#c2402a" stroke-width="2.5"/><line x1="73" y1="41" x2="88" y2="62" stroke="#c2402a" stroke-width="4" stroke-linecap="round"/></svg></div>
-        <span class="no">NO.06</span><h3>撈金魚</h3><p>紙網動太快會破</p><span class="best"></span>
-      </a>
-      <a class="tile" href="bubble/" data-key="bubble" data-unit="cm" data-name="吹泡泡糖">
-        <span class="new">NEW</span>
-        <div class="art" style="background:#f7e1ea"><svg viewBox="0 0 100 75" aria-hidden="true"><circle cx="34" cy="44" r="20" fill="#f5d2b4"/><circle cx="26" cy="50" r="4" fill="#f2a7a0" opacity=".7"/><circle cx="28" cy="38" r="1.8" fill="#3a2a20"/><circle cx="40" cy="38" r="1.8" fill="#3a2a20"/><circle cx="66" cy="44" r="22" fill="#ff8fb1" opacity=".85"/><ellipse cx="58" cy="35" rx="6" ry="3.5" fill="#fff" opacity=".7" transform="rotate(-30 58 35)"/></svg></div>
-        <span class="no">NO.07</span><h3>吹泡泡糖</h3><p>越大越高分，小心爆</p><span class="best"></span>
-      </a>
-      <a class="tile" href="scooter/" data-key="scooter" data-unit="分" data-name="載阿嬤回家">
-        <span class="new">NEW</span>
-        <div class="art" style="background:#e4eadb"><svg viewBox="0 0 100 75" aria-hidden="true"><rect x="0" y="0" width="100" height="75" fill="#d4d8cf"/><g fill="#fff" opacity=".8"><rect x="48" y="4" width="4" height="12"/><rect x="48" y="30" width="4" height="12"/><rect x="48" y="56" width="4" height="12"/></g><rect x="20" y="10" width="16" height="26" rx="5" fill="#8fb3d9"/><g transform="translate(64 40)"><rect x="-6" y="-14" width="12" height="30" rx="6" fill="#c2402a"/><circle cx="0" cy="-4" r="6" fill="#f5d2b4"/><circle cx="0" cy="8" r="6.5" fill="#d9a3c8"/><circle cx="0" cy="5" r="5" fill="#9a9a9a"/></g></svg></div>
-        <span class="no">NO.08</span><h3>載阿嬤回家</h3><p>單指騎車鑽車陣</p><span class="best"></span>
-      </a>
-    </div>
-    <footer><b>KEWEI</b> 遊戲室　·　最高分只存在你自己的手機裡</footer>
-  </section>
+<main class="games" id="games">
+  <div class="games-h">
+    <h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.3 5.3 3.3 1.7-2 3.1-3.3 5.3-3.3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="#ff6f9c"/></svg>遊戲列表</h2>
+    <span>08 GAMES</span>
+  </div>
+  <div class="grid">
+    <a class="tile" href="tea/" data-key="tea" data-unit="分" data-name="倒剛好"><div class="art"><img src="covers/tea.jpg" alt="" loading="lazy" width="640" height="640"></div><span class="no">NO.01</span><h3>倒剛好</h3><p>按住出茶，停在紅線上</p><span class="best"></span></a>
+    <a class="tile" href="circle/" data-key="circle" data-unit="%" data-name="一筆畫正圓"><div class="art"><img src="covers/circle.jpg" alt="" loading="lazy" width="640" height="640"></div><span class="no">NO.02</span><h3>一筆畫正圓</h3><p>畫一圈，看有幾 % 圓</p><span class="best"></span></a>
+    <a class="tile" href="cake/" data-key="cake" data-unit="分" data-name="蛋糕切一半"><div class="art"><img src="covers/cake.jpg" alt="" loading="lazy" width="640" height="640"></div><span class="no">NO.03</span><h3>蛋糕切一半</h3><p>歪蛋糕，一刀平分</p><span class="best"></span></a>
+    <a class="tile" href="stack/" data-key="stack" data-unit="片" data-name="雞排疊疊樂"><div class="art"><img src="covers/stack.jpg" alt="" loading="lazy" width="640" height="640"></div><span class="no">NO.04</span><h3>雞排疊疊樂</h3><p>點一下放，對不準會被切</p><span class="best"></span></a>
+    <a class="tile" href="claw/" data-key="claw" data-unit="隻" data-name="夾娃娃機"><div class="art"><img src="covers/claw.jpg" alt="" loading="lazy" width="640" height="640"></div><span class="no">NO.05</span><h3>夾娃娃機</h3><p>五次機會，看準再下爪</p><span class="best"></span></a>
+    <a class="tile" href="goldfish/" data-key="goldfish" data-unit="分" data-name="撈金魚"><span class="new">NEW</span><div class="art"><img src="covers/goldfish.jpg" alt="" loading="lazy" width="640" height="640"></div><span class="no">NO.06</span><h3>撈金魚</h3><p>紙網動太快會破</p><span class="best"></span></a>
+    <a class="tile" href="bubble/" data-key="bubble" data-unit="cm" data-name="吹泡泡糖"><span class="new">NEW</span><div class="art"><img src="covers/bubble.jpg" alt="" loading="lazy" width="640" height="640"></div><span class="no">NO.07</span><h3>吹泡泡糖</h3><p>越大越高分，小心爆</p><span class="best"></span></a>
+    <a class="tile" href="scooter/" data-key="scooter" data-unit="分" data-name="載阿嬤回家"><span class="new">NEW</span><div class="art"><img src="covers/scooter.jpg" alt="" loading="lazy" width="640" height="640"></div><span class="no">NO.08</span><h3>載阿嬤回家</h3><p>單指騎車鑽車陣</p><span class="best"></span></a>
+  </div>
+  <footer><b>KEWEI</b> 遊戲室　·　最高分只存在你自己的手機裡</footer>
 </main>
 
 <script>
@@ -215,6 +163,44 @@ footer b { font-family: var(--f-latin); color: var(--fg); }
     e.preventDefault();
     location.href = tiles[Math.floor(Math.random() * tiles.length)].getAttribute('href');
   });
+
+  // plush fur burst (2D, drawn once per resize; the canvas slowly rotates via CSS)
+  const fur = document.getElementById('fur');
+  function drawFur() {
+    const hero = fur.parentElement;
+    const W = hero.clientWidth, H = hero.clientHeight;
+    const S = Math.ceil(Math.hypot(W, H) * 1.05);
+    const dpr = Math.min(devicePixelRatio || 1, 1.5);
+    fur.width = S * dpr; fur.height = S * dpr; fur.style.width = S + 'px'; fur.style.height = S + 'px';
+    const g = fur.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const c = S / 2, inner = Math.min(W, H) * .2;
+    const bg = g.createRadialGradient(c, c, inner * .5, c, c, S / 2);
+    bg.addColorStop(0, '#ffd0e4'); bg.addColorStop(.25, '#ff8cc0'); bg.addColorStop(1, '#ff4f97');
+    g.fillStyle = bg; g.fillRect(0, 0, S, S);
+    const cols = ['#ff3d8c', '#ff5fa2', '#ff7fb6', '#ffa6cc', '#ffc4dc', '#e8327d', '#fff0f6'];
+    const N = Math.min(14000, Math.round(S * S / 40));
+    g.lineCap = 'round';
+    for (let i = 0; i < N; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const r0 = inner * .7 + Math.pow(Math.random(), .8) * (S / 2);
+      const len = 18 + Math.random() * 46 * (r0 / (S / 2) + .5);
+      const curl = (Math.random() - .5) * .5;
+      const x0 = c + Math.cos(a) * r0, y0 = c + Math.sin(a) * r0;
+      const x1 = c + Math.cos(a + curl * .08) * (r0 + len), y1 = c + Math.sin(a + curl * .08) * (r0 + len);
+      g.strokeStyle = cols[(Math.random() * cols.length) | 0];
+      g.globalAlpha = .35 + Math.random() * .5;
+      g.lineWidth = .8 + Math.random() * 2.2;
+      g.beginPath(); g.moveTo(x0, y0);
+      g.quadraticCurveTo((x0 + x1) / 2 + Math.cos(a + 1.57) * curl * len, (y0 + y1) / 2 + Math.sin(a + 1.57) * curl * len, x1, y1);
+      g.stroke();
+    }
+    g.globalAlpha = 1;
+    const glow = g.createRadialGradient(c, c, 0, c, c, inner * 1.5);
+    glow.addColorStop(0, 'rgba(255,255,255,.95)'); glow.addColorStop(.55, 'rgba(255,255,255,.75)'); glow.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = glow; g.beginPath(); g.arc(c, c, inner * 1.5, 0, 7); g.fill();
+  }
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawFur, 150); });
+  drawFur();
 })();
 </script>
 
@@ -224,128 +210,144 @@ footer b { font-family: var(--f-latin); color: var(--fg); }
 <script type="module">
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const canvas = document.getElementById('bg');
+const canvas = document.getElementById('sky');
+const hero = canvas.parentElement;
 let renderer = null;
 try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); } catch (e) {}
 if (renderer) {
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.75));
   renderer.setClearColor(0x000000, 0);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  renderer.toneMappingExposure = 1.1;
   const scene = new THREE.Scene();
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
-  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(renderer), .04).texture;
+  const camera = new THREE.PerspectiveCamera(34, 1, .1, 100);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xffb3d1, 1.1));
+  const key = new THREE.DirectionalLight(0xfff4f8, 2.2); key.position.set(3, 4, 5); scene.add(key);
 
-  const key = new THREE.DirectionalLight(0xffe2c0, 2.2); key.position.set(3, 5, 4); scene.add(key);
-  const rim = new THREE.DirectionalLight(0xffb48a, 1.6); rim.position.set(-4, 2, -3); scene.add(rim);
-  scene.add(new THREE.AmbientLight(0x3a2418, .6));
+  const M = (color, o = {}) => new THREE.MeshPhysicalMaterial({ color, roughness: .45, clearcoat: .4, ...o });
 
-  const glass = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transmission: 1, roughness: .06, thickness: .25, ior: 1.45, clearcoat: 1, transparent: true });
-  const pearlMat = new THREE.MeshPhysicalMaterial({ color: 0x1a0d08, roughness: .18, clearcoat: 1, clearcoatRoughness: .05, sheen: .3 });
-  const items = [];
-  const world = new THREE.Group(); scene.add(world);
-  function add(obj, x, y, z, s, spin, bob) {
-    const g = new THREE.Group(); g.add(obj); g.position.set(x, y, z); g.scale.setScalar(s);
-    g.userData = { base: new THREE.Vector3(x, y, z), spin, bob, ph: Math.random() * 6.28 };
-    world.add(g); items.push(g); return g;
+  // ---------- balloon ----------
+  const balloon = new THREE.Group();
+  const stripes = document.createElement('canvas'); stripes.width = 512; stripes.height = 256;
+  { const x = stripes.getContext('2d'); const n = 12;
+    for (let i = 0; i < n; i++) { x.fillStyle = i % 2 ? '#ffffff' : '#ff6fa8'; x.fillRect(i * 512 / n, 0, 512 / n + 1, 256); }
+    x.fillStyle = '#ff6fa8';
+    for (let i = 1; i < n; i += 2) { const cx = (i + .5) * 512 / n, cy = 120, s = 9;
+      x.beginPath(); x.moveTo(cx, cy + s); x.bezierCurveTo(cx - s * 1.6, cy - s * .2, cx - s * .8, cy - s * 1.4, cx, cy - s * .5); x.bezierCurveTo(cx + s * .8, cy - s * 1.4, cx + s * 1.6, cy - s * .2, cx, cy + s); x.fill(); } }
+  const tex = new THREE.CanvasTexture(stripes); tex.colorSpace = THREE.SRGBColorSpace;
+  const prof = new THREE.SplineCurve([[0, -1.25], [.32, -1.12], [.62, -.78], [.9, -.15], [1.0, .45], [.9, .98], [.62, 1.32], [.3, 1.48], [0, 1.52]].map(p => new THREE.Vector2(p[0], p[1]))).getPoints(48);
+  const env = new THREE.Mesh(new THREE.LatheGeometry(prof, 72), M(0xffffff, { map: tex, roughness: .35, clearcoat: .8, sheen: .6, sheenColor: new THREE.Color(0xffd6e6) }));
+  balloon.add(env);
+  const skirt = new THREE.Mesh(new THREE.CylinderGeometry(.2, .26, .14, 32), M(0xff6fa8)); skirt.position.y = -1.3; balloon.add(skirt);
+  const ropeMat = M(0xd98aa6, { roughness: .8, clearcoat: 0 });
+  for (let i = 0; i < 4; i++) {
+    const a = i / 4 * Math.PI * 2 + Math.PI / 4;
+    const top = new THREE.Vector3(Math.cos(a) * .24, -1.34, Math.sin(a) * .24), bot = new THREE.Vector3(Math.cos(a) * .4, -1.86, Math.sin(a) * .4);
+    const rope = new THREE.Mesh(new THREE.CylinderGeometry(.012, .012, top.distanceTo(bot), 6), ropeMat);
+    rope.position.copy(top).add(bot).multiplyScalar(.5); rope.lookAt(bot); rope.rotateX(Math.PI / 2); balloon.add(rope);
   }
+  const basket = new THREE.Mesh(new THREE.CylinderGeometry(.44, .36, .42, 40, 1, true), M(0xf5c9a8, { roughness: .85, clearcoat: 0, side: THREE.DoubleSide }));
+  basket.position.y = -2.08; balloon.add(basket);
+  const basketBottom = new THREE.Mesh(new THREE.CircleGeometry(.36, 40), M(0xe9b58f, { roughness: .9 })); basketBottom.rotation.x = -Math.PI / 2; basketBottom.position.y = -2.29; balloon.add(basketBottom);
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(.44, .045, 12, 48), M(0xff8fb8)); rim.rotation.x = Math.PI / 2; rim.position.y = -1.87; balloon.add(rim);
 
-  // boba cup
-  const cup = new THREE.Group();
-  const prof = [[0, -1], [.62, -1], [.66, -.96], [.82, 1.05], [.86, 1.1], [.8, 1.1], [.77, 1.02], [.6, -.92], [0, -.92]].map(p => new THREE.Vector2(p[0], p[1]));
-  cup.add(new THREE.Mesh(new THREE.LatheGeometry(prof, 64), glass));
-  const tea = new THREE.Mesh(new THREE.CylinderGeometry(.74, .59, 1.55, 64), new THREE.MeshPhysicalMaterial({ color: 0xc08a5a, roughness: .35, clearcoat: .6 }));
-  tea.position.y = -.14; cup.add(tea);
-  const foam = new THREE.Mesh(new THREE.CylinderGeometry(.745, .745, .06, 64), new THREE.MeshPhysicalMaterial({ color: 0xe9cfae, roughness: .5 }));
-  foam.position.y = .64; cup.add(foam);
-  for (let i = 0; i < 26; i++) {
-    const a = i / 9 * 6.28 + Math.floor(i / 9) * .35, r = .5 + Math.random() * .05;
-    const p = new THREE.Mesh(new THREE.SphereGeometry(.11, 20, 16), pearlMat);
-    p.position.set(Math.cos(a) * r, -.8 + Math.floor(i / 9) * .18 + Math.random() * .04, Math.sin(a) * r); cup.add(p);
-  }
-  const film = new THREE.Mesh(new THREE.CircleGeometry(.84, 64), new THREE.MeshPhysicalMaterial({ color: 0xfff6ea, roughness: .25, transmission: .5, transparent: true, opacity: .9, side: THREE.DoubleSide }));
-  film.rotation.x = -Math.PI / 2; film.position.y = 1.1; cup.add(film);
-  const straw = new THREE.Mesh(new THREE.CylinderGeometry(.085, .085, 2.9, 24), new THREE.MeshPhysicalMaterial({ color: 0x7d9c86, roughness: .25, clearcoat: .8 }));
-  straw.position.set(.2, 1.0, .05); straw.rotation.z = -.2; cup.add(straw);
-  add(cup, 0, .35, 0, 1, .25, .08);
-
-  // gum bubble
-  const bubble = new THREE.Mesh(new THREE.SphereGeometry(1, 64, 48), new THREE.MeshPhysicalMaterial({ color: 0xff8db0, roughness: .12, clearcoat: 1, iridescence: 1, iridescenceIOR: 1.3, transmission: .25, thickness: .5, transparent: true }));
-  add(bubble, -1.9, 1.35, -.8, .5, .1, .14);
-
-  // strawberry
-  const sp = []; for (let i = 0; i <= 20; i++) { const t = i / 20; sp.push(new THREE.Vector2(Math.sin(Math.PI * t) * (0.55 + .35 * t) * Math.pow(1 - t * .15, 1), -1 + t * 1.6)); }
-  sp[sp.length - 1].x = 0;
-  const berry = new THREE.Group();
-  berry.add(new THREE.Mesh(new THREE.LatheGeometry(sp, 48), new THREE.MeshPhysicalMaterial({ color: 0xd42a3e, roughness: .28, clearcoat: 1, clearcoatRoughness: .1 })));
-  for (let i = 0; i < 5; i++) { const l = new THREE.Mesh(new THREE.ConeGeometry(.16, .5, 8), new THREE.MeshPhysicalMaterial({ color: 0x4f8f4a, roughness: .5 })); l.position.y = .62; l.rotation.z = Math.PI / 2.2; l.rotation.y = i / 5 * 6.28; l.geometry.translate(0, .25, 0); berry.add(l); }
-  add(berry, 1.85, 1.15, -.4, .48, .3, .12);
-
-  // plush bear head
-  const plushMat = new THREE.MeshPhysicalMaterial({ color: 0xf7c3cf, roughness: .9, sheen: 1, sheenColor: new THREE.Color(0xffe8ee), sheenRoughness: .5 });
-  const bear = new THREE.Group();
-  bear.add(new THREE.Mesh(new THREE.SphereGeometry(1, 48, 32), plushMat));
+  // ---------- kitten (original: cream tabby with forehead stripes, pink bow by the ear, ω mouth) ----------
+  const kit = new THREE.Group();
+  const fluff = M(0xfff1e6, { roughness: .95, clearcoat: 0, sheen: 1, sheenColor: new THREE.Color(0xffffff) });
+  const head = new THREE.Mesh(new THREE.SphereGeometry(.3, 40, 30), fluff); head.scale.set(1.08, .95, 1); kit.add(head);
   for (const s of [-1, 1]) {
-    const ear = new THREE.Mesh(new THREE.SphereGeometry(.38, 32, 24), plushMat); ear.position.set(s * .72, .72, 0); bear.add(ear);
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(.08, 16, 12), pearlMat); eye.position.set(s * .3, .1, .93); bear.add(eye);
-    const blush = new THREE.Mesh(new THREE.SphereGeometry(.13, 16, 12), new THREE.MeshPhysicalMaterial({ color: 0xff8fa3, roughness: .9 })); blush.scale.z = .3; blush.position.set(s * .52, -.15, .82); bear.add(blush);
+    const ear = new THREE.Mesh(new THREE.ConeGeometry(.11, .2, 24), fluff); ear.position.set(s * .2, .27, 0); ear.rotation.z = -s * .35; kit.add(ear);
+    const inner = new THREE.Mesh(new THREE.ConeGeometry(.06, .12, 16), M(0xffb6cf, { roughness: .9 })); inner.position.set(s * .2, .26, .05); inner.rotation.z = -s * .35; kit.add(inner);
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(.042, 20, 16), M(0x2a1520, { roughness: .15, clearcoat: 1 })); eye.position.set(s * .11, .03, .275); kit.add(eye);
+    const spark = new THREE.Mesh(new THREE.SphereGeometry(.013, 10, 8), new THREE.MeshBasicMaterial({ color: 0xffffff })); spark.position.set(s * .11 - .012, .048, .31); kit.add(spark);
+    const cheek = new THREE.Mesh(new THREE.SphereGeometry(.05, 16, 12), M(0xff9cbc, { roughness: .9 })); cheek.scale.z = .3; cheek.position.set(s * .19, -.07, .245); kit.add(cheek);
+    const paw = new THREE.Mesh(new THREE.SphereGeometry(.07, 20, 16), fluff); paw.position.set(s * .15, -.17, .27); kit.add(paw);
+    for (let w = -1; w <= 1; w += 2) {
+      const wh = new THREE.Mesh(new THREE.CylinderGeometry(.004, .004, .16, 4), M(0xc89aa8)); wh.position.set(s * .27, -.04 + w * .02, .23); wh.rotation.z = Math.PI / 2 + w * .12 * s; kit.add(wh);
+    }
   }
-  const snout = new THREE.Mesh(new THREE.SphereGeometry(.3, 24, 16), new THREE.MeshPhysicalMaterial({ color: 0xfff1f3, roughness: .9, sheen: 1 })); snout.scale.set(1, .75, .6); snout.position.set(0, -.18, .88); bear.add(snout);
-  add(bear, -1.75, -1.0, .3, .5, .2, .1);
+  for (let i = -1; i <= 1; i++) { const st = new THREE.Mesh(new THREE.BoxGeometry(.025, .07, .01), M(0xf0b89a)); st.position.set(i * .05, .2, .245); st.rotation.x = -.6; kit.add(st); }
+  const nose = new THREE.Mesh(new THREE.SphereGeometry(.024, 12, 10), M(0xff7aa3)); nose.position.set(0, -.04, .3); kit.add(nose);
+  const mouth = new THREE.Mesh(new THREE.TorusGeometry(.022, .006, 6, 16, Math.PI), M(0x6a2a40));
+  for (const s of [-1, 1]) { const m2 = mouth.clone(); m2.position.set(s * .022, -.075, .292); m2.rotation.z = Math.PI; kit.add(m2); }
+  // bow on the head, next to the right ear
+  const bowMat = M(0xff4f93, { roughness: .3, clearcoat: 1 });
+  const bow = new THREE.Group();
+  bow.add(new THREE.Mesh(new THREE.SphereGeometry(.035, 16, 12), bowMat));
+  for (const s of [-1, 1]) { const loop = new THREE.Mesh(new THREE.ConeGeometry(.07, .13, 20), bowMat); loop.position.x = s * .075; loop.rotation.z = s * Math.PI / 2; loop.scale.z = .55; bow.add(loop); }
+  bow.position.set(.12, .3, .1); bow.rotation.set(-.3, 0, -.35); bow.scale.setScalar(1.5);
+  kit.add(bow);
+  kit.scale.setScalar(1.4);
+  kit.position.set(0, -1.7, .05);
+  balloon.add(kit);
+  balloon.rotation.x = .08;
+  scene.add(balloon);
 
-  // gold ring (perfect circle)
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(1, .06, 24, 128), new THREE.MeshPhysicalMaterial({ color: 0xe0b46a, metalness: 1, roughness: .2 }));
-  add(ring, 1.7, -.85, -.6, .55, .5, .1);
-
-  // ice cubes + loose pearls
-  for (let i = 0; i < 3; i++) {
-    const ice = new THREE.Mesh(new RoundedBoxGeometry(1, 1, 1, 4, .18), glass);
-    ice.rotation.set(Math.random() * 3, Math.random() * 3, 0);
-    add(ice, [-.9, 1.05, .1][i], [-1.75, -1.85, 1.95][i], [.6, .9, -1.6][i], [.36, .3, .28][i], .4, .08);
+  // ---------- clouds ----------
+  const cloudMat = M(0xffffff, { roughness: 1, clearcoat: 0, sheen: 1, sheenColor: new THREE.Color(0xfff0f6) });
+  const clouds = [];
+  function cloud(x, y, z, s) {
+    const c = new THREE.Group();
+    [[0, 0, .5], [.45, .05, .38], [-.45, .02, .36], [.2, .28, .34], [-.22, .25, .3], [.75, -.05, .25], [-.75, -.06, .24]].forEach(([px, py, r]) => {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(r, 24, 18), cloudMat); m.position.set(px, py, 0); m.scale.z = .7; c.add(m);
+    });
+    c.position.set(x, y, z); c.scale.setScalar(s); scene.add(c); clouds.push({ c, v: .05 + Math.random() * .06, x0: x });
   }
-  for (let i = 0; i < 7; i++) {
-    const p = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 24), pearlMat);
-    const a = i / 7 * 6.28;
-    add(p, Math.cos(a) * 2.6, Math.sin(a * 1.3) * 1.6 + .2, Math.sin(a) * 1.2 - .6, .12 + Math.random() * .05, .2, .15);
+  cloud(-2.1, -.4, .4, .75); cloud(2.2, .9, -.6, .6); cloud(1.6, -2.3, .8, .55); cloud(-1.9, 2.0, -1.2, .5);
+
+  // ---------- hearts ----------
+  const hs = new THREE.Shape();
+  hs.moveTo(0, -.5); hs.bezierCurveTo(-.55, -.05, -.62, .45, -.28, .5); hs.bezierCurveTo(-.1, .53, 0, .38, 0, .28);
+  hs.bezierCurveTo(0, .38, .1, .53, .28, .5); hs.bezierCurveTo(.62, .45, .55, -.05, 0, -.5);
+  const hg = new THREE.ExtrudeGeometry(hs, { depth: .18, bevelEnabled: true, bevelThickness: .1, bevelSize: .08, bevelSegments: 6, curveSegments: 24 }); hg.center();
+  const heartMats = [M(0xff4f93, { roughness: .2, clearcoat: 1 }), M(0xff8fbd, { roughness: .2, clearcoat: 1 }), M(0xffffff, { roughness: .25, clearcoat: 1 })];
+  const hearts = [];
+  for (let i = 0; i < 11; i++) {
+    const m = new THREE.Mesh(hg, heartMats[i % 3]);
+    const s = .16 + Math.random() * .18; m.scale.setScalar(s);
+    m.position.set((Math.random() - .5) * 5.5, -3.5 + Math.random() * 7, (Math.random() - .5) * 2.5);
+    scene.add(m); hearts.push({ m, v: .25 + Math.random() * .3, ph: Math.random() * 6.28, vr: (Math.random() - .5) * 1.2 });
   }
 
-  let W = 0, H = 0, camZ = 8, liftY = 0;
+  let W = 0, H = 0, camZ = 9;
   function resize() {
-    W = innerWidth; H = innerHeight;
+    W = hero.clientWidth; H = hero.clientHeight;
     renderer.setSize(W, H, false);
     camera.aspect = W / H;
-    camZ = Math.max(8, 6.4 / (2 * Math.tan(THREE.MathUtils.degToRad(17)) * camera.aspect));
-    liftY = camera.aspect < 1 ? 1.1 + (1 - camera.aspect) * 1.6 : .6;
+    camZ = Math.max(8.5, 5.4 / (2 * Math.tan(THREE.MathUtils.degToRad(17)) * camera.aspect));
     camera.updateProjectionMatrix();
   }
   addEventListener('resize', resize); resize();
 
   let px = 0, py = 0, tx = 0, ty = 0;
-  addEventListener('pointermove', e => { tx = (e.clientX / W - .5) * 2; ty = (e.clientY / H - .5) * 2; }, { passive: true });
+  addEventListener('pointermove', e => { tx = (e.clientX / innerWidth - .5) * 2; ty = (e.clientY / innerHeight - .5) * 2; }, { passive: true });
 
   const clock = new THREE.Clock(); let t = 0;
+  // place the balloon near the fur centre (44% from the top of the hero)
+  function worldYAt(frac) { const h = 2 * Math.tan(THREE.MathUtils.degToRad(17)) * camZ; return (.5 - frac) * h; }
   function frame() {
     const dt = Math.min(clock.getDelta(), .05);
     t += reduced ? dt * .15 : dt;
     px += (tx - px) * .05; py += (ty - py) * .05;
-    const sc = Math.min(1, scrollY / (H * 1.1));
-    world.position.y = liftY + sc * 2.2;
-    world.rotation.y = Math.sin(t * .15) * .25 + px * .35;
-    world.rotation.x = py * .12;
-    for (const g of items) {
-      const u = g.userData;
-      g.position.y = u.base.y + Math.sin(t * .9 + u.ph) * u.bob;
-      g.rotation.y += u.spin * dt * (reduced ? .15 : 1);
-      g.rotation.x = Math.sin(t * .5 + u.ph) * .15;
+    const cy = worldYAt(.42);
+    balloon.position.set(px * .25, cy + .45 + Math.sin(t * .9) * .12, 0);
+    balloon.rotation.y = Math.sin(t * .35) * .35 + px * .3;
+    balloon.rotation.z = Math.sin(t * .7) * .04;
+    kit.rotation.y = Math.sin(t * .8) * .25;
+    kit.rotation.z = Math.sin(t * 1.3) * .06;
+    for (const c of clouds) { c.c.position.x = c.x0 + Math.sin(t * c.v * 2) * .35; }
+    for (const h of hearts) {
+      h.m.position.y += h.v * dt * (reduced ? .2 : 1);
+      h.m.position.x += Math.sin(t + h.ph) * .002;
+      h.m.rotation.y += h.vr * dt; h.m.rotation.z = Math.sin(t * .8 + h.ph) * .25;
+      if (h.m.position.y > cy + 4.5) { h.m.position.y = cy - 4.5; h.m.position.x = (Math.random() - .5) * 5.5; }
     }
-    camera.position.set(px * .4, -py * .25, camZ);
+    camera.position.set(px * .4, -py * .2, camZ);
     camera.lookAt(0, 0, 0);
-    canvas.style.opacity = String(1 - sc * .55);
-    renderer.render(scene, camera);
+    if (scrollY < H * 1.2) renderer.render(scene, camera);
     requestAnimationFrame(frame);
   }
   frame();
