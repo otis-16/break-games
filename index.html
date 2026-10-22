@@ -105,9 +105,53 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--ink); outline-o
 .tile p { margin: 0; font-size: 12px; color: var(--muted); padding: 0 6px; }
 .new { position: absolute; top: 16px; left: 16px; font-family: var(--f-latin); font-size: 10px; font-weight: 800; letter-spacing: .14em; padding: 3px 9px; border-radius: 999px; background: var(--pink); color: var(--white); box-shadow: 0 2px 8px rgba(226, 54, 122, .3); }
 .best { margin-top: 4px; font-size: 12px; color: var(--pink-deep); font-weight: 700; font-variant-numeric: tabular-nums; min-height: 1.4em; padding: 0 6px; }
-footer { text-align: center; font-size: 12px; color: var(--muted); padding-top: 12px; }
-footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); font-size: 16px; letter-spacing: .04em; }
-@media (prefers-reduced-motion: reduce) { #fur { animation: none; } .tile, .btn, .chip, .art img { transition: none; } html { scroll-behavior: auto; } }
+footer { text-align: center; font-size: 12px; color: var(--white); padding-top: 12px; text-shadow: 0 1px 6px rgba(140, 20, 70, .3); }
+footer b { font-family: var(--f-display); font-weight: 400; color: var(--white); font-size: 16px; letter-spacing: .04em; }
+footer a { text-decoration: underline; text-underline-offset: 3px; }
+
+/* shelf below the hero keeps the plush mood: pink sky, heart print, cloud edge, floating hearts */
+.shelf {
+  position: relative; overflow: hidden;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M16 26s-7-4.3-9-8.6C5.6 14.2 7.6 10.6 11 10.6c2 0 3.4 1.2 5 3.1 1.6-1.9 3-3.1 5-3.1 3.4 0 5.4 3.6 4 6.8C23 21.7 16 26 16 26z' fill='%23ffffff' fill-opacity='.22'/%3E%3Cpath d='M48 58s-5-3-6.4-6.1c-1-2.3.4-4.8 2.8-4.8 1.4 0 2.4.8 3.6 2.2 1.2-1.4 2.2-2.2 3.6-2.2 2.4 0 3.8 2.5 2.8 4.8C53 55 48 58 48 58z' fill='%23ffffff' fill-opacity='.16'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, #ff6fab 0%, #ff94c2 30%, #ffb9d6 70%, #ffd3e5 100%);
+}
+.shelf::before {
+  content: ""; position: absolute; left: -5%; right: -5%; top: -1px; height: 58px; z-index: 1;
+  background:
+    radial-gradient(circle at 6% 0, #fff 34px, transparent 35px),
+    radial-gradient(circle at 18% 0, #fff 46px, transparent 47px),
+    radial-gradient(circle at 31% 0, #fff 30px, transparent 31px),
+    radial-gradient(circle at 44% 0, #fff 50px, transparent 51px),
+    radial-gradient(circle at 58% 0, #fff 34px, transparent 35px),
+    radial-gradient(circle at 71% 0, #fff 48px, transparent 49px),
+    radial-gradient(circle at 85% 0, #fff 32px, transparent 33px),
+    radial-gradient(circle at 96% 0, #fff 44px, transparent 45px);
+  opacity: .95;
+}
+.floaty { position: absolute; bottom: -40px; width: 22px; height: 22px; z-index: 0; pointer-events: none; animation: rise linear infinite; opacity: .85; }
+.floaty svg { width: 100%; height: 100%; display: block; }
+@keyframes rise { to { transform: translateY(-140vh) rotate(25deg); opacity: 0; } }
+.shelf .games { position: relative; z-index: 2; padding-top: 76px; }
+.games-h h2, .games-h span { color: var(--white); text-shadow: 0 2px 10px rgba(140, 20, 70, .25); }
+.grid .tile:nth-child(odd) { rotate: -1.2deg; }
+.grid .tile:nth-child(even) { rotate: 1deg; }
+
+/* fly-away transition */
+#fly { position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: 0; background: radial-gradient(circle at 50% 60%, #ffd6e6, #ff6fab 70%); transition: opacity .25s ease; }
+#fly.on { opacity: 1; pointer-events: auto; }
+#fly svg { position: absolute; left: 50%; top: 100%; width: 140px; margin-left: -70px; }
+#fly.on svg { animation: flyup .95s cubic-bezier(.5, 0, .7, .4) forwards; }
+@keyframes flyup { 0% { transform: translateY(0) rotate(-4deg); } 60% { transform: translateY(-75vh) rotate(4deg); } 100% { transform: translateY(-140vh) rotate(-2deg); } }
+#fly p { position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom, 0px) + 40px); margin: 0; text-align: center; color: #fff; font-family: var(--f-display); font-size: 28px; letter-spacing: .04em; }
+.say {
+  position: absolute; z-index: 4; max-width: 220px; padding: 10px 14px; border-radius: 18px 18px 18px 4px;
+  background: #fff; color: var(--ink); font-weight: 700; font-size: 14px; line-height: 1.4;
+  box-shadow: 0 8px 24px rgba(140, 20, 70, .25); pointer-events: none;
+  animation: pop .25s cubic-bezier(.3, 1.6, .5, 1) both;
+}
+@keyframes pop { from { transform: scale(.4); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { #fur, .floaty { animation: none; } .floaty { display: none; } .tile, .btn, .chip, .art img { transition: none; } html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
@@ -128,9 +172,10 @@ footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); 
   </div>
 </header>
 
-<main class="games" id="games">
+<main class="shelf" id="games">
+<div class="games">
   <div class="games-h">
-    <h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.3 5.3 3.3 1.7-2 3.1-3.3 5.3-3.3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="#ff6f9c"/></svg>遊戲列表</h2>
+    <h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.3 5.3 3.3 1.7-2 3.1-3.3 5.3-3.3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="#fff"/></svg>遊戲列表</h2>
     <span>08 GAMES</span>
   </div>
   <div class="grid">
@@ -144,7 +189,9 @@ footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); 
     <a class="tile" href="scooter/" data-key="scooter" data-unit="分" data-name="載阿嬤回家"><span class="new">NEW</span><div class="art"><img src="covers/scooter.jpg" alt="" loading="lazy" width="640" height="640"></div><span class="no">NO.08</span><h3>載阿嬤回家</h3><p>單指騎車鑽車陣</p><span class="best"></span></a>
   </div>
   <footer><b>KEWEI</b> 遊戲室　·　最高分只存在你自己的手機裡</footer>
+</div>
 </main>
+<div id="fly" aria-hidden="true"><svg viewBox="0 0 140 220"><defs><clipPath id="bl"><path d="M70 6C34 6 10 32 10 68c0 34 30 62 46 84h28c16-22 46-50 46-84C130 32 106 6 70 6z"/></clipPath></defs><g clip-path="url(#bl)"><rect x="0" y="0" width="140" height="160" fill="#fff"/><g fill="#ff6fa8"><rect x="10" y="0" width="20" height="160"/><rect x="50" y="0" width="20" height="160"/><rect x="90" y="0" width="20" height="160"/><rect x="130" y="0" width="20" height="160"/></g></g><path d="M58 152 L52 176 M82 152 L88 176" stroke="#d98aa6" stroke-width="2"/><rect x="44" y="172" width="52" height="34" rx="8" fill="#f5c9a8"/><rect x="42" y="170" width="56" height="8" rx="4" fill="#ff8fb8"/><circle cx="70" cy="166" r="16" fill="#fff1e6"/><path d="M57 156 l3 -12 l8 9z M83 156 l-3 -12 l-8 9z" fill="#fff1e6"/><circle cx="64" cy="165" r="2.4" fill="#2a1520"/><circle cx="76" cy="165" r="2.4" fill="#2a1520"/><circle cx="59" cy="170" r="3" fill="#ff9cbc" opacity=".7"/><circle cx="81" cy="170" r="3" fill="#ff9cbc" opacity=".7"/><path d="M79 150 l8 -4 v8z M95 150 l-8 -4 v8z" fill="#ff4f93" transform="translate(-6 0)"/></svg><p>LET'S GO!</p></div>
 
 <script>
 (() => {
@@ -159,10 +206,30 @@ footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); 
   const pick = tiles[(d.getFullYear() * 372 + d.getMonth() * 31 + d.getDate()) % tiles.length];
   document.getElementById('today').href = pick.getAttribute('href');
   document.getElementById('todayName').textContent = pick.dataset.name;
+  const reducedMo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fly = document.getElementById('fly');
+  function go(href) {
+    if (reducedMo) { location.href = href; return; }
+    fly.classList.add('on');
+    setTimeout(() => { location.href = href; }, 900);
+  }
+  addEventListener('pageshow', () => fly.classList.remove('on'));
+  document.querySelectorAll('.tile, #today').forEach(a => a.addEventListener('click', e => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault(); go(a.getAttribute('href'));
+  }));
   document.getElementById('rand').addEventListener('click', e => {
     e.preventDefault();
-    location.href = tiles[Math.floor(Math.random() * tiles.length)].getAttribute('href');
+    go(tiles[Math.floor(Math.random() * tiles.length)].getAttribute('href'));
   });
+  const shelf = document.getElementById('games');
+  const heartSvg = '<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.3 5.3 3.3 1.7-2 3.1-3.3 5.3-3.3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="#fff"/></svg>';
+  for (let i = 0; i < 14; i++) {
+    const f = document.createElement('span'); f.className = 'floaty'; f.innerHTML = heartSvg;
+    const sz = 12 + Math.random() * 22;
+    f.style.cssText = `left:${Math.random() * 100}%;width:${sz}px;height:${sz}px;animation-duration:${14 + Math.random() * 16}s;animation-delay:${-Math.random() * 30}s;opacity:${.35 + Math.random() * .5}`;
+    shelf.appendChild(f);
+  }
 
   // plush fur burst (2D, drawn once per resize; the canvas slowly rotates via CSS)
   const fur = document.getElementById('fur');
@@ -325,6 +392,47 @@ if (renderer) {
   let px = 0, py = 0, tx = 0, ty = 0;
   addEventListener('pointermove', e => { tx = (e.clientX / innerWidth - .5) * 2; ty = (e.clientY / innerHeight - .5) * 2; }, { passive: true });
 
+  // ---------- easter eggs: tap KEWEI ----------
+  const LINES = ['剛剛好喵～', '今天倒剛好了嗎？', '雞排要疊到天花板喵', '紙網破了不要怪我喔', '阿嬤說紅燈要停！', '泡泡吹太大會黏在臉上喵', '夾娃娃？我比較想當娃娃', '圓要畫圓圓的喵', '蛋糕大塊的給我', '摸夠了沒？喵！'];
+  let AC = null, taps = 0, sneeze = 0, bubbleEl = null, bubbleT = 0;
+  const muted = () => { try { return localStorage.getItem('dgh-muted') === '1'; } catch (e) { return false; } };
+  function meow(hi) {
+    try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); } catch (e) { return; }
+    if (muted()) return;
+    const t0 = AC.currentTime, o = AC.createOscillator(), f = AC.createBiquadFilter(), g = AC.createGain();
+    o.type = 'sawtooth'; f.type = 'lowpass'; f.frequency.value = 2200; f.Q.value = 6;
+    const b = hi ? 900 : 620;
+    o.frequency.setValueAtTime(b, t0); o.frequency.linearRampToValueAtTime(b * 1.6, t0 + .12); o.frequency.exponentialRampToValueAtTime(b * .75, t0 + .45);
+    f.frequency.setValueAtTime(900, t0); f.frequency.linearRampToValueAtTime(2600, t0 + .12); f.frequency.linearRampToValueAtTime(1100, t0 + .45);
+    g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(.18, t0 + .04); g.gain.exponentialRampToValueAtTime(.001, t0 + .5);
+    o.connect(f).connect(g).connect(AC.destination); o.start(t0); o.stop(t0 + .55);
+  }
+  function achoo() {
+    if (!AC || muted()) return;
+    const t0 = AC.currentTime, n = AC.createBufferSource(), buf = AC.createBuffer(1, AC.sampleRate * .5, AC.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2);
+    n.buffer = buf; const f = AC.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 3000; const g = AC.createGain(); g.gain.value = .35;
+    n.connect(f).connect(g).connect(AC.destination); n.start(t0 + .15);
+    meow(true);
+  }
+  function say(text) {
+    if (bubbleEl) bubbleEl.remove();
+    bubbleEl = document.createElement('div'); bubbleEl.className = 'say'; bubbleEl.textContent = text;
+    hero.appendChild(bubbleEl); bubbleT = 2.4;
+  }
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  canvas.addEventListener('pointerdown', e => {
+    const r = canvas.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    if (!ray.intersectObject(balloon, true).length) return;
+    taps++;
+    for (let i = 0; i < 6; i++) { const h = hearts[(taps * 6 + i) % hearts.length]; const p = new THREE.Vector3(); kit.getWorldPosition(p); h.m.position.set(p.x + (Math.random() - .5) * .8, p.y, p.z + .5); h.boost = 2.5; }
+    if (taps % 10 === 0) { sneeze = 1; achoo(); say('哈——啾！！'); }
+    else { meow(); say(LINES[Math.floor(Math.random() * LINES.length)]); }
+    kit.userData.bounce = 1;
+  });
+
   const clock = new THREE.Clock(); let t = 0;
   // place the balloon near the fur centre (44% from the top of the hero)
   function worldYAt(frac) { const h = 2 * Math.tan(THREE.MathUtils.degToRad(17)) * camZ; return (.5 - frac) * h; }
@@ -333,14 +441,29 @@ if (renderer) {
     t += reduced ? dt * .15 : dt;
     px += (tx - px) * .05; py += (ty - py) * .05;
     const cy = worldYAt(.42);
-    balloon.position.set(px * .25, cy + .45 + Math.sin(t * .9) * .12, 0);
+    if (!sneeze) balloon.position.set(px * .25, cy + .45 + Math.sin(t * .9) * .12, 0);
     balloon.rotation.y = Math.sin(t * .35) * .35 + px * .3;
     balloon.rotation.z = Math.sin(t * .7) * .04;
     kit.rotation.y = Math.sin(t * .8) * .25;
     kit.rotation.z = Math.sin(t * 1.3) * .06;
+    if (kit.userData.bounce) { kit.userData.bounce = Math.max(0, kit.userData.bounce - dt * 3); kit.position.y = -1.7 + Math.sin((1 - kit.userData.bounce) * Math.PI) * .25; }
+    if (sneeze > 0) {
+      sneeze += dt;
+      const k = sneeze - 1;
+      if (k < .9) balloon.position.y += k * k * 40 * dt;          // blasted up and away
+      else if (k < 1.0) balloon.position.y = cy - 8;               // re-enter from below
+      else { const back = Math.min(1, (k - 1.0) / 1.6); balloon.position.y = (cy - 8) + 8.45 * (1 - Math.pow(1 - back, 3)); if (back >= 1) sneeze = 0; }
+    }
+    if (bubbleEl) {
+      bubbleT -= dt;
+      const p = new THREE.Vector3(); kit.getWorldPosition(p); p.y += .6; p.project(camera);
+      bubbleEl.style.left = Math.min(W - 230, Math.max(12, (p.x * .5 + .5) * W + 30)) + 'px';
+      bubbleEl.style.top = Math.max(70, (-p.y * .5 + .5) * H - 60) + 'px';
+      if (bubbleT <= 0) { bubbleEl.remove(); bubbleEl = null; }
+    }
     for (const c of clouds) { c.c.position.x = c.x0 + Math.sin(t * c.v * 2) * .35; }
     for (const h of hearts) {
-      h.m.position.y += h.v * dt * (reduced ? .2 : 1);
+      h.m.position.y += h.v * dt * (reduced ? .2 : 1) * (1 + (h.boost || 0)); if (h.boost) h.boost = Math.max(0, h.boost - dt * 1.5);
       h.m.position.x += Math.sin(t + h.ph) * .002;
       h.m.rotation.y += h.vr * dt; h.m.rotation.z = Math.sin(t * .8 + h.ph) * .25;
       if (h.m.position.y > cy + 4.5) { h.m.position.y = cy - 4.5; h.m.position.x = (Math.random() - .5) * 5.5; }
