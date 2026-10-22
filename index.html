@@ -99,7 +99,6 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--ink); outline-o
 .tile:active { transform: scale(.98); }
 .art { aspect-ratio: 1 / 1; max-width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 10px; background: var(--blush); }
 .art img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s ease; }
-.tile:hover .art img { transform: scale(1.05); }
 .no { font-family: var(--f-latin); font-size: 11px; font-weight: 800; letter-spacing: .14em; color: var(--pink); padding: 0 6px; }
 .tile h3 { margin: 0; font-size: 17px; font-weight: 900; line-height: 1.35; padding: 0 6px; }
 .tile p { margin: 0; font-size: 12px; color: var(--muted); padding: 0 6px; }
@@ -116,26 +115,27 @@ footer a { text-decoration: underline; text-underline-offset: 3px; }
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M16 26s-7-4.3-9-8.6C5.6 14.2 7.6 10.6 11 10.6c2 0 3.4 1.2 5 3.1 1.6-1.9 3-3.1 5-3.1 3.4 0 5.4 3.6 4 6.8C23 21.7 16 26 16 26z' fill='%23ffffff' fill-opacity='.22'/%3E%3Cpath d='M48 58s-5-3-6.4-6.1c-1-2.3.4-4.8 2.8-4.8 1.4 0 2.4.8 3.6 2.2 1.2-1.4 2.2-2.2 3.6-2.2 2.4 0 3.8 2.5 2.8 4.8C53 55 48 58 48 58z' fill='%23ffffff' fill-opacity='.16'/%3E%3C/svg%3E"),
     linear-gradient(180deg, #ff6fab 0%, #ff94c2 30%, #ffb9d6 70%, #ffd3e5 100%);
 }
-.shelf::before {
-  content: ""; position: absolute; left: -5%; right: -5%; top: -1px; height: 58px; z-index: 1;
-  background:
-    radial-gradient(circle at 6% 0, #fff 34px, transparent 35px),
-    radial-gradient(circle at 18% 0, #fff 46px, transparent 47px),
-    radial-gradient(circle at 31% 0, #fff 30px, transparent 31px),
-    radial-gradient(circle at 44% 0, #fff 50px, transparent 51px),
-    radial-gradient(circle at 58% 0, #fff 34px, transparent 35px),
-    radial-gradient(circle at 71% 0, #fff 48px, transparent 49px),
-    radial-gradient(circle at 85% 0, #fff 32px, transparent 33px),
-    radial-gradient(circle at 96% 0, #fff 44px, transparent 45px);
-  opacity: .95;
-}
 .floaty { position: absolute; bottom: -40px; width: 22px; height: 22px; z-index: 0; pointer-events: none; animation: rise linear infinite; opacity: .85; }
 .floaty svg { width: 100%; height: 100%; display: block; }
 @keyframes rise { to { transform: translateY(-140vh) rotate(25deg); opacity: 0; } }
-.shelf .games { position: relative; z-index: 2; padding-top: 76px; }
+.shelf .games { position: relative; z-index: 2; padding-top: 40px; }
 .games-h h2, .games-h span { color: var(--white); text-shadow: 0 2px 10px rgba(140, 20, 70, .25); }
 .grid .tile:nth-child(odd) { rotate: -1.2deg; }
 .grid .tile:nth-child(even) { rotate: 1deg; }
+
+/* scroll band: two tilted ribbons of text that slide with the scroll */
+.band { position: relative; z-index: 3; pointer-events: none; overflow: hidden; padding-block: 34px 26px; background: #ff6fab; }
+.band .strip { position: relative; left: -10%; width: 120%; overflow: hidden; padding-block: 10px; }
+.band .s1 { background: var(--pink-deep); color: #fff; rotate: -4deg; box-shadow: 0 10px 30px rgba(140, 20, 70, .25); z-index: 2; }
+.band .s2 { background: #fff; color: var(--pink-deep); rotate: 3deg; margin-top: -10px; }
+.band .row { display: flex; width: max-content; white-space: nowrap; font-family: var(--f-display); font-size: clamp(30px, 9vw, 54px); line-height: 1; will-change: transform; }
+.band .row span { padding-right: .5em; }
+/* cards rise in as they enter; parallax on covers */
+.js .grid .tile { opacity: 0; transform: translateY(46px) scale(.94); transition: opacity .6s ease, transform .7s cubic-bezier(.2, .9, .3, 1.15), border-color .2s ease, box-shadow .2s ease; }
+.js .grid .tile.in { opacity: 1; transform: none; }
+.js .grid .tile.in:hover { transform: translateY(-4px); }
+.art img { transform: translateY(var(--py, 0px)) scale(1.1); }
+.tile:hover .art img { transform: translateY(var(--py, 0px)) scale(1.16); }
 
 /* fly-away transition */
 #fly { position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: 0; background: radial-gradient(circle at 50% 60%, #ffd6e6, #ff6fab 70%); transition: opacity .25s ease; }
@@ -151,7 +151,7 @@ footer a { text-decoration: underline; text-underline-offset: 3px; }
   animation: pop .25s cubic-bezier(.3, 1.6, .5, 1) both;
 }
 @keyframes pop { from { transform: scale(.4); opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { #fur, .floaty { animation: none; } .floaty { display: none; } .tile, .btn, .chip, .art img { transition: none; } html { scroll-behavior: auto; } }
+@media (prefers-reduced-motion: reduce) { .js .grid .tile { opacity: 1; transform: none; transition: none; } .band .row { transform: none !important; } #fur, .floaty { animation: none; } .floaty { display: none; } .tile, .btn, .chip, .art img { transition: none; } html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
@@ -172,6 +172,7 @@ footer a { text-decoration: underline; text-underline-offset: 3px; }
   </div>
 </header>
 
+<div class="band" aria-hidden="true"><div class="strip s1"><div class="row r1"><span>ONE FINGER ♥ EIGHT GAMES ♥ KEWEI GAME ROOM ♥ DRIFT UP &amp; PLAY ♥ ONE FINGER ♥ EIGHT GAMES ♥ KEWEI GAME ROOM ♥ DRIFT UP &amp; PLAY ♥ ONE FINGER ♥ EIGHT GAMES ♥ KEWEI GAME ROOM ♥ DRIFT UP &amp; PLAY ♥ </span></div></div><div class="strip s2"><div class="row r2"><span>剛剛好 ♥ 一根手指 ♥ 八款遊戲 ♥ KEWEI 遊戲室 ♥ 剛剛好 ♥ 一根手指 ♥ 八款遊戲 ♥ KEWEI 遊戲室 ♥ 剛剛好 ♥ 一根手指 ♥ 八款遊戲 ♥ KEWEI 遊戲室 ♥ 剛剛好 ♥ 一根手指 ♥ 八款遊戲 ♥ KEWEI 遊戲室 ♥ </span></div></div></div>
 <main class="shelf" id="games">
 <div class="games">
   <div class="games-h">
@@ -195,6 +196,7 @@ footer a { text-decoration: underline; text-underline-offset: 3px; }
 
 <script>
 (() => {
+  document.documentElement.classList.add('js');
   const tiles = [...document.querySelectorAll('.tile')];
   tiles.forEach(t => {
     try {
@@ -222,6 +224,28 @@ footer a { text-decoration: underline; text-underline-offset: 3px; }
     e.preventDefault();
     go(tiles[Math.floor(Math.random() * tiles.length)].getAttribute('href'));
   });
+  // scroll effects
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(en => {
+    if (en.isIntersecting) { en.target.style.transitionDelay = (tiles.indexOf(en.target) % 2) * 0.12 + 's'; en.target.classList.add('in'); io.unobserve(en.target); }
+  }), { threshold: .15 }) : null;
+  tiles.forEach(t => io ? io.observe(t) : t.classList.add('in'));
+  const r1 = document.querySelector('.band .r1'), r2 = document.querySelector('.band .r2');
+  const imgs = tiles.map(t => t.querySelector('.art img'));
+  let ticking = false;
+  function onScroll() {
+    ticking = false;
+    if (reducedMo) return;
+    const y = scrollY, vh = innerHeight;
+    r1.style.transform = `translateX(${-y * .45}px)`;
+    r2.style.transform = `translateX(${-1400 + y * .45}px)`;
+    for (const im of imgs) {
+      const r = im.parentElement.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > vh) continue;
+      im.style.setProperty('--py', (((r.top + r.height / 2) / vh) - .5) * -18 + 'px');
+    }
+  }
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  onScroll();
   const shelf = document.getElementById('games');
   const heartSvg = '<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.3 5.3 3.3 1.7-2 3.1-3.3 5.3-3.3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="#fff"/></svg>';
   for (let i = 0; i < 14; i++) {
@@ -441,8 +465,10 @@ if (renderer) {
     t += reduced ? dt * .15 : dt;
     px += (tx - px) * .05; py += (ty - py) * .05;
     const cy = worldYAt(.42);
-    if (!sneeze) balloon.position.set(px * .25, cy + .45 + Math.sin(t * .9) * .12, 0);
-    balloon.rotation.y = Math.sin(t * .35) * .35 + px * .3;
+    const sp = reduced ? 0 : Math.min(1.3, scrollY / H);
+    if (!sneeze) balloon.position.set(px * .25 + sp * 1.2, cy + .45 + Math.sin(t * .9) * .12 + sp * 3.2, -sp * 2);
+    balloon.rotation.y = Math.sin(t * .35) * .35 + px * .3 + sp * Math.PI * 2;
+    for (const c of clouds) c.c.position.z = (c.c.userData.z0 ?? (c.c.userData.z0 = c.c.position.z)) + sp * 4;
     balloon.rotation.z = Math.sin(t * .7) * .04;
     kit.rotation.y = Math.sin(t * .8) * .25;
     kit.rotation.z = Math.sin(t * 1.3) * .06;
