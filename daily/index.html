@@ -149,7 +149,7 @@ footer b { font-family: var(--f-display); font-weight: 400; font-size: 15px; let
 
   <section class="card" aria-labelledby="gName">
     <div class="game">
-      <div class="cover"><img id="gCover" src="../covers/tea.jpg" alt="" width="640" height="640"></div>
+      <div class="cover"><img id="gCover" src="../lux/tea.jpg" alt="" width="640" height="640"></div>
       <div>
         <span class="no" id="gNo">TODAY · NO.01</span>
         <h2 id="gName">倒剛好</h2>
@@ -231,7 +231,7 @@ footer b { font-family: var(--f-display); font-weight: 400; font-size: 15px; let
     key = gameFor(today);
     const g = GAMES[key];
     $('date').textContent = `${o.y}/${p2(o.m)}/${p2(o.d)}（${WD[o.w]}）`;
-    $('gCover').src = `../covers/${key}.jpg`;
+    $('gCover').src = `../lux/${key}.jpg`;
     $('gNo').textContent = `TODAY · NO.${g.no}`;
     $('gName').textContent = g.name;
     $('gHow').textContent = g.how;

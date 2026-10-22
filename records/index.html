@@ -345,7 +345,7 @@ footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); 
 
     $('cards').innerHTML = state.map(({ g, i, best, rk }) => {
       const no = 'NO.' + String(i + 1).padStart(2, '0');
-      const img = `<div class="thumb"><img src="../covers/${g.key}.jpg" alt="" width="640" height="640" loading="lazy"></div>`;
+      const img = `<div class="thumb"><img src="../lux/${g.key}.jpg" alt="" width="640" height="640" loading="lazy"></div>`;
       if (!rk) {
         return `<a class="card none" href="../${g.key}/">${img}<div class="info"><span class="no">${no}</span><h3>${esc(g.name)}</h3><p class="score">還沒玩</p><span class="go">去玩 →</span></div><div class="stamp empty" aria-hidden="true">?</div></a>`;
       }
