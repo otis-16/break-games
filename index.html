@@ -93,21 +93,34 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--rose); outline-
 .games-intro h2 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: clamp(56px, 16vw, 140px); line-height: .9; text-transform: uppercase; }
 .games-intro h2 em { font-family: var(--f-serif); font-style: italic; text-transform: none; color: var(--rose); }
 .games-intro span { font-family: var(--f-latin); font-weight: 800; font-size: 11px; letter-spacing: .28em; color: var(--muted); padding-bottom: 12px; white-space: nowrap; }
-.cards { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 14px; }
-@media (min-width: 760px) { .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.carousel { position: relative; }
+.cards {
+  display: flex; gap: 16px; overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  padding: 10px max(11vw, env(safe-area-inset-left, 0px)) 18px;
+  scroll-padding-inline: 11vw;
+}
+.cards::-webkit-scrollbar { display: none; }
+@media (min-width: 760px) { .cards { padding-inline: calc(50vw - 200px); scroll-padding-inline: calc(50vw - 200px); } }
+.card { flex: 0 0 78vw; max-width: 400px; scroll-snap-align: center; scroll-snap-stop: always; transition: transform .35s ease, opacity .35s ease; transform: scale(.9); opacity: .55; }
+.card.cur { transform: none; opacity: 1; }
+.dots { display: flex; justify-content: center; gap: 8px; padding-top: 4px; }
+.dots i { width: 7px; height: 7px; border-radius: 999px; background: var(--blush); transition: width .3s ease, background .3s ease; }
+.dots i.on { width: 22px; background: var(--rose); }
+.arrow { position: absolute; top: 38%; z-index: 2; width: 46px; height: 46px; border-radius: 50%; border: 0; background: var(--white); color: var(--ink); font-size: 18px; box-shadow: 0 8px 24px rgba(43, 23, 32, .15); cursor: pointer; display: none; }
+.arrow.prev { left: 16px; } .arrow.next { right: 16px; }
+@media (hover: hover) and (pointer: fine) { .arrow { display: grid; place-items: center; } }
 .card { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.card .ph { position: relative; aspect-ratio: 4 / 5; border-radius: 22px; overflow: hidden; background: var(--blush); box-shadow: 0 14px 30px rgba(226, 54, 122, .14); margin-bottom: 10px; }
+.card .ph { position: relative; aspect-ratio: 4 / 5; max-width: 100%; border-radius: 22px; overflow: hidden; background: var(--blush); box-shadow: 0 14px 30px rgba(226, 54, 122, .14); margin-bottom: 10px; }
 .card .ph img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; }
 .card:hover .ph img { transform: scale(1.06); }
 .card:active .ph { transform: scale(.98); }
 .card .no { position: absolute; left: 12px; bottom: 8px; font-family: var(--f-display); font-size: 40px; line-height: 1; color: var(--white); text-shadow: 0 2px 12px rgba(43, 23, 32, .3); }
 .card .new { position: absolute; top: 10px; right: 10px; font-family: var(--f-latin); font-weight: 800; font-size: 10px; letter-spacing: .18em; padding: 4px 10px; border-radius: 999px; background: var(--white); color: var(--rose); }
-.card h3 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: 24px; line-height: 1; text-transform: uppercase; letter-spacing: .01em; }
-.card .zh { margin: 2px 0 0; font-weight: 900; font-size: 15px; }
-.card .how { margin: 0; font-size: 12px; color: var(--muted); }
+.card h3 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: 34px; line-height: 1; text-transform: uppercase; letter-spacing: .01em; }
+.card .zh { margin: 2px 0 0; font-weight: 900; font-size: 17px; }
+.card .how { margin: 0; font-size: 13px; color: var(--muted); }
 .card .best { margin-top: 4px; align-self: flex-start; font-family: var(--f-latin); font-weight: 800; font-size: 11px; letter-spacing: .06em; color: var(--rose); }
-.js .card { opacity: 0; transform: translateY(30px); transition: opacity .6s ease, transform .7s cubic-bezier(.2, .9, .3, 1.1); }
-.js .card.in { opacity: 1; transform: none; }
 
 /* ---------- rooms ---------- */
 .rooms-wrap { max-width: 1100px; margin: 0 auto; padding-block: 14svh 6svh; display: flex; flex-direction: column; gap: 18px; }
@@ -144,7 +157,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--rose); outline-
 @media (prefers-reduced-motion: reduce) {
   #fur { animation: none; }
   .manifesto .w { opacity: 1; }
-  .js .card { opacity: 1; transform: none; transition: none; }
+  .card { transition: none; }
   #curtain.on { animation: none; transform: none; }
 }
 </style>
@@ -186,10 +199,12 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--rose); outline-
 
   <div class="games-intro gutter" id="games">
     <h2>The <em>games</em></h2>
-    <span>08 TITLES</span>
+    <span>SWIPE →</span>
   </div>
 
-  <div class="cards gutter" id="deck">
+  <div class="carousel">
+  <button class="arrow prev" type="button" aria-label="上一款">←</button>
+  <div class="cards" id="deck">
     <a class="card" href="tea/" data-key="tea" data-unit="分" data-name="倒剛好"><div class="ph"><img src="lux/s/tea.jpg" alt="" loading="lazy" decoding="async" width="560" height="560"><span class="no">01</span></div><h3>Just Pour</h3><p class="zh">倒剛好</p><p class="how">按住出茶，停在紅線上</p><span class="best"></span></a>
     <a class="card" href="circle/" data-key="circle" data-unit="%" data-name="一筆畫正圓"><div class="ph"><img src="lux/s/circle.jpg" alt="" loading="lazy" decoding="async" width="560" height="560"><span class="no">02</span></div><h3>Perfect Circle</h3><p class="zh">一筆畫正圓</p><p class="how">畫一圈，看有幾 % 圓</p><span class="best"></span></a>
     <a class="card" href="cake/" data-key="cake" data-unit="分" data-name="蛋糕切一半"><div class="ph"><img src="lux/s/cake.jpg" alt="" loading="lazy" decoding="async" width="560" height="560"><span class="no">03</span></div><h3>Fair Slice</h3><p class="zh">蛋糕切一半</p><p class="how">歪蛋糕，一刀平分</p><span class="best"></span></a>
@@ -198,6 +213,9 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--rose); outline-
     <a class="card" href="goldfish/" data-key="goldfish" data-unit="分" data-name="撈金魚"><div class="ph"><img src="lux/s/goldfish.jpg" alt="" loading="lazy" decoding="async" width="560" height="560"><span class=new>NEW</span><span class="no">06</span></div><h3>Paper Scoop</h3><p class="zh">撈金魚</p><p class="how">紙網動太快會破</p><span class="best"></span></a>
     <a class="card" href="bubble/" data-key="bubble" data-unit="cm" data-name="吹泡泡糖"><div class="ph"><img src="lux/s/bubble.jpg" alt="" loading="lazy" decoding="async" width="560" height="560"><span class=new>NEW</span><span class="no">07</span></div><h3>Bubble Gum</h3><p class="zh">吹泡泡糖</p><p class="how">越大越高分，小心爆</p><span class="best"></span></a>
     <a class="card" href="scooter/" data-key="scooter" data-unit="分" data-name="載阿嬤回家"><div class="ph"><img src="lux/s/scooter.jpg" alt="" loading="lazy" decoding="async" width="560" height="560"><span class=new>NEW</span><span class="no">08</span></div><h3>Ride Home</h3><p class="zh">載阿嬤回家</p><p class="how">單指騎車鑽車陣</p><span class="best"></span></a>
+  </div>
+  <button class="arrow next" type="button" aria-label="下一款">→</button>
+  <div class="dots" id="dots" aria-hidden="true"></div>
   </div>
 
   <section class="rooms-wrap gutter">
@@ -270,10 +288,25 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--rose); outline-
   // scroll engine
   const nav = document.getElementById('nav');
   const r1 = document.querySelector('.band .r1'), r2 = document.querySelector('.band .r2');
-  const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(en => {
-    if (en.isIntersecting) { en.target.style.transitionDelay = (slides.indexOf(en.target) % 2) * .1 + 's'; en.target.classList.add('in'); io.unobserve(en.target); }
-  }), { threshold: .12 }) : null;
-  slides.forEach(c => io ? io.observe(c) : c.classList.add('in'));
+  // carousel: highlight the centred card, dots, arrows
+  const track = document.getElementById('deck'), dots = document.getElementById('dots');
+  slides.forEach(() => dots.appendChild(document.createElement('i')));
+  let cur = -1;
+  function markCurrent() {
+    const mid = track.scrollLeft + track.clientWidth / 2;
+    let best = 0, bd = 1e9;
+    slides.forEach((c, i) => { const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (d < bd) { bd = d; best = i; } });
+    if (best === cur) return;
+    cur = best;
+    slides.forEach((c, i) => c.classList.toggle('cur', i === cur));
+    [...dots.children].forEach((d, i) => d.classList.toggle('on', i === cur));
+  }
+  let ct = false;
+  track.addEventListener('scroll', () => { if (!ct) { ct = true; requestAnimationFrame(() => { ct = false; markCurrent(); }); } }, { passive: true });
+  const step = dir => { const c = slides[Math.min(slides.length - 1, Math.max(0, cur + dir))]; track.scrollTo({ left: c.offsetLeft + c.offsetWidth / 2 - track.clientWidth / 2, behavior: reduced ? 'auto' : 'smooth' }); };
+  document.querySelector('.arrow.prev').addEventListener('click', () => step(-1));
+  document.querySelector('.arrow.next').addEventListener('click', () => step(1));
+  markCurrent();
   const furEl = document.getElementById('fur');
   let ticking = false;
   function frame() {
