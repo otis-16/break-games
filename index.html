@@ -52,6 +52,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--rose); outline-
 #fur { position: absolute; left: 50%; top: 44%; translate: -50% -50%; pointer-events: none; animation: spin 140s linear infinite; }
 @keyframes spin { to { rotate: 360deg; } }
 #sky { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.flykit { position: absolute; left: 0; top: 0; z-index: 2; height: min(60svh, 560px); width: auto; max-width: 86vw; object-fit: contain; translate: -50% -50%; cursor: pointer; user-select: none; -webkit-user-drag: none; filter: drop-shadow(0 18px 30px rgba(160, 30, 90, .28)); will-change: transform; touch-action: manipulation; }
 .hnav { position: absolute; top: 0; left: 0; right: 0; z-index: 3; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding-top: calc(env(safe-area-inset-top, 0px) + 16px); padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px)); }
 .hnav nav { display: flex; flex-wrap: wrap; gap: 8px; max-width: 64%; }
 .hnav nav a { font-size: 13px; font-weight: 700; padding: 7px 14px; border-radius: 999px; background: rgba(255, 255, 255, .22); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
@@ -181,6 +182,7 @@ html.lenis, html.lenis body { height: auto; }
   <header class="phero" id="hero">
   <canvas id="fur" aria-hidden="true"></canvas>
   <canvas id="sky" aria-hidden="true"></canvas>
+  <img id="flyKit" class="flykit" src="lux/fly.png" alt="KEWEI 抓著愛心氣球飛在空中" width="900" height="1350" draggable="false">
   <div class="hnav">
     <nav><a href="daily/">每日挑戰</a><a href="records/">紀錄</a><a href="kewei/">KEWEI</a><a href="#" id="rand">隨機玩</a></nav>
     <div class="mark">KEWEI<br>GAME<br>ROOM<small>遊戲室</small></div>
@@ -475,7 +477,9 @@ if (renderer) {
   kit.position.set(0, -1.66, .22);
   balloon.add(kit);
   balloon.rotation.x = .08;
+  balloon.visible = false;               // the photo-real KEWEI image replaces the cartoon balloon
   scene.add(balloon);
+  const flyKit = document.getElementById('flyKit');
 
   // ---------- clouds ----------
   const cloudMat = M(0xffffff, { roughness: 1, clearcoat: 0, sheen: 1, sheenColor: new THREE.Color(0xfff0f6) });
@@ -545,11 +549,7 @@ if (renderer) {
     hero.appendChild(bubbleEl); bubbleT = 2.4;
   }
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
-  canvas.addEventListener('pointerdown', e => {
-    const r = canvas.getBoundingClientRect();
-    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
-    ray.setFromCamera(ndc, camera);
-    if (!ray.intersectObject(balloon, true).length) return;
+  flyKit.addEventListener('pointerdown', e => {
     taps++;
     for (let i = 0; i < 6; i++) { const h = hearts[(taps * 6 + i) % hearts.length]; const p = new THREE.Vector3(); kit.getWorldPosition(p); h.m.position.set(p.x + (Math.random() - .5) * .8, p.y, p.z + .5); h.boost = 2.5; }
     if (taps % 10 === 0) { sneeze = 1; achoo(); say('哈——啾！！'); }
@@ -597,6 +597,9 @@ if (renderer) {
     }
     camera.position.set(px * .4, -py * .2, camZ);
     camera.lookAt(0, 0, 0);
+    { const p = balloon.position.clone(); p.y -= .55; p.project(camera);
+      const bounce = kit.userData.bounce ? Math.sin((1 - kit.userData.bounce) * Math.PI) * -18 : 0;
+      flyKit.style.transform = `translate(${(p.x * .5 + .5) * W}px, ${(-p.y * .5 + .5) * H + bounce}px) rotate(${Math.sin(t * .7) * 4 + px * 6 + (sneeze ? sneeze * 40 : 0)}deg)`; }
     if (scrollY < H * 1.2) renderer.render(scene, camera);
     requestAnimationFrame(frame);
   }
