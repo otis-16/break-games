@@ -266,7 +266,7 @@ footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); 
   // Rank logic mirrors each game's result sheet. Only the best score is stored,
   // so rules that depend on more than the score are approximated (noted inline).
   const GAMES = [
-    { key: 'tea', name: '倒剛好', unit: '分', fmt: v => String(Math.round(v)),
+    { key: 'tea', name: '手搖調飲師', unit: '分', fmt: v => String(Math.round(v)),
       roles: { S: '飲料店店長', A: '資深店員', B: '新來的工讀生', C: '老闆的小孩' },
       // tea never saves an overflowed pour as best, so score-only is exact here.
       rank: v => v >= 97 ? 'S' : v >= 88 ? 'A' : v >= 70 ? 'B' : 'C' },

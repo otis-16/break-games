@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded',function(){var t=document.getElemen
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <meta name="theme-color" content="#f4ebdf">
-<title>倒剛好｜珍珠奶茶篇</title>
-<meta name="description" content="按住出茶、放開就停。把珍珠奶茶倒到剛好的那條線。">
+<title>手搖調飲師｜KEWEI遊戲室</title>
+<meta name="description" content="手搖調飲師：八種手搖飲輪流來，按住出飲料、放開就停，倒到剛好那條線。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Noto+Sans+TC:wght@400;500;700&family=DM+Serif+Display&display=swap">
@@ -207,22 +207,22 @@ button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
 
 <div class="slip" id="slip" hidden>
   <div class="no"><span id="ordNo">#0000</span><span id="ordTime">00:00</span></div>
-  <div class="item">珍珠奶茶（大）</div>
+  <div class="item" id="ordItem">珍珠奶茶（大）</div>
   <div class="opt" id="ordOpt">少冰・半糖</div>
   <div class="tgt">倒到<b id="ordMl">500</b>ml</div>
 </div>
 
 <section class="title" id="title">
   <a class="home" href="../">← 全部遊戲</a>
-  <p class="kicker">TAPIOCA MILK TEA</p>
-  <h1>倒剛<span>好</span></h1>
-  <p class="sub">珍珠奶茶篇</p>
-  <p class="how">按住螢幕出茶，越按越快。<br>放開就停，停在紅線上。</p>
+  <p class="kicker">DRINK MASTER</p>
+  <h1>調飲<span>師</span></h1>
+  <p class="sub">手搖飲八連發</p>
+  <p class="how">每單飲料都不一樣：奶茶、綠茶、芒果冰沙…<br>按住出飲料，放開就停，停在紅線上。</p>
   <button class="go" id="go" type="button">開始營業</button>
   <p class="best" id="bestTitle"></p>
 </section>
 
-<p class="hint" id="hint" hidden>按住螢幕出茶</p>
+<p class="hint" id="hint" hidden>按住螢幕出飲料</p>
 
 <section class="sheet" id="sheet" hidden>
   <div class="sheet-in">
@@ -250,6 +250,18 @@ button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
   let state = 'title', T = 0;
   let level = 0, target = 520, rate = 0, hold = 0, tail = 0, waveA = 0, settleT = 0, sealT = 0, overflow = false, spill = 0;
   let pearls = [], ices = [], drops = [], bubbles = [];
+  // menu: liquid gradient (top→bottom), surface, stream, drop rgb, topping
+  const DRINKS = [
+    { name: '珍珠奶茶', label: '阿薩姆奶茶', c: ['#d8ac80', '#c4915f', '#8e5a35'], s: ['#ecd0ad', '#d7aa7c'], st: ['#a46d44', '#e3bb92', '#93603a'], d: '200,150,105', top: 'pearl' },
+    { name: '黑糖珍珠鮮奶', label: '小農鮮奶', c: ['#fbf3e8', '#eedfc8', '#9a5626'], s: ['#fffaf2', '#efe2cf'], st: ['#e8dccb', '#ffffff', '#d9cbb6'], d: '240,230,215', top: 'tiger' },
+    { name: '多多綠茶', label: '茉莉綠茶', c: ['#eeeaa6', '#d9d56c', '#b3ae45'], s: ['#f7f4cc', '#e0dc90'], st: ['#bdb95c', '#f1eea8', '#a9a54d'], d: '214,208,120', top: 'none' },
+    { name: '芒果冰沙', label: '愛文芒果', c: ['#ffd06e', '#ffb22f', '#f29510'], s: ['#ffe6ab', '#ffcb6a'], st: ['#f0a12a', '#ffd88a', '#e08a12'], d: '255,180,60', top: 'fruit', fc: ['#ffb000', '#ff9a00'] },
+    { name: '草莓牛奶', label: '大湖草莓', c: ['#ffd8e2', '#ffb6c9', '#ff8aa8'], s: ['#ffeaf0', '#ffc8d6'], st: ['#ff9fb8', '#ffe1e9', '#f78aa4'], d: '255,170,195', top: 'fruit', fc: ['#e8384f', '#ff5a6e'] },
+    { name: '冬瓜檸檬', label: '古早味冬瓜', c: ['#efcf8c', '#dcaa52', '#b9802a'], s: ['#f6e2b4', '#e6bf74'], st: ['#c9963e', '#f3d79c', '#b07a26'], d: '225,180,100', top: 'lemon' },
+    { name: '椰果奶綠', label: '奶綠', c: ['#eef2d2', '#d8e2a8', '#b7c47e'], s: ['#f7f9e6', '#e2eabc'], st: ['#c6d28e', '#f3f6dc', '#b0bd78'], d: '220,228,170', top: 'coco' },
+    { name: '西瓜汁', label: '現打西瓜', c: ['#ff8a8a', '#f2545b', '#d23a46'], s: ['#ffb3b3', '#ff7474'], st: ['#e24a54', '#ff9c9c', '#c9323e'], d: '240,90,100', top: 'none' }
+  ];
+  let drink = DRINKS[0];
   let shake = 0, lastRes = null;
 
   // ---------- storage ----------
@@ -379,7 +391,7 @@ button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
     // label plate
     g.fillStyle = '#3a2a20'; rrect(x - 34, ny - 72, 68, 22, 4); g.fill();
     g.fillStyle = '#f4ebdf'; g.font = '700 11px "Noto Sans TC", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillText('阿薩姆奶茶', x, ny - 60.5);
+    g.fillText(drink.label, x, ny - 60.5);
     // nozzle
     const ng = g.createLinearGradient(x - 10, 0, x + 10, 0);
     ng.addColorStop(0, '#7d8489'); ng.addColorStop(.4, '#f3f5f6'); ng.addColorStop(1, '#6f767b');
@@ -394,7 +406,7 @@ button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
     g.save(); cupBody(); g.clip();
     if (level > 0.5) {
       const lg = g.createLinearGradient(0, ly, 0, L.bot);
-      lg.addColorStop(0, '#d8ac80'); lg.addColorStop(.55, '#c4915f'); lg.addColorStop(1, '#8e5a35');
+      lg.addColorStop(0, drink.c[0]); lg.addColorStop(.55, drink.c[1]); lg.addColorStop(1, drink.c[2]);
       g.fillStyle = lg; g.fillRect(0, ly, W, L.bot - ly + L.bry + 2);
       // side shading for volume
       const sg = g.createLinearGradient(L.cx - L.tw, 0, L.cx + L.tw, 0);
@@ -411,14 +423,35 @@ button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
       }
       g.closePath();
       const tg = g.createLinearGradient(0, ly - sry, 0, ly + sry);
-      tg.addColorStop(0, '#ecd0ad'); tg.addColorStop(1, '#d7aa7c');
+      tg.addColorStop(0, drink.s[0]); tg.addColorStop(1, drink.s[1]);
       g.fillStyle = tg; g.fill();
       g.strokeStyle = 'rgba(255,240,220,.6)'; g.lineWidth = 1.2; g.stroke();
       // foam bubbles
       for (const b of bubbles) { g.fillStyle = `rgba(255,248,236,${b.a})`; g.beginPath(); g.arc(L.cx + b.u * hw * .85, ly + b.v * sry * .8, b.r, 0, 7); g.fill(); }
     }
+    // brown-sugar tiger stripes up the cup wall
+    if (drink.top === 'tiger' && level > 0) {
+      g.strokeStyle = 'rgba(122,62,24,.55)'; g.lineWidth = 7; g.lineCap = 'round';
+      for (let i = 0; i < 7; i++) {
+        const u = -1 + i / 3, x0 = L.cx + u * L.bw * .85, top = Math.max(ly + 10, L.bot - L.cupH * (.35 + (i % 3) * .12));
+        g.beginPath(); g.moveTo(x0, L.bot);
+        g.bezierCurveTo(x0 + 14, L.bot - (L.bot - top) * .4, x0 - 12, L.bot - (L.bot - top) * .7, x0 + 6, top); g.stroke();
+      }
+    }
+    // toppings
+    if (drink.top !== 'none') for (const p of pearls) {
+      if (drink.top === 'pearl' || drink.top === 'tiger') continue;
+      const sub = level > 0 && yOf(level) < p.y;
+      const bob = sub ? Math.sin(T * 3 + p.ph) * Math.min(2, waveA * .35) : 0;
+      const s2 = p.r * 1.7;
+      g.save(); g.translate(p.x, p.y + bob); g.rotate(p.ph);
+      if (drink.top === 'coco') { g.fillStyle = 'rgba(255,255,255,.75)'; rrect(-s2 / 2, -s2 / 2, s2, s2, 3); g.fill(); g.strokeStyle = 'rgba(255,255,255,.95)'; g.lineWidth = 1; g.stroke(); }
+      else if (drink.top === 'lemon') { g.fillStyle = '#fff3a6'; g.beginPath(); g.arc(0, 0, p.r * 1.3, 0, 7); g.fill(); g.strokeStyle = '#f2d23c'; g.lineWidth = 2; g.stroke(); g.strokeStyle = 'rgba(242,210,60,.7)'; g.lineWidth = 1; for (let k = 0; k < 6; k++) { g.beginPath(); g.moveTo(0, 0); g.lineTo(Math.cos(k) * p.r * 1.2, Math.sin(k) * p.r * 1.2); g.stroke(); } }
+      else { g.fillStyle = drink.fc[(p.ph * 10 | 0) % 2]; rrect(-s2 / 2, -s2 / 2, s2, s2, 4); g.fill(); g.fillStyle = 'rgba(255,255,255,.4)'; g.fillRect(-s2 / 3, -s2 / 3, s2 / 3, s2 / 6); }
+      g.restore();
+    }
     // pearls
-    for (const p of pearls) {
+    if (drink.top === 'pearl' || drink.top === 'tiger') for (const p of pearls) {
       const sub = level > 0 && yOf(level) < p.y;
       const bob = sub ? Math.sin(T * 3 + p.ph) * Math.min(2, waveA * .35) : 0;
       const pg = g.createRadialGradient(p.x - p.r * .35, p.y + bob - p.r * .4, p.r * .1, p.x, p.y + bob, p.r);
@@ -499,18 +532,18 @@ button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
     const w = 3 + Math.min(rate, 340) / 340 * 9;
     const x = L.cx + Math.sin(T * 40) * .6;
     const sg = g.createLinearGradient(x - w / 2, 0, x + w / 2, 0);
-    sg.addColorStop(0, '#a46d44'); sg.addColorStop(.4, '#e3bb92'); sg.addColorStop(1, '#93603a');
+    sg.addColorStop(0, drink.st[0]); sg.addColorStop(.4, drink.st[1]); sg.addColorStop(1, drink.st[2]);
     g.fillStyle = sg;
     g.beginPath(); g.moveTo(x - w * .4, top); g.lineTo(x + w * .4, top); g.lineTo(x + w / 2, ly); g.lineTo(x - w / 2, ly); g.fill();
   }
 
   function drawDrops() {
-    for (const d of drops) { g.fillStyle = `rgba(200,150,105,${d.a})`; g.beginPath(); g.arc(d.x, d.y, d.r, 0, 7); g.fill(); }
+    for (const d of drops) { g.fillStyle = `rgba(${drink.d},${d.a})`; g.beginPath(); g.arc(d.x, d.y, d.r, 0, 7); g.fill(); }
   }
 
   function drawSpill() {
     if (!overflow) return;
-    g.fillStyle = 'rgba(196,145,95,.9)';
+    g.fillStyle = `rgba(${drink.d},.9)`;
     const k = clamp(spill, 0, 1);
     for (const s of [-1, 1]) {
       g.beginPath();
@@ -575,6 +608,8 @@ button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
   // ---------- game flow ----------
   function newOrder() {
     window.DGH_DAILY && DGH_DAILY.reseed();
+    rand(0, 1); rand(0, 1); rand(0, 1);   // the seeded generator's first draws cluster low; skip them
+    drink = DRINKS[Math.floor(rand(0, DRINKS.length))];
     target = Math.round(rand(360, 640) / 10) * 10;
     level = 0; rate = 0; hold = 0; tail = 0; waveA = 0; settleT = 0; sealT = 0; overflow = false; spill = 0;
     drops = []; bubbles = [];
@@ -583,6 +618,7 @@ button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
     const sug = ['全糖', '少糖', '半糖', '微糖', '無糖'][Math.floor(rand(0, 5))];
     $('ordNo').textContent = '#' + String(Math.floor(rand(1, 9999))).padStart(4, '0');
     const d = new Date(); $('ordTime').textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    $('ordItem').textContent = drink.name + '（大）';
     $('ordOpt').textContent = ice + '・' + sug;
     $('ordMl').textContent = target;
     const slip = $('slip'); slip.hidden = true; void slip.offsetWidth; slip.hidden = false;
@@ -596,7 +632,7 @@ button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
     const err = Math.abs(level - target);
     const score = overflow ? 0 : Math.max(0, Math.round(100 - err * 1.5));
     let rk, role;
-    if (overflow) { rk = 'C'; role = '整個吧台都是奶茶'; }
+    if (overflow) { rk = 'C'; role = `整個吧台都是${drink.name}`; }
     else if (score >= 97) { rk = 'S'; role = '飲料店店長'; }
     else if (score >= 88) { rk = 'A'; role = '資深店員'; }
     else if (score >= 70) { rk = 'B'; role = '新來的工讀生'; }
@@ -647,13 +683,13 @@ button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
   $('share').addEventListener('click', async () => {
     if (!lastRes) return;
     let msg = lastRes.rk === 'C' && lastRes.score === 0
-      ? '我在《倒剛好》把奶茶倒到滿出來了，你來試試看能不能倒剛好？'
-      : `我在《倒剛好》倒奶茶拿到 ${lastRes.score} 分（${lastRes.rk} 級・${lastRes.role}），只差 ${lastRes.err}ml！換你：`;
+      ? `我在《手搖調飲師》把${drink.name}倒到滿出來了，你來試試看能不能倒剛好？`
+      : `我在《手搖調飲師》倒${drink.name}拿到 ${lastRes.score} 分（${lastRes.rk} 級・${lastRes.role}），只差 ${lastRes.err}ml！換你：`;
     const url = location.protocol.startsWith('http') ? location.href : '';
     if (window.DGH_DAILY) msg = DGH_DAILY.tag + msg;
     const btn = $('share');
     try {
-      if (navigator.share) { await navigator.share({ title: '倒剛好', text: msg, url: url || undefined }); return; }
+      if (navigator.share) { await navigator.share({ title: '手搖調飲師', text: msg, url: url || undefined }); return; }
     } catch (e) { if (e && e.name === 'AbortError') return; }
     try { await navigator.clipboard.writeText(url ? msg + ' ' + url : msg); btn.textContent = '已複製，去貼給朋友'; }
     catch (e) { btn.textContent = '複製失敗'; }
