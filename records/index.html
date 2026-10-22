@@ -12,7 +12,7 @@
 
 <meta name="theme-color" content="#ff5fa2">
 <title>我的紀錄・KEWEI遊戲室</title>
-<meta name="description" content="KEWEI遊戲室的個人紀錄與稱號收集：八款小遊戲的最高分、評級印章與 32 個稱號。">
+<meta name="description" content="KEWEI遊戲室的個人紀錄與稱號收集：十六款小遊戲的最高分、評級印章與 64 個稱號。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+TC:wght@400;500;700;900&family=Manrope:wght@600;800&display=swap">
@@ -213,13 +213,13 @@ footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); 
 <main>
   <section class="summary" aria-label="紀錄總覽">
     <div class="stats">
-      <div class="stat"><b id="played">0<small>/8</small></b><span>玩過的遊戲</span></div>
+      <div class="stat"><b id="played">0<small>/16</small></b><span>玩過的遊戲</span></div>
       <div class="stat"><b id="sCount">0</b><span>S 級數量</span></div>
-      <div class="stat"><b id="tCount">0<small>/32</small></b><span>稱號收集</span></div>
+      <div class="stat"><b id="tCount">0<small>/64</small></b><span>稱號收集</span></div>
     </div>
     <div class="level">
       <div class="level-row"><small>KEWEI 認證等級</small><span class="level-name" id="levelName">見習貓奴</span></div>
-      <div class="bar" role="progressbar" aria-label="認證進度" aria-valuemin="0" aria-valuemax="32" aria-valuenow="0" id="bar"><i id="barFill"></i></div>
+      <div class="bar" role="progressbar" aria-label="認證進度" aria-valuemin="0" aria-valuemax="64" aria-valuenow="0" id="bar"><i id="barFill"></i></div>
       <div class="steps" id="steps"><span>見習貓奴</span><span>資深貓奴</span><span>貓咪大師</span><span>KEWEI 本貓</span></div>
       <p class="next" id="nextTip"></p>
     </div>
@@ -248,7 +248,7 @@ footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); 
   <section aria-labelledby="h-titles">
     <div class="sec-h">
       <h2 id="h-titles"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#ff6f9c"/></svg>稱號收集</h2>
-      <span id="tLabel">0 / 32</span>
+      <span id="tLabel">0 / 64</span>
     </div>
     <div class="titles" id="titles"></div>
     <p class="legend">拿到某個評級，就會一起解鎖同款遊戲比它低的所有稱號。</p>
@@ -297,14 +297,38 @@ footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); 
       // Approximation: in-game C means "didn't reach home" (win flag not stored).
       // A run that reaches home scores at least 2000 (full 2000 m distance), so
       // < 2000 is treated as C; a failed run padded by snacks could exceed 2000.
-      rank: v => v >= 3000 ? 'S' : v >= 2550 ? 'A' : v >= 2000 ? 'B' : 'C' }
+      rank: v => v >= 3000 ? 'S' : v >= 2550 ? 'A' : v >= 2000 ? 'B' : 'C' },
+    { key: 'toss', name: '紙團投籃', unit: '分', fmt: v => String(Math.round(v)),
+      roles: { S: '辦公室 MVP', A: '投籃高手', B: '還可以', C: '丟到老闆頭上' },
+      rank: v => v >= 180 ? 'S' : v >= 110 ? 'A' : v >= 50 ? 'B' : 'C' },
+    { key: 'nails', name: '幫 KEWEI 剪指甲', unit: '分', fmt: v => String(Math.round(v)),
+      roles: { S: '貓咪美甲師', A: '溫柔的手', B: '有點緊張', C: '被貓抓' },
+      rank: v => v >= 430 ? 'S' : v >= 340 ? 'A' : v >= 220 ? 'B' : 'C' },
+    { key: 'pearls', name: '接珍珠', unit: '分', fmt: v => String(Math.round(v)),
+      roles: { S: '珍珠收集王', A: '很會接', B: '半杯', C: '只有冰塊' },
+      rank: v => v >= 200 ? 'S' : v >= 120 ? 'A' : v >= 60 ? 'B' : 'C' },
+    { key: 'swat', name: '拍蚊子', unit: '分', fmt: v => String(Math.round(v)),
+      roles: { S: '蚊子剋星', A: '手很快', B: '被叮幾包', C: '全身都是包' },
+      rank: v => v >= 45 ? 'S' : v >= 30 ? 'A' : v >= 15 ? 'B' : 'C' },
+    { key: 'bomb', name: '拆彈專家 KEWEI', unit: '分', fmt: v => String(Math.round(v)),
+      roles: { S: '拆彈之神', A: '特勤隊王牌', B: '手抖的實習生', C: '爆炸頭本人' },
+      rank: v => { const n = Math.floor(v / 100); return n >= 10 ? 'S' : n >= 6 ? 'A' : n >= 3 ? 'B' : 'C'; } },
+    { key: 'boss', name: '老闆來了', unit: '秒', fmt: v => (Math.round(v * 10) / 10).toString(),
+      roles: { S: '摸魚之神', A: '薪水小偷', B: '被瞄一眼', C: '收到人事通知' },
+      rank: v => v >= 48 ? 'S' : v >= 32 ? 'A' : v >= 15 ? 'B' : 'C' },
+    { key: 'yarn', name: 'KEWEI 推毛線球', unit: '顆星', fmt: v => String(Math.round(v)),
+      roles: { S: '毛線球大師', A: '逗貓棒高手', B: '貓奴實習生', C: '被毛線纏住' },
+      rank: v => v >= 34 ? 'S' : v >= 28 ? 'A' : v >= 20 ? 'B' : 'C' },
+    { key: 'parking', name: '機車停進格子', unit: '分', fmt: v => String(Math.round(v)),
+      roles: { S: '停車之神', A: '機車老司機', B: '剛考到駕照', C: '阿姨在罵你' },
+      rank: v => v >= 700 ? 'S' : v >= 500 ? 'A' : v >= 300 ? 'B' : 'C' },
   ];
 
   const LEVELS = [
     { name: '見習貓奴', min: 0 },
-    { name: '資深貓奴', min: 10 },
-    { name: '貓咪大師', min: 20 },
-    { name: 'KEWEI 本貓', min: 32 }
+    { name: '資深貓奴', min: 20 },
+    { name: '貓咪大師', min: 40 },
+    { name: 'KEWEI 本貓', min: 64 }
   ];
 
   function readBest(key) {
@@ -333,16 +357,16 @@ footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); 
     const sN = state.filter(s => s.rk === 'S').length;
     const titlesN = state.reduce((n, s) => n + (s.rk ? RV[s.rk] + 1 : 0), 0);
 
-    $('played').innerHTML = played + '<small>/8</small>';
+    $('played').innerHTML = played + '<small>/16</small>';
     $('sCount').textContent = sN;
-    $('tCount').innerHTML = titlesN + '<small>/32</small>';
-    $('tLabel').textContent = titlesN + ' / 32';
+    $('tCount').innerHTML = titlesN + '<small>/64</small>';
+    $('tLabel').textContent = titlesN + ' / 64';
 
     let li = 0;
     LEVELS.forEach((l, i) => { if (titlesN >= l.min) li = i; });
     $('levelName').textContent = LEVELS[li].name;
     [...$('steps').children].forEach((el, i) => el.classList.toggle('on', i <= li));
-    $('barFill').style.width = (titlesN / 32 * 100).toFixed(1) + '%';
+    $('barFill').style.width = (titlesN / 64 * 100).toFixed(1) + '%';
     $('bar').setAttribute('aria-valuenow', titlesN);
     const nx = LEVELS[li + 1];
     $('nextTip').textContent = played === 0
@@ -388,7 +412,7 @@ footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); 
     const { played, sN, titlesN, level } = render();
     const lines = state.filter(s => s.rk).map(s => `${s.g.name}：${s.rk} 級・${s.g.roles[s.rk]}`);
     const head = played
-      ? `我在 KEWEI 遊戲室玩了 ${played}/8 款，拿到 ${sN} 個 S，收集 ${titlesN}/32 個稱號，認證等級「${level}」！`
+      ? `我在 KEWEI 遊戲室玩了 ${played}/16 款，拿到 ${sN} 個 S，收集 ${titlesN}/64 個稱號，認證等級「${level}」！`
       : '我要開始挑戰 KEWEI 遊戲室了！';
     return [head, ...lines, '一起來玩：'].join('\n');
   }

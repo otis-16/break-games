@@ -198,7 +198,15 @@ footer b { font-family: var(--f-display); font-weight: 400; font-size: 15px; let
     claw:     { no: '05', name: '夾娃娃機',   how: '爪子左右移動，點一下下爪。五枚十元，看準再夾。', goal: '夾到 2 隻',               unit: '隻', ok: s => s >= 2 },
     goldfish: { no: '06', name: '撈金魚',     how: '按住把紙網放進水裡，等金魚游過來再放開撈起。',   goal: '撈到 6 分以上',           unit: '分', ok: s => s >= 6 },
     bubble:   { no: '07', name: '吹泡泡糖',   how: '按住吹氣、放開收下，吹越大越好，吹破就黏滿臉。', goal: '三顆合計 54 cm 以上',     unit: 'cm', ok: s => s >= 54 },
-    scooter:  { no: '08', name: '載阿嬤回家', how: '一根手指騎機車，閃過車陣，平安把阿嬤載回家。',   goal: '平安到家並拿到 2550 分',  unit: '分', ok: s => s >= 2550 }
+    scooter:  { no: '08', name: '載阿嬤回家', how: '一根手指騎機車，閃過車陣，平安把阿嬤載回家。',   goal: '平安到家並拿到 2550 分',  unit: '分', ok: s => s >= 2550 },
+    toss: { no: '09', name: '紙團投籃', how: '甩紙團進垃圾桶，風向每次不同。', goal: '拿到 110 分以上', unit: '分', ok: s => s >= 110 },
+    nails: { no: '10', name: '幫 KEWEI 剪指甲', how: '剪越靠近血線越高分，別剪到肉。', goal: '拿到 340 分以上', unit: '分', ok: s => s >= 340 },
+    pearls: { no: '11', name: '接珍珠', how: '拖杯子接珍珠，閃冰塊和貓掌。', goal: '拿到 120 分以上', unit: '分', ok: s => s >= 120 },
+    swat: { no: '12', name: '拍蚊子', how: '拍蚊子，別打到 KEWEI。', goal: '拍到 30 分以上', unit: '分', ok: s => s >= 30 },
+    bomb: { no: '13', name: '拆彈專家 KEWEI', how: '照規則剪對的線，倒數中拆彈。', goal: '拆掉 6 顆以上', unit: '分', ok: s => s >= 600 },
+    boss: { no: '14', name: '老闆來了', how: '按住偷玩，老闆轉頭就放開。', goal: '摸魚 32 秒以上', unit: '秒', ok: s => s >= 32 },
+    yarn: { no: '15', name: 'KEWEI 推毛線球', how: '推箱子解謎，12 關越來越燒腦。', goal: '今天推完 3 關', unit: '顆星', ok: s => s >= 9 },
+    parking: { no: '16', name: '機車停進格子', how: '窄格停機車，撞到整排倒。', goal: '拿到 500 分以上', unit: '分', ok: s => s >= 500 }
   };
   const KEYS = Object.keys(GAMES);
   const WD = ['日', '一', '二', '三', '四', '五', '六'];
