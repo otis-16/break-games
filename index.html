@@ -414,34 +414,12 @@ if (renderer) {
   const basketBottom = new THREE.Mesh(new THREE.CircleGeometry(.36, 40), M(0xe9b58f, { roughness: .9 })); basketBottom.rotation.x = -Math.PI / 2; basketBottom.position.y = -2.29; balloon.add(basketBottom);
   const rim = new THREE.Mesh(new THREE.TorusGeometry(.44, .045, 12, 48), M(0xff8fb8)); rim.rotation.x = Math.PI / 2; rim.position.y = -1.87; balloon.add(rim);
 
-  // ---------- kitten (original: cream tabby with forehead stripes, pink bow by the ear, ω mouth) ----------
+  // ---------- KEWEI: realistic cut-out kitten peeking over the basket rim ----------
   const kit = new THREE.Group();
-  const fluff = M(0xfff1e6, { roughness: .95, clearcoat: 0, sheen: 1, sheenColor: new THREE.Color(0xffffff) });
-  const head = new THREE.Mesh(new THREE.SphereGeometry(.3, 40, 30), fluff); head.scale.set(1.08, .95, 1); kit.add(head);
-  for (const s of [-1, 1]) {
-    const ear = new THREE.Mesh(new THREE.ConeGeometry(.11, .2, 24), fluff); ear.position.set(s * .2, .27, 0); ear.rotation.z = -s * .35; kit.add(ear);
-    const inner = new THREE.Mesh(new THREE.ConeGeometry(.06, .12, 16), M(0xffb6cf, { roughness: .9 })); inner.position.set(s * .2, .26, .05); inner.rotation.z = -s * .35; kit.add(inner);
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(.042, 20, 16), M(0x2a1520, { roughness: .15, clearcoat: 1 })); eye.position.set(s * .11, .03, .275); kit.add(eye);
-    const spark = new THREE.Mesh(new THREE.SphereGeometry(.013, 10, 8), new THREE.MeshBasicMaterial({ color: 0xffffff })); spark.position.set(s * .11 - .012, .048, .31); kit.add(spark);
-    const cheek = new THREE.Mesh(new THREE.SphereGeometry(.05, 16, 12), M(0xff9cbc, { roughness: .9 })); cheek.scale.z = .3; cheek.position.set(s * .19, -.07, .245); kit.add(cheek);
-    const paw = new THREE.Mesh(new THREE.SphereGeometry(.07, 20, 16), fluff); paw.position.set(s * .15, -.17, .27); kit.add(paw);
-    for (let w = -1; w <= 1; w += 2) {
-      const wh = new THREE.Mesh(new THREE.CylinderGeometry(.004, .004, .16, 4), M(0xc89aa8)); wh.position.set(s * .27, -.04 + w * .02, .23); wh.rotation.z = Math.PI / 2 + w * .12 * s; kit.add(wh);
-    }
-  }
-  for (let i = -1; i <= 1; i++) { const st = new THREE.Mesh(new THREE.BoxGeometry(.025, .07, .01), M(0xf0b89a)); st.position.set(i * .05, .2, .245); st.rotation.x = -.6; kit.add(st); }
-  const nose = new THREE.Mesh(new THREE.SphereGeometry(.024, 12, 10), M(0xff7aa3)); nose.position.set(0, -.04, .3); kit.add(nose);
-  const mouth = new THREE.Mesh(new THREE.TorusGeometry(.022, .006, 6, 16, Math.PI), M(0x6a2a40));
-  for (const s of [-1, 1]) { const m2 = mouth.clone(); m2.position.set(s * .022, -.075, .292); m2.rotation.z = Math.PI; kit.add(m2); }
-  // bow on the head, next to the right ear
-  const bowMat = M(0xff4f93, { roughness: .3, clearcoat: 1 });
-  const bow = new THREE.Group();
-  bow.add(new THREE.Mesh(new THREE.SphereGeometry(.035, 16, 12), bowMat));
-  for (const s of [-1, 1]) { const loop = new THREE.Mesh(new THREE.ConeGeometry(.07, .13, 20), bowMat); loop.position.x = s * .075; loop.rotation.z = s * Math.PI / 2; loop.scale.z = .55; bow.add(loop); }
-  bow.position.set(.12, .3, .1); bow.rotation.set(-.3, 0, -.35); bow.scale.setScalar(1.5);
-  kit.add(bow);
-  kit.scale.setScalar(1.4);
-  kit.position.set(0, -1.7, .05);
+  const kitTex = new THREE.TextureLoader().load('lux/kitten.png'); kitTex.colorSpace = THREE.SRGBColorSpace;
+  const kitPlane = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 1.0), new THREE.MeshBasicMaterial({ map: kitTex, transparent: true, alphaTest: .02, toneMapped: false, side: THREE.DoubleSide }));
+  kit.add(kitPlane);
+  kit.position.set(0, -1.66, .22);
   balloon.add(kit);
   balloon.rotation.x = .08;
   scene.add(balloon);
@@ -541,7 +519,8 @@ if (renderer) {
     balloon.rotation.z = Math.sin(t * .7) * .04;
     kit.rotation.y = Math.sin(t * .8) * .25;
     kit.rotation.z = Math.sin(t * 1.3) * .06;
-    if (kit.userData.bounce) { kit.userData.bounce = Math.max(0, kit.userData.bounce - dt * 3); kit.position.y = -1.7 + Math.sin((1 - kit.userData.bounce) * Math.PI) * .25; }
+    kitPlane.lookAt(camera.position); kitPlane.rotateZ(Math.sin(t * 1.3) * .05);
+    if (kit.userData.bounce) { kit.userData.bounce = Math.max(0, kit.userData.bounce - dt * 3); kit.position.y = -1.66 + Math.sin((1 - kit.userData.bounce) * Math.PI) * .25; }
     if (sneeze > 0) {
       sneeze += dt;
       const k = sneeze - 1;
