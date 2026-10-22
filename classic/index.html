@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>夜市遊戲街</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=Bungee&display=swap">
+<style>
+/* Layout: a single night-market street — stall signs stacked down the page; each game opens full-screen like stepping up to the stall. Single dark look by choice. */
+:root {
+  --night: #1b1633;
+  --night-2: #272048;
+  --night-3: #362c63;
+  --lantern: #ff5b3a;
+  --gold: #ffc94a;
+  --paper: #f7ecd8;
+  --muted: #b9acd6;
+  --mint: #63d6b8;
+  --f-display: "LXGW WenKai TC", "Kaiti TC", "STKaiti", serif;
+  --f-body: "Noto Sans TC", "PingFang TC", "Heiti TC", system-ui, sans-serif;
+  --f-num: "Bungee", "Noto Sans TC", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--night);
+  background-image: radial-gradient(120% 60% at 50% -10%, var(--night-3), transparent 70%);
+  background-attachment: fixed;
+  color: var(--paper);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.6;
+}
+body.playing { overflow: hidden; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+#hub {
+  max-width: 560px;
+  margin: 0 auto;
+  padding-block: 28px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.sign { display: flex; flex-direction: column; gap: 6px; }
+.eyebrow {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: .18em;
+  color: var(--gold);
+}
+.eyebrow b { color: var(--lantern); font-family: var(--f-num); font-weight: 400; letter-spacing: .08em; }
+h1 {
+  margin: 0;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(44px, 13vw, 68px);
+  line-height: 1.05;
+  letter-spacing: .04em;
+  text-wrap: balance;
+  color: var(--paper);
+  text-shadow: 0 0 18px rgba(255, 91, 58, .55), 0 0 2px var(--lantern);
+}
+.lede { margin: 4px 0 0; color: var(--muted); max-width: 32em; }
+
+.stalls { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.stall {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px 14px 14px;
+  text-align: left;
+  background: var(--night-2);
+  border: 1px solid var(--night-3);
+  border-radius: 14px;
+  transition: transform .15s ease, border-color .15s ease;
+}
+.stall:hover { border-color: var(--gold); transform: translateY(-2px); }
+.stall:active { transform: translateY(0); }
+.stamp {
+  width: 56px; height: 56px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--lantern);
+  color: var(--paper);
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 30px;
+  box-shadow: 0 0 0 3px var(--night-2), 0 0 0 5px var(--gold), 0 0 22px rgba(255, 91, 58, .45);
+  transform-origin: 50% -20%;
+  animation: sway 3.2s ease-in-out infinite;
+}
+.stalls li:nth-child(2) .stamp { animation-delay: -.6s; }
+.stalls li:nth-child(3) .stamp { animation-delay: -1.3s; }
+.stalls li:nth-child(4) .stamp { animation-delay: -2s; }
+.stalls li:nth-child(5) .stamp { animation-delay: -2.6s; }
+@keyframes sway { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+.txt { display: flex; flex-direction: column; min-width: 0; }
+.txt strong { font-family: var(--f-display); font-size: 20px; font-weight: 700; line-height: 1.3; }
+.txt span { color: var(--muted); font-size: 13px; }
+.best {
+  font-size: 12px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--night-3);
+  color: var(--muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.best.has { border-color: var(--gold); color: var(--gold); }
+.foot { margin: 0; font-size: 12px; color: var(--muted); }
+
+#play {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  background: var(--night);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: 10px;
+  padding-left: max(12px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  border-bottom: 1px solid var(--night-3);
+}
+.bar button {
+  background: var(--night-2);
+  border: 1px solid var(--night-3);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 14px;
+}
+#gname { font-family: var(--f-display); font-size: 20px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#gbest { font-size: 12px; color: var(--gold); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.stage { position: relative; flex: 1; min-height: 0; }
+#cv { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; display: block; }
+#hint {
+  position: absolute;
+  left: 50%; bottom: 14px;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(27, 22, 51, .78);
+  color: var(--paper);
+  font-size: 13px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+#result {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  background: rgba(27, 22, 51, .72);
+  padding-inline: 16px;
+}
+.card {
+  width: min(360px, 100%);
+  background: var(--night-2);
+  border: 2px solid var(--gold);
+  border-radius: 18px;
+  padding: 22px 20px 18px;
+  text-align: center;
+  display: flex; flex-direction: column; gap: 6px;
+  box-shadow: 0 0 40px rgba(255, 201, 74, .2);
+}
+.card p { margin: 0; }
+.rk { font-size: 12px; letter-spacing: .2em; color: var(--muted); }
+.big { font-family: var(--f-num); font-size: 56px; line-height: 1.1; color: var(--gold); font-variant-numeric: tabular-nums; }
+.big small { font-family: var(--f-display); font-size: 22px; margin-left: 6px; color: var(--paper); }
+#rdetail { color: var(--muted); font-size: 13px; }
+#rcomment { font-family: var(--f-display); font-size: 19px; margin-top: 4px; }
+#rbest { font-size: 12px; color: var(--mint); min-height: 1.2em; }
+.btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.btns button { padding: 10px; border-radius: 10px; border: 1px solid var(--night-3); background: var(--night); font-size: 14px; }
+.btns #again { grid-column: 1 / -1; background: var(--lantern); border-color: var(--lantern); font-weight: 700; font-size: 16px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp { animation: none; }
+  .stall { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<main id="hub">
+  <a href="../" style="color:var(--muted);font-size:13px;text-decoration:none">← 回到下課十分鐘</a>
+  <header class="sign">
+    <p class="eyebrow"><b>OPEN</b>　營業到下課鐘響</p>
+    <h1>夜市遊戲街</h1>
+    <p class="lede">上課無聊就來逛一圈。五個攤位，每攤只要一個動作，看你能拿幾分。</p>
+  </header>
+  <ul class="stalls">
+    <li><button class="stall" data-game="tea"><span class="stamp">茶</span><span class="txt"><strong>手搖飲倒剛好</strong><span>按住倒、放開停，停在目標線上</span></span><span class="best" id="best-tea">還沒玩</span></button></li>
+    <li><button class="stall" data-game="circle"><span class="stamp">圓</span><span class="txt"><strong>一筆畫正圓</strong><span>手指畫一圈，看有多圓</span></span><span class="best" id="best-circle">還沒玩</span></button></li>
+    <li><button class="stall" data-game="cake"><span class="stamp">切</span><span class="txt"><strong>蛋糕切一半</strong><span>形狀歪歪的，一刀切到剛好平分</span></span><span class="best" id="best-cake">還沒玩</span></button></li>
+    <li><button class="stall" data-game="stack"><span class="stamp">疊</span><span class="txt"><strong>雞排疊疊樂</strong><span>點一下放下去，對不準就會被切掉</span></span><span class="best" id="best-stack">還沒玩</span></button></li>
+    <li><button class="stall" data-game="claw"><span class="stamp">夾</span><span class="txt"><strong>夾娃娃機</strong><span>五枚十元硬幣，看準了再下爪</span></span><span class="best" id="best-claw">還沒玩</span></button></li>
+  </ul>
+  <p class="foot">最高分只存在你這台裝置的瀏覽器裡。</p>
+</main>
+
+<section id="play" hidden>
+  <div class="bar">
+    <button id="back" type="button">← 回攤位</button>
+    <strong id="gname"></strong>
+    <span id="gbest"></span>
+  </div>
+  <div class="stage">
+    <canvas id="cv"></canvas>
+    <p id="hint"></p>
+    <div id="result" hidden>
+      <div class="card" role="dialog" aria-labelledby="rbig">
+        <p class="rk">本攤成績</p>
+        <p class="big"><span id="rbig"></span><small id="runit"></small></p>
+        <p id="rdetail"></p>
+        <p id="rcomment"></p>
+        <p id="rbest"></p>
+        <div class="btns">
+          <button id="again" type="button">再玩一次</button>
+          <button id="share" type="button">複製成績</button>
+          <button id="home" type="button">回攤位</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const cv = $('#cv'), g = cv.getContext('2d');
+  let W = 0, H = 0, cur = null, curId = null, last = 0, lastRes = null;
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const C = { night: '#1b1633', night2: '#272048', night3: '#362c63', lantern: '#ff5b3a', gold: '#ffc94a', paper: '#f7ecd8', muted: '#b9acd6', mint: '#63d6b8' };
+
+  // ---------- storage ----------
+  const getBest = id => { try { const v = localStorage.getItem('nm-best-' + id); return v == null ? null : Number(v); } catch (e) { return null; } };
+  const setBest = (id, v) => { try { localStorage.setItem('nm-best-' + id, String(v)); } catch (e) {} };
+
+  function fit() {
+    const r = cv.getBoundingClientRect();
+    const d = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.round(r.width * d); cv.height = Math.round(r.height * d);
+    g.setTransform(d, 0, 0, d, 0, 0);
+    W = r.width; H = r.height;
+  }
+  function text(s, x, y, size, color, align = 'center', font = 'body') {
+    const f = font === 'num' ? '"Bungee", sans-serif' : font === 'disp' ? '"LXGW WenKai TC", serif' : '"Noto Sans TC", sans-serif';
+    g.font = `${font === 'body' ? 500 : 700} ${size}px ${f}`;
+    g.fillStyle = color; g.textAlign = align; g.textBaseline = 'middle';
+    g.fillText(s, x, y);
+  }
+  function rrect(x, y, w, h, r) {
+    r = Math.min(r, w / 2, h / 2);
+    g.beginPath();
+    g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
+    g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+  }
+
+  // ---------- 1. 手搖飲 ----------
+  function makeTea() {
+    const S = {};
+    const CAP = 700;
+    const yOf = ml => S.bot - ml / CAP * S.cupH;
+    const halfAt = y => { const t = (y - S.top) / S.cupH; return S.tw + (S.bw - S.tw) * t; };
+    function cupPath() {
+      g.beginPath();
+      g.moveTo(S.cx - S.tw, S.top); g.lineTo(S.cx + S.tw, S.top);
+      g.lineTo(S.cx + S.bw, S.bot); g.lineTo(S.cx - S.bw, S.bot); g.closePath();
+    }
+    function end() {
+      if (S.done) return; S.done = true;
+      const err = Math.abs(S.level - S.target);
+      const score = S.overflow ? 0 : Math.max(0, Math.round(100 - err * 1.5));
+      const c = S.overflow ? '溢出來了！整個吧台都是奶茶。' : score >= 95 ? '老闆說你明天可以直接來上班。' : score >= 80 ? '手很穩，客人不會客訴。' : score >= 50 ? '差一點，店長默默皺了一下眉。' : '這杯算招待，下次加油。';
+      finish({ score, big: String(score), unit: '分', detail: `目標 ${S.target}ml，你倒了 ${Math.round(S.level)}ml（差 ${Math.round(err)}ml）`, comment: c, share: `倒了 ${score} 分的奶茶` });
+    }
+    return {
+      hint: '按住螢幕開始倒，越倒越快，放開就停',
+      init() {
+        S.cupH = Math.min(H * 0.56, 380); S.tw = S.cupH * 0.3; S.bw = S.tw * 0.78;
+        S.bot = H * 0.86; S.top = S.bot - S.cupH; S.cx = W / 2;
+        S.target = Math.round(rand(380, 640) / 10) * 10;
+        Object.assign(S, { level: 0, pour: false, hold: 0, rate: 0, tail: 0, released: false, done: false, endT: 0, overflow: false });
+        S.pearls = Array.from({ length: 34 }, () => ({ u: Math.random(), v: Math.random(), r: rand(6, 8.5) }));
+      },
+      update(dt) {
+        if (S.done) return;
+        if (S.pour) { S.hold += dt; S.rate = Math.min(340, 90 + S.hold * 160); S.level += S.rate * dt; }
+        else if (S.tail > 0) { const a = Math.min(S.tail, S.rate * dt); S.level += a; S.tail -= a; }
+        if (S.level > CAP) { S.level = CAP; S.overflow = true; S.pour = false; S.tail = 0; S.released = true; end(); }
+        else if (S.released && S.tail <= 0) { S.endT += dt; if (S.endT > .45) end(); }
+      },
+      down() { if (!S.done && !S.released) S.pour = true; },
+      up() { if (!S.pour) return; S.pour = false; S.released = true; S.tail = S.rate * .09; },
+      draw() {
+        // counter
+        g.fillStyle = '#5a3a2a'; g.fillRect(0, S.bot, W, H - S.bot);
+        g.fillStyle = '#6e4834'; g.fillRect(0, S.bot, W, 6);
+        // dispenser
+        const nz = Math.max(10, S.top - 70);
+        g.fillStyle = C.night3; rrect(S.cx - 46, -20, 92, nz + 10, 12); g.fill();
+        g.fillStyle = C.muted; g.fillRect(S.cx - 8, nz - 4, 16, 18);
+        text('紅茶拿鐵', S.cx, nz - 30, 13, C.paper);
+        // stream
+        if (S.pour || S.tail > 0) {
+          const w = 4 + Math.min(S.rate, 340) / 340 * 7;
+          g.fillStyle = '#c99566'; g.fillRect(S.cx - w / 2, nz + 14, w, yOf(S.level) - nz - 14);
+        }
+        // liquid + pearls
+        g.save(); cupPath(); g.clip();
+        g.fillStyle = 'rgba(255,255,255,.06)'; g.fillRect(0, S.top, W, S.cupH);
+        const ly = yOf(S.level);
+        const grad = g.createLinearGradient(0, ly, 0, S.bot);
+        grad.addColorStop(0, '#d9a978'); grad.addColorStop(1, '#a8714a');
+        g.fillStyle = grad; g.fillRect(0, ly, W, S.bot - ly);
+        const pTop = S.bot - S.cupH * .14;
+        for (const p of S.pearls) {
+          const y = pTop + p.v * (S.bot - pTop - 6);
+          const hw = halfAt(y) - 8;
+          g.fillStyle = '#2b1810'; g.beginPath(); g.arc(S.cx - hw + p.u * hw * 2, y, p.r, 0, 7); g.fill();
+          g.fillStyle = 'rgba(255,255,255,.25)'; g.beginPath(); g.arc(S.cx - hw + p.u * hw * 2 - 2, y - 2, 2, 0, 7); g.fill();
+        }
+        g.restore();
+        cupPath(); g.strokeStyle = 'rgba(247,236,216,.7)'; g.lineWidth = 3; g.stroke();
+        g.fillStyle = 'rgba(247,236,216,.12)'; g.fillRect(S.cx - S.tw - 6, S.top - 6, S.tw * 2 + 12, 8);
+        text('700ml 大杯', S.cx, S.bot - 16, 11, 'rgba(247,236,216,.55)');
+        // target line
+        const ty = yOf(S.target), th = halfAt(ty);
+        g.setLineDash([8, 6]); g.strokeStyle = C.gold; g.lineWidth = 2.5;
+        g.beginPath(); g.moveTo(S.cx - th - 16, ty); g.lineTo(S.cx + th + 16, ty); g.stroke(); g.setLineDash([]);
+        text(`${S.target}ml`, S.cx + th + 22, ty, 14, C.gold, 'left');
+        if (S.done) text(`${Math.round(S.level)}ml`, S.cx - halfAt(ly) - 22, ly, 14, C.mint, 'right');
+        if (S.overflow) { g.fillStyle = '#c99566'; g.beginPath(); g.ellipse(S.cx, S.bot + 8, S.tw * 2.2, 10, 0, 0, 7); g.fill(); }
+      }
+    };
+  }
+
+  // ---------- 2. 畫圓 ----------
+  function makeCircle() {
+    const S = {};
+    function stats(pts) {
+      const n = pts.length; let cx = 0, cy = 0;
+      for (const p of pts) { cx += p.x; cy += p.y; } cx /= n; cy /= n;
+      const ds = pts.map(p => Math.hypot(p.x - cx, p.y - cy));
+      const r = ds.reduce((a, b) => a + b, 0) / n;
+      const sd = Math.sqrt(ds.reduce((a, d) => a + (d - r) ** 2, 0) / n);
+      return { cx, cy, r, score: clamp(100 - sd / r * 250, 0, 100) };
+    }
+    return {
+      hint: '手指按住，一筆畫一個圓，回到起點再放開',
+      init() { Object.assign(S, { pts: [], drawing: false, res: null, msg: '', live: null }); },
+      down(p) { if (S.res) return; S.pts = [p]; S.drawing = true; S.msg = ''; S.live = null; },
+      move(p) {
+        if (!S.drawing) return;
+        const l = S.pts[S.pts.length - 1];
+        if (Math.hypot(p.x - l.x, p.y - l.y) > 2) { S.pts.push(p); if (S.pts.length > 12) S.live = stats(S.pts); }
+      },
+      up() {
+        if (!S.drawing) return; S.drawing = false;
+        const pts = S.pts;
+        if (pts.length < 15) { S.msg = '再畫大一點'; return; }
+        const st = stats(pts);
+        if (st.r < 50) { S.msg = '再畫大一點'; return; }
+        let turn = 0;
+        for (let i = 1; i < pts.length; i++) {
+          let d = Math.atan2(pts[i].y - st.cy, pts[i].x - st.cx) - Math.atan2(pts[i - 1].y - st.cy, pts[i - 1].x - st.cx);
+          if (d > Math.PI) d -= 2 * Math.PI; if (d < -Math.PI) d += 2 * Math.PI; turn += d;
+        }
+        if (Math.abs(turn) < Math.PI * 2 * .85) { S.msg = '要畫滿一整圈喔'; return; }
+        const a = pts[0], b = pts[pts.length - 1];
+        if (Math.hypot(a.x - b.x, a.y - b.y) > st.r * .6) { S.msg = '頭尾要接起來'; return; }
+        S.res = st;
+        const s = Math.round(st.score * 10) / 10;
+        const c = s >= 95 ? '圓規都要拜你為師。' : s >= 90 ? '數學老師會偷偷拍照。' : s >= 80 ? '是圓的，大致上。' : '這比較像……雞蛋？';
+        finish({ score: s, big: s.toFixed(1), unit: '%', detail: `半徑大約 ${Math.round(st.r)}px`, comment: c, share: `畫出 ${s.toFixed(1)}% 的正圓` });
+      },
+      draw() {
+        g.fillStyle = 'rgba(185,172,214,.12)';
+        for (let x = 12; x < W; x += 24) for (let y = 12; y < H; y += 24) g.fillRect(x, y, 2, 2);
+        const pts = S.pts;
+        if (S.res) {
+          g.setLineDash([6, 8]); g.strokeStyle = C.mint; g.lineWidth = 2;
+          g.beginPath(); g.arc(S.res.cx, S.res.cy, S.res.r, 0, 7); g.stroke(); g.setLineDash([]);
+        }
+        if (pts.length > 1) {
+          const sc = S.res ? S.res.score : S.live ? S.live.score : 100;
+          g.strokeStyle = `hsl(${clamp((sc - 60) * 3, 0, 120) * .45 + 0},90%,62%)`;
+          g.lineWidth = 6; g.lineCap = 'round'; g.lineJoin = 'round';
+          g.beginPath(); g.moveTo(pts[0].x, pts[0].y); for (const p of pts) g.lineTo(p.x, p.y); g.stroke();
+        }
+        if (S.drawing && S.live) text(`${S.live.score.toFixed(1)}%`, S.live.cx, S.live.cy, 30, C.paper, 'center', 'num');
+        if (S.res) { g.fillStyle = C.mint; g.beginPath(); g.arc(S.res.cx, S.res.cy, 4, 0, 7); g.fill(); }
+        if (!pts.length) text('在這裡畫', W / 2, H / 2, 22, 'rgba(247,236,216,.35)', 'center', 'disp');
+        if (S.msg) text(S.msg, W / 2, 34, 18, C.lantern, 'center', 'disp');
+      }
+    };
+  }
+
+  // ---------- 3. 切蛋糕 ----------
+  function makeCake() {
+    const S = {};
+    const rf = th => S.R * (1 + S.k1 * Math.sin(2 * th + S.a) + S.k2 * Math.sin(3 * th + S.b));
+    const inside = (x, y) => Math.hypot(x - S.cx, y - S.cy) < rf(Math.atan2(y - S.cy, x - S.cx));
+    function cakePath() {
+      g.beginPath();
+      for (let i = 0; i <= 160; i++) { const th = i / 160 * Math.PI * 2, r = rf(th); const x = S.cx + Math.cos(th) * r, y = S.cy + Math.sin(th) * r; i ? g.lineTo(x, y) : g.moveTo(x, y); }
+      g.closePath();
+    }
+    function drawCake() {
+      cakePath(); g.fillStyle = '#fff4e6'; g.fill();
+      g.strokeStyle = '#ef7f9a'; g.lineWidth = 9; g.stroke();
+      g.save(); cakePath(); g.clip();
+      g.strokeStyle = 'rgba(239,127,154,.25)'; g.lineWidth = 3;
+      for (let i = -6; i <= 6; i++) { g.beginPath(); g.moveTo(S.cx - S.R * 2, S.cy + i * 22 - S.R); g.lineTo(S.cx + S.R * 2, S.cy + i * 22 + S.R * .4); g.stroke(); }
+      g.restore();
+      for (const b of S.berries) {
+        g.fillStyle = '#e8384f'; g.beginPath(); g.ellipse(b.x, b.y, 10, 12, b.rot, 0, 7); g.fill();
+        g.fillStyle = '#3fa66b'; g.beginPath(); g.ellipse(b.x + Math.sin(b.rot) * 10, b.y - Math.cos(b.rot) * 10, 6, 3, b.rot, 0, 7); g.fill();
+      }
+    }
+    function halfPlane(side) {
+      const { p0, d, n } = S.cut, L = 3000;
+      g.beginPath();
+      g.moveTo(p0.x - d.x * L, p0.y - d.y * L); g.lineTo(p0.x + d.x * L, p0.y + d.y * L);
+      g.lineTo(p0.x + d.x * L + n.x * L * side, p0.y + d.y * L + n.y * L * side);
+      g.lineTo(p0.x - d.x * L + n.x * L * side, p0.y - d.y * L + n.y * L * side); g.closePath();
+    }
+    return {
+      hint: '手指劃一條直線切下去，切得越平均越高分',
+      init() {
+        S.cx = W / 2; S.cy = H * .48; S.R = Math.min(W, H) * .3;
+        S.a = rand(0, 6.28); S.b = rand(0, 6.28); S.k1 = rand(.1, .2); S.k2 = rand(.05, .13);
+        S.samples = [];
+        while (S.samples.length < 6000) { const x = S.cx + rand(-1.4, 1.4) * S.R, y = S.cy + rand(-1.4, 1.4) * S.R; if (inside(x, y)) S.samples.push({ x, y }); }
+        S.berries = [];
+        let tries = 0;
+        while (S.berries.length < 5 && tries++ < 500) {
+          const th = rand(0, 6.28), r = rf(th) * rand(.15, .75);
+          const p = { x: S.cx + Math.cos(th) * r, y: S.cy + Math.sin(th) * r, rot: rand(-.6, .6) };
+          if (S.berries.every(b => Math.hypot(b.x - p.x, b.y - p.y) > 34)) S.berries.push(p);
+        }
+        Object.assign(S, { p0: null, p1: null, drag: false, cut: null, anim: 0, msg: '' });
+      },
+      down(p) { if (S.cut) return; S.p0 = p; S.p1 = p; S.drag = true; S.msg = ''; },
+      move(p) { if (S.drag) S.p1 = p; },
+      up() {
+        if (!S.drag) return; S.drag = false;
+        const dx = S.p1.x - S.p0.x, dy = S.p1.y - S.p0.y, len = Math.hypot(dx, dy);
+        if (len < 30) { S.p0 = null; S.msg = '要劃長一點'; return; }
+        const d = { x: dx / len, y: dy / len }, n = { x: -d.y, y: d.x };
+        let left = 0, lx = 0, ly = 0, rx = 0, ry = 0;
+        for (const s of S.samples) {
+          if (d.x * (s.y - S.p0.y) - d.y * (s.x - S.p0.x) > 0) { left++; lx += s.x; ly += s.y; } else { rx += s.x; ry += s.y; }
+        }
+        const N = S.samples.length;
+        if (left < N * .01 || left > N * .99) { S.p0 = null; S.msg = '要切過蛋糕喔'; return; }
+        const pct = left / N * 100;
+        // side +1 in n-direction corresponds to cross > 0
+        S.cut = { p0: S.p0, d, n, pct, lc: { x: lx / left, y: ly / left }, rc: { x: rx / (N - left), y: ry / (N - left) } };
+        const score = Math.max(0, Math.round((100 - Math.abs(50 - pct) * 4) * 10) / 10);
+        const a = Math.max(pct, 100 - pct).toFixed(1), b = Math.min(pct, 100 - pct).toFixed(1);
+        const c = score >= 96 ? '兄弟姊妹都沒話說。' : score >= 88 ? '小的那塊會被搶，但不會吵架。' : score >= 70 ? '有人要哭了。' : '這不叫平分，這叫獨佔。';
+        finish({ score, big: score.toFixed(1), unit: '分', detail: `兩塊比例 ${a} : ${b}`, comment: c, share: `蛋糕切出 ${a} : ${b}` });
+      },
+      update(dt) { if (S.cut) S.anim = Math.min(1, S.anim + dt * 2.5); },
+      draw() {
+        g.fillStyle = '#e9e3f5'; g.beginPath(); g.arc(S.cx, S.cy, S.R * 1.5, 0, 7); g.fill();
+        g.fillStyle = '#d6cdec'; g.beginPath(); g.arc(S.cx, S.cy, S.R * 1.36, 0, 7); g.fill();
+        if (!S.cut) drawCake();
+        else {
+          const off = S.anim * 16;
+          for (const side of [1, -1]) {
+            g.save(); g.translate(S.cut.n.x * off * side, S.cut.n.y * off * side);
+            halfPlane(side); g.clip(); drawCake(); g.restore();
+          }
+          const lp = S.cut.pct, ls = S.cut.lc, rs = S.cut.rc;
+          for (const [c, v] of [[ls, lp], [rs, 100 - lp]]) {
+            g.fillStyle = 'rgba(27,22,51,.82)'; rrect(c.x - 36, c.y - 16, 72, 32, 16); g.fill();
+            text(`${v.toFixed(1)}%`, c.x, c.y + 1, 15, C.gold, 'center', 'num');
+          }
+        }
+        if (S.drag && S.p0) {
+          const dx = S.p1.x - S.p0.x, dy = S.p1.y - S.p0.y, len = Math.hypot(dx, dy) || 1;
+          g.setLineDash([6, 6]); g.strokeStyle = 'rgba(247,236,216,.35)'; g.lineWidth = 2;
+          g.beginPath(); g.moveTo(S.p0.x - dx / len * 2000, S.p0.y - dy / len * 2000); g.lineTo(S.p0.x + dx / len * 2000, S.p0.y + dy / len * 2000); g.stroke();
+          g.setLineDash([]); g.strokeStyle = C.paper; g.lineWidth = 3;
+          g.beginPath(); g.moveTo(S.p0.x, S.p0.y); g.lineTo(S.p1.x, S.p1.y); g.stroke();
+        }
+        if (S.msg) text(S.msg, W / 2, 34, 18, C.lantern, 'center', 'disp');
+      }
+    };
+  }
+
+  // ---------- 4. 雞排疊疊樂 ----------
+  function makeStack() {
+    const S = {};
+    const sy = i => S.baseY - i * S.h + S.cam;
+    function cutlet(x, y, w, seed) {
+      const h = S.h;
+      const gr = g.createLinearGradient(0, y, 0, y + h);
+      gr.addColorStop(0, '#f0b04a'); gr.addColorStop(1, '#b8641e');
+      rrect(x, y + 1, w, h - 2, 9); g.fillStyle = gr; g.fill();
+      g.strokeStyle = '#7c3d10'; g.lineWidth = 1.5; g.stroke();
+      g.fillStyle = 'rgba(255,230,160,.55)';
+      for (let k = 0; k < w / 9; k++) {
+        const hx = Math.abs(Math.sin(seed * 12.9898 + k * 78.233) * 43758.5453) % 1;
+        const hy = Math.abs(Math.sin(seed * 4.1 + k * 19.7) * 9631.17) % 1;
+        g.fillRect(x + 5 + hx * (w - 10), y + 5 + hy * (h - 10), 2.5, 2.5);
+      }
+    }
+    function spawn() {
+      const prev = S.blocks[S.blocks.length - 1];
+      S.dir = S.blocks.length % 2 ? 1 : -1;
+      S.cur = { x: S.dir > 0 ? 6 : W - 6 - prev.w, w: prev.w };
+    }
+    function gameOver() {
+      S.over = true;
+      const n = S.blocks.length - 1;
+      const c = n >= 30 ? '這疊可以申請金氏世界紀錄。' : n >= 15 ? '雞排店老闆想挖角你。' : n >= 6 ? '還不錯，可以再疊高一點。' : '雞排掉滿地，好浪費。';
+      setTimeout(() => { if (cur === me) finish({ score: n, big: String(n), unit: '片', detail: `完美對齊 ${S.perfects} 次`, comment: c, share: `雞排疊了 ${n} 片` }); }, 800);
+    }
+    const me = {
+      hint: '點一下螢幕放下雞排，完全對齊不會縮小',
+      init() {
+        S.h = 26; const w0 = Math.min(W * .5, 220);
+        S.baseY = H * .8; S.cam = 0; S.camT = 0;
+        S.blocks = [{ x: W / 2 - w0 / 2, w: w0 }];
+        Object.assign(S, { falling: [], speed: 150, over: false, perfects: 0, flash: 0 });
+        spawn();
+      },
+      update(dt) {
+        S.cam += (S.camT - S.cam) * Math.min(1, dt * 6);
+        S.flash = Math.max(0, S.flash - dt);
+        for (const f of S.falling) { f.vy += 1200 * dt; f.dy += f.vy * dt; f.rot += f.vr * dt; }
+        S.falling = S.falling.filter(f => f.dy < H * 2);
+        if (S.over) return;
+        const c = S.cur; c.x += S.speed * S.dir * dt;
+        if (c.x < 6) { c.x = 6; S.dir = 1; } if (c.x + c.w > W - 6) { c.x = W - 6 - c.w; S.dir = -1; }
+      },
+      down() {
+        if (S.over) return;
+        const c = S.cur, prev = S.blocks[S.blocks.length - 1], idx = S.blocks.length;
+        const left = Math.max(c.x, prev.x), right = Math.min(c.x + c.w, prev.x + prev.w), ov = right - left;
+        if (ov <= 0) { S.falling.push({ x: c.x, w: c.w, i: idx, dy: 0, vy: 0, rot: 0, vr: rand(-2, 2) }); S.cur = null; gameOver(); return; }
+        if (Math.abs(c.x - prev.x) < 5) { S.blocks.push({ x: prev.x, w: prev.w }); S.perfects++; S.flash = .4; }
+        else {
+          const piece = c.x < prev.x ? { x: c.x, w: prev.x - c.x } : { x: right, w: c.x + c.w - right };
+          S.falling.push({ ...piece, i: idx, dy: 0, vy: 0, rot: 0, vr: (c.x < prev.x ? -1 : 1) * rand(1, 3) });
+          S.blocks.push({ x: left, w: ov });
+        }
+        S.speed = Math.min(420, S.speed + 9);
+        S.camT = Math.max(0, S.blocks.length * S.h - (S.baseY - H * .42));
+        spawn();
+      },
+      draw() {
+        const pY = sy(0) + S.h;
+        g.fillStyle = '#e9e3f5'; g.beginPath(); g.ellipse(W / 2, pY + 6, Math.min(W * .4, 190), 14, 0, 0, 7); g.fill();
+        S.blocks.forEach((b, i) => { const y = sy(i); if (y > -S.h && y < H + S.h) cutlet(b.x, y, b.w, i + 1); });
+        if (S.cur) cutlet(S.cur.x, sy(S.blocks.length), S.cur.w, S.blocks.length + 1);
+        for (const f of S.falling) {
+          g.save(); const y = sy(f.i) + f.dy; g.translate(f.x + f.w / 2, y + S.h / 2); g.rotate(f.rot);
+          cutlet(-f.w / 2, -S.h / 2, f.w, f.i + 7); g.restore();
+        }
+        text(String(S.blocks.length - 1), W / 2, 48, 40, C.gold, 'center', 'num');
+        if (S.flash > 0) text('完美！', W / 2, 88, 18, C.mint, 'center', 'disp');
+      }
+    };
+    return me;
+  }
+
+  // ---------- 5. 夾娃娃 ----------
+  function makeClaw() {
+    const S = {};
+    const COLORS = ['#ff8fab', '#7ed6c5', '#ffd166', '#a08cff', '#ff9f5a', '#8ecbff', '#f4a6ff'];
+    function plush(p) {
+      g.save(); g.translate(p.x, p.y);
+      g.fillStyle = p.c;
+      g.beginPath(); g.arc(-p.r * .62, -p.r * .72, p.r * .34, 0, 7); g.arc(p.r * .62, -p.r * .72, p.r * .34, 0, 7); g.fill();
+      g.beginPath(); g.arc(0, 0, p.r, 0, 7); g.fill();
+      g.fillStyle = 'rgba(255,255,255,.55)'; g.beginPath(); g.ellipse(0, p.r * .3, p.r * .5, p.r * .38, 0, 0, 7); g.fill();
+      g.fillStyle = '#2a2140';
+      g.beginPath(); g.arc(-p.r * .32, -p.r * .12, 2.6, 0, 7); g.arc(p.r * .32, -p.r * .12, 2.6, 0, 7); g.fill();
+      g.fillRect(-3, p.r * .12, 6, 2);
+      g.restore();
+    }
+    function endTry() {
+      S.tries--;
+      if (S.tries <= 0) {
+        S.state = 'done';
+        const n = S.caught;
+        const c = n >= 4 ? '台主看到你要哭了。' : n >= 2 ? '今天手氣不錯！' : n === 1 ? '至少沒有空手回家。' : '50 元幫台主繳了電費。';
+        setTimeout(() => { if (cur === me) finish({ score: n, big: String(n), unit: '隻', detail: '投了 5 枚十元，共 50 元', comment: c, share: `50 元夾到 ${n} 隻娃娃` }); }, 600);
+      } else S.state = 'move';
+    }
+    const me = {
+      hint: '爪子左右移動，點一下螢幕就下爪',
+      init() {
+        S.mx = 14; S.mw = W - 28; S.rail = 70; S.rest = S.rail + 26; S.floor = H * .88;
+        S.chuteX = S.mx + 42; S.lo = S.mx + 110; S.hi = S.mx + S.mw - 34;
+        const n = Math.max(4, Math.min(8, Math.floor((S.hi - S.lo) / 50)));
+        S.prizes = Array.from({ length: n }, (_, i) => {
+          const r = rand(24, 31);
+          return { x: S.lo + (i + .5) * (S.hi - S.lo) / n + rand(-6, 6), y: S.floor - r, r, c: COLORS[i % COLORS.length], vy: 0, st: 'rest' };
+        });
+        Object.assign(S, { x: S.lo, y: S.rest, dir: 1, state: 'move', t: 0, tries: 5, caught: 0, held: null, stopY: 0, slipMsg: 0 });
+      },
+      update(dt) {
+        S.slipMsg = Math.max(0, S.slipMsg - dt);
+        for (const p of S.prizes) {
+          if (p.st === 'fall') { p.vy += 1100 * dt; p.y += p.vy * dt; if (p.y >= S.floor - p.r) { p.y = S.floor - p.r; p.st = 'rest'; p.vy = 0; } }
+          if (p.st === 'chute') { p.vy += 1100 * dt; p.y += p.vy * dt; if (p.y > H + 60) p.st = 'gone'; }
+        }
+        S.prizes = S.prizes.filter(p => p.st !== 'gone');
+        const st = S.state;
+        if (st === 'move') {
+          S.x += S.dir * 150 * dt;
+          if (S.x > S.hi) { S.x = S.hi; S.dir = -1; } if (S.x < S.lo) { S.x = S.lo; S.dir = 1; }
+        } else if (st === 'down') {
+          S.y += 260 * dt;
+          if (S.y + 26 >= S.stopY) { S.y = S.stopY - 26; S.state = 'close'; S.t = 0; }
+        } else if (st === 'close') {
+          S.t += dt;
+          if (S.t > .35) {
+            let best = null, bd = 1e9;
+            for (const p of S.prizes) { if (p.st !== 'rest') continue; const d = Math.abs(p.x - S.x); if (d < p.r * .95 && d < bd) { bd = d; best = p; } }
+            if (best) {
+              const q = bd / best.r;
+              const secure = q < .3 || Math.random() < (1 - q) * .45;
+              best.st = 'held'; S.held = best;
+              best.slip = secure ? null : S.rest + rand(.15, .8) * (S.y - S.rest);
+            }
+            S.state = 'up';
+          }
+        } else if (st === 'up') {
+          S.y -= 200 * dt;
+          const h = S.held;
+          if (h && h.slip != null && S.y < h.slip) { h.st = 'fall'; h.vy = 0; S.held = null; S.slipMsg = 1.2; }
+          if (S.y <= S.rest) { S.y = S.rest; if (S.held) S.state = 'carry'; else endTry(); }
+        } else if (st === 'carry') {
+          S.x -= 190 * dt;
+          if (S.x <= S.chuteX) { S.x = S.chuteX; S.state = 'release'; S.t = 0; S.held.st = 'chute'; S.held.vy = 0; S.held = null; S.caught++; }
+        } else if (st === 'release') {
+          S.t += dt; if (S.t > .6) { S.x = S.lo; endTry(); }
+        }
+        if (S.held) { S.held.x = S.x; S.held.y = S.y + 26 + S.held.r * .55; }
+      },
+      down() {
+        if (S.state !== 'move') return;
+        let top = S.floor;
+        for (const p of S.prizes) if (p.st === 'rest' && Math.abs(p.x - S.x) < p.r) top = Math.min(top, p.y - p.r * .2);
+        S.stopY = top; S.state = 'down';
+      },
+      draw() {
+        // cabinet
+        rrect(S.mx, 14, S.mw, S.floor - 14 + 18, 16);
+        g.fillStyle = 'rgba(99,214,184,.06)'; g.fill();
+        g.strokeStyle = C.lantern; g.lineWidth = 3; g.shadowColor = C.lantern; g.shadowBlur = 14; g.stroke(); g.shadowBlur = 0;
+        g.fillStyle = C.night3; g.fillRect(S.mx + 10, S.rail - 4, S.mw - 20, 8);
+        // floor + chute
+        g.fillStyle = '#3d3170'; g.fillRect(S.mx + 2, S.floor, S.mw - 4, 16);
+        g.fillStyle = '#0f0c20'; g.fillRect(S.mx + 8, S.floor - 6, 70, 26);
+        text('出口', S.chuteX, S.floor - 22, 13, C.gold, 'center', 'disp');
+        for (const p of S.prizes) if (p.st !== 'chute') plush(p);
+        g.save(); g.beginPath(); g.rect(0, 0, W, S.floor - 6); g.clip();
+        for (const p of S.prizes) if (p.st === 'chute') plush(p);
+        g.restore();
+        // claw
+        const open = (S.state === 'move' || S.state === 'down' || S.state === 'release' || S.state === 'done') ? 1 : 0;
+        g.strokeStyle = C.muted; g.lineWidth = 2; g.beginPath(); g.moveTo(S.x, S.rail); g.lineTo(S.x, S.y); g.stroke();
+        g.fillStyle = C.gold; rrect(S.x - 12, S.y - 6, 24, 14, 4); g.fill();
+        g.strokeStyle = C.gold; g.lineWidth = 4; g.lineCap = 'round';
+        for (const s of [-1, 1]) {
+          const ox = s * (8 + open * 14);
+          g.beginPath(); g.moveTo(S.x + s * 6, S.y + 6); g.lineTo(S.x + ox, S.y + 20); g.lineTo(S.x + ox - s * 7, S.y + 30); g.stroke();
+        }
+        // hud
+        text(`剩 ${S.tries} 次　夾到 ${S.caught} 隻`, W / 2, 42, 15, C.paper, 'center');
+        if (S.slipMsg > 0) text('啊，滑掉了！', W / 2, S.rail + 70, 20, C.lantern, 'center', 'disp');
+      }
+    };
+    return me;
+  }
+
+  const GAMES = {
+    tea: { name: '手搖飲倒剛好', make: makeTea, fmt: v => `${v} 分` },
+    circle: { name: '一筆畫正圓', make: makeCircle, fmt: v => `${v.toFixed(1)}%` },
+    cake: { name: '蛋糕切一半', make: makeCake, fmt: v => `${v.toFixed(1)} 分` },
+    stack: { name: '雞排疊疊樂', make: makeStack, fmt: v => `${v} 片` },
+    claw: { name: '夾娃娃機', make: makeClaw, fmt: v => `${v} 隻` }
+  };
+
+  function refreshBests() {
+    for (const id in GAMES) {
+      const b = getBest(id), el = $('#best-' + id);
+      el.textContent = b == null ? '還沒玩' : '最高 ' + GAMES[id].fmt(b);
+      el.classList.toggle('has', b != null);
+    }
+  }
+  function showBestBar() { const b = getBest(curId); $('#gbest').textContent = b == null ? '' : '最高 ' + GAMES[curId].fmt(b); }
+
+  function start(id) {
+    curId = id;
+    $('#hub').hidden = true; $('#play').hidden = false; document.body.classList.add('playing');
+    $('#result').hidden = true;
+    $('#gname').textContent = GAMES[id].name;
+    showBestBar();
+    fit();
+    cur = GAMES[id].make(); cur.init();
+    $('#hint').textContent = cur.hint; $('#hint').hidden = false;
+  }
+  function home() {
+    cur = null; curId = null;
+    $('#play').hidden = true; $('#hub').hidden = false; document.body.classList.remove('playing');
+    refreshBests();
+  }
+  function finish(res) {
+    const me = cur; lastRes = res;
+    const prev = getBest(curId);
+    const isNew = prev == null || res.score > prev;
+    if (isNew) setBest(curId, res.score);
+    setTimeout(() => {
+      if (cur !== me) return;
+      $('#rbig').textContent = res.big; $('#runit').textContent = res.unit;
+      $('#rdetail').textContent = res.detail; $('#rcomment').textContent = res.comment;
+      $('#rbest').textContent = isNew ? (prev == null ? '第一次挑戰，紀錄已保存' : '刷新個人最高紀錄！') : `你的最高紀錄：${GAMES[curId].fmt(prev)}`;
+      $('#share').textContent = '複製成績';
+      $('#result').hidden = false; $('#hint').hidden = true;
+      showBestBar();
+      $('#again').focus();
+    }, 700);
+  }
+
+  const pos = e => { const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  cv.addEventListener('pointerdown', e => { if (!cur) return; e.preventDefault(); try { cv.setPointerCapture(e.pointerId); } catch (_) {} $('#hint').hidden = true; cur.down && cur.down(pos(e)); });
+  cv.addEventListener('pointermove', e => { if (cur && cur.move) cur.move(pos(e)); });
+  const up = e => { if (cur && cur.up) cur.up(pos(e)); };
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  cv.addEventListener('contextmenu', e => e.preventDefault());
+
+  document.querySelectorAll('.stall').forEach(b => b.addEventListener('click', () => start(b.dataset.game)));
+  $('#back').addEventListener('click', home);
+  $('#home').addEventListener('click', home);
+  $('#again').addEventListener('click', () => start(curId));
+  $('#share').addEventListener('click', () => {
+    if (!lastRes) return;
+    const msg = `我在「夜市遊戲街」${GAMES[curId].name}${lastRes.share}，換你來挑戰！`;
+    const btn = $('#share');
+    const ok = () => { btn.textContent = '已複製'; };
+    const fail = () => { btn.textContent = '無法複製'; };
+    try { navigator.clipboard.writeText(msg).then(ok, fail); } catch (e) { fail(); }
+  });
+  window.addEventListener('keydown', e => { if (e.key === 'Escape' && curId) home(); });
+  window.addEventListener('resize', () => { if (cur && $('#result').hidden) { fit(); cur.init(); } else if (cur) fit(); });
+
+  function frame(t) {
+    const dt = Math.min(.05, (t - last) / 1000 || 0); last = t;
+    if (cur) { cur.update && cur.update(dt); g.clearRect(0, 0, W, H); cur.draw(); }
+    requestAnimationFrame(frame);
+  }
+  refreshBests();
+  requestAnimationFrame(frame);
+  const h = location.hash.slice(1); if (GAMES[h]) start(h);
+})();
+</script>
+</body>
+</html>
