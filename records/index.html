@@ -11,9 +11,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <meta name="theme-color" content="#ff5fa2">
-<script>/* app freshness: if a newer build is published, reload once (home-screen apps cache hard) */(function(){var B='20261023034903';try{fetch('../version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==B){var k='dgh-reloaded-'+j.v;if(!sessionStorage.getItem(k)){sessionStorage.setItem(k,'1');location.replace(location.pathname+'?v='+j.v+location.hash)}}}).catch(function(){})}catch(e){}})();</script>
+<script>/* app freshness: if a newer build is published, reload once (home-screen apps cache hard) */(function(){var B='20261023035008';try{fetch('../version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==B){var k='dgh-reloaded-'+j.v;if(!sessionStorage.getItem(k)){sessionStorage.setItem(k,'1');location.replace(location.pathname+'?v='+j.v+location.hash)}}}).catch(function(){})}catch(e){}})();</script>
 <title>我的紀錄・KEWEI遊戲室</title>
-<meta name="description" content="KEWEI遊戲室的個人紀錄與稱號收集：十六款小遊戲的最高分、評級印章與 64 個稱號。">
+<meta name="description" content="KEWEI遊戲室的個人紀錄與稱號收集：二十款小遊戲的最高分、評級印章與 80 個稱號。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+TC:wght@400;500;700;900&family=Manrope:wght@600;800&display=swap">
@@ -214,13 +214,13 @@ footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); 
 <main>
   <section class="summary" aria-label="紀錄總覽">
     <div class="stats">
-      <div class="stat"><b id="played">0<small>/16</small></b><span>玩過的遊戲</span></div>
+      <div class="stat"><b id="played">0<small>/20</small></b><span>玩過的遊戲</span></div>
       <div class="stat"><b id="sCount">0</b><span>S 級數量</span></div>
-      <div class="stat"><b id="tCount">0<small>/64</small></b><span>稱號收集</span></div>
+      <div class="stat"><b id="tCount">0<small>/80</small></b><span>稱號收集</span></div>
     </div>
     <div class="level">
       <div class="level-row"><small>KEWEI 認證等級</small><span class="level-name" id="levelName">見習貓奴</span></div>
-      <div class="bar" role="progressbar" aria-label="認證進度" aria-valuemin="0" aria-valuemax="64" aria-valuenow="0" id="bar"><i id="barFill"></i></div>
+      <div class="bar" role="progressbar" aria-label="認證進度" aria-valuemin="0" aria-valuemax="80" aria-valuenow="0" id="bar"><i id="barFill"></i></div>
       <div class="steps" id="steps"><span>見習貓奴</span><span>資深貓奴</span><span>貓咪大師</span><span>KEWEI 本貓</span></div>
       <p class="next" id="nextTip"></p>
     </div>
@@ -249,7 +249,7 @@ footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); 
   <section aria-labelledby="h-titles">
     <div class="sec-h">
       <h2 id="h-titles"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#ff6f9c"/></svg>稱號收集</h2>
-      <span id="tLabel">0 / 64</span>
+      <span id="tLabel">0 / 80</span>
     </div>
     <div class="titles" id="titles"></div>
     <p class="legend">拿到某個評級，就會一起解鎖同款遊戲比它低的所有稱號。</p>
@@ -323,13 +323,25 @@ footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); 
     { key: 'parking', name: '機車停進格子', unit: '分', fmt: v => String(Math.round(v)),
       roles: { S: '停車之神', A: '機車老司機', B: '剛考到駕照', C: '阿姨在罵你' },
       rank: v => v >= 700 ? 'S' : v >= 500 ? 'A' : v >= 300 ? 'B' : 'C' },
+    { key: 'shrimp', name: '釣蝦', unit: 'g', fmt: v => String(Math.round(v)),
+      roles: { S: '蝦王', A: '釣蝦老手', B: '一盤剛好', C: '只釣到拖鞋' },
+      rank: v => v >= 650 ? 'S' : v >= 400 ? 'A' : v >= 180 ? 'B' : 'C' },
+    { key: 'darts', name: '射氣球', unit: '分', fmt: v => String(Math.round(v)),
+      roles: { S: '神射手', A: '準', B: '有中就好', C: '射到老闆' },
+      rank: v => v >= 420 ? 'S' : v >= 280 ? 'A' : v >= 150 ? 'B' : 'C' },
+    { key: 'rings', name: '套圈圈', unit: '分', fmt: v => String(Math.round(v)),
+      roles: { S: '套圈之神', A: '手感很好', B: '套到安慰獎', C: '圈圈都飛走' },
+      rank: v => v >= 200 ? 'S' : v >= 120 ? 'A' : v >= 50 ? 'B' : 'C' },
+    { key: 'pachinko', name: '彈珠台', unit: '分', fmt: v => String(Math.round(v)),
+      roles: { S: '彈珠台霸主', A: '運氣不錯', B: '還可以', C: '全部掉下去' },
+      rank: v => v >= 320 ? 'S' : v >= 200 ? 'A' : v >= 100 ? 'B' : 'C' },
   ];
 
   const LEVELS = [
     { name: '見習貓奴', min: 0 },
-    { name: '資深貓奴', min: 20 },
-    { name: '貓咪大師', min: 40 },
-    { name: 'KEWEI 本貓', min: 64 }
+    { name: '資深貓奴', min: 25 },
+    { name: '貓咪大師', min: 50 },
+    { name: 'KEWEI 本貓', min: 80 }
   ];
 
   function readBest(key) {
@@ -358,16 +370,16 @@ footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); 
     const sN = state.filter(s => s.rk === 'S').length;
     const titlesN = state.reduce((n, s) => n + (s.rk ? RV[s.rk] + 1 : 0), 0);
 
-    $('played').innerHTML = played + '<small>/16</small>';
+    $('played').innerHTML = played + '<small>/20</small>';
     $('sCount').textContent = sN;
-    $('tCount').innerHTML = titlesN + '<small>/64</small>';
-    $('tLabel').textContent = titlesN + ' / 64';
+    $('tCount').innerHTML = titlesN + '<small>/80</small>';
+    $('tLabel').textContent = titlesN + ' / 80';
 
     let li = 0;
     LEVELS.forEach((l, i) => { if (titlesN >= l.min) li = i; });
     $('levelName').textContent = LEVELS[li].name;
     [...$('steps').children].forEach((el, i) => el.classList.toggle('on', i <= li));
-    $('barFill').style.width = (titlesN / 64 * 100).toFixed(1) + '%';
+    $('barFill').style.width = (titlesN / 80 * 100).toFixed(1) + '%';
     $('bar').setAttribute('aria-valuenow', titlesN);
     const nx = LEVELS[li + 1];
     $('nextTip').textContent = played === 0
@@ -413,7 +425,7 @@ footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); 
     const { played, sN, titlesN, level } = render();
     const lines = state.filter(s => s.rk).map(s => `${s.g.name}：${s.rk} 級・${s.g.roles[s.rk]}`);
     const head = played
-      ? `我在 KEWEI 遊戲室玩了 ${played}/16 款，拿到 ${sN} 個 S，收集 ${titlesN}/64 個稱號，認證等級「${level}」！`
+      ? `我在 KEWEI 遊戲室玩了 ${played}/20 款，拿到 ${sN} 個 S，收集 ${titlesN}/80 個稱號，認證等級「${level}」！`
       : '我要開始挑戰 KEWEI 遊戲室了！';
     return [head, ...lines, '一起來玩：'].join('\n');
   }

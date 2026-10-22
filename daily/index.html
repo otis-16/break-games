@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <meta name="theme-color" content="#ff5fa2">
-<script>/* app freshness: if a newer build is published, reload once (home-screen apps cache hard) */(function(){var B='20261023034903';try{fetch('../version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==B){var k='dgh-reloaded-'+j.v;if(!sessionStorage.getItem(k)){sessionStorage.setItem(k,'1');location.replace(location.pathname+'?v='+j.v+location.hash)}}}).catch(function(){})}catch(e){}})();</script>
+<script>/* app freshness: if a newer build is published, reload once (home-screen apps cache hard) */(function(){var B='20261023035008';try{fetch('../version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==B){var k='dgh-reloaded-'+j.v;if(!sessionStorage.getItem(k)){sessionStorage.setItem(k,'1');location.replace(location.pathname+'?v='+j.v+location.hash)}}}).catch(function(){})}catch(e){}})();</script>
 <title>每日挑戰｜KEWEI遊戲室</title>
 <meta name="description" content="KEWEI遊戲室每日挑戰：每天一款遊戲、一題同樣的關卡，跟朋友比同一題。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -207,7 +207,11 @@ footer b { font-family: var(--f-display); font-weight: 400; font-size: 15px; let
     bomb: { no: '13', name: '拆彈專家 KEWEI', how: '照規則剪對的線，倒數中拆彈。', goal: '拆掉 6 顆以上', unit: '分', ok: s => s >= 600 },
     boss: { no: '14', name: '老闆來了', how: '按住偷玩，老闆轉頭就放開。', goal: '摸魚 32 秒以上', unit: '秒', ok: s => s >= 32 },
     yarn: { no: '15', name: 'KEWEI 推毛線球', how: '推箱子解謎，12 關越來越燒腦。', goal: '今天推完 3 關', unit: '顆星', ok: s => s >= 9 },
-    parking: { no: '16', name: '機車停進格子', how: '窄格停機車，撞到整排倒。', goal: '拿到 500 分以上', unit: '分', ok: s => s >= 500 }
+    parking: { no: '16', name: '機車停進格子', how: '窄格停機車，撞到整排倒。', goal: '拿到 500 分以上', unit: '分', ok: s => s >= 500 },
+    shrimp: { no: '17', name: '釣蝦', how: '看浮標收線，拉太緊線會斷。', goal: '釣到 400g 以上', unit: 'g', ok: s => s >= 400 },
+    darts: { no: '18', name: '射氣球', how: '甩飛鏢射氣球，小心炸彈和黑氣球。', goal: '拿到 280 分以上', unit: '分', ok: s => s >= 280 },
+    rings: { no: '19', name: '套圈圈', how: '往後拉放手，越遠獎品越大。', goal: '拿到 120 分以上', unit: '分', ok: s => s >= 120 },
+    pachinko: { no: '20', name: '彈珠台', how: '拉彈簧發射，點亮 KEWEI 進入狂熱。', goal: '拿到 200 分以上', unit: '分', ok: s => s >= 200 }
   };
   const KEYS = Object.keys(GAMES);
   const WD = ['日', '一', '二', '三', '四', '五', '六'];
