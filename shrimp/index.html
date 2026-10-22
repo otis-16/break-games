@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded',function(){var t=document.getElemen
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <meta name="theme-color" content="#f4ebdf">
-<script>/* app freshness: if a newer build is published, reload once (home-screen apps cache hard) */(function(){var B='20261023035244';try{fetch('../version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==B){var k='dgh-reloaded-'+j.v;if(!sessionStorage.getItem(k)){sessionStorage.setItem(k,'1');location.replace(location.pathname+'?v='+j.v+location.hash)}}}).catch(function(){})}catch(e){}})();</script>
+<script>/* app freshness: if a newer build is published, reload once (home-screen apps cache hard) */(function(){var B='20261023035806';try{fetch('../version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==B){var k='dgh-reloaded-'+j.v;if(!sessionStorage.getItem(k)){sessionStorage.setItem(k,'1');location.replace(location.pathname+'?v='+j.v+location.hash)}}}).catch(function(){})}catch(e){}})();</script>
 <title>釣蝦｜泰國蝦王爭霸</title>
 <meta name="description" content="浮標整個沉下去才拉，按住收線、看緊張力。90 秒內釣最多公克，小心泰國蝦王跟藍白拖。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -449,9 +449,9 @@ button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
     }
     if (s && s.st === 'bite') { startFight(s, null); return; }
     if (s) {
-      flee(s, 1.2);
-      for (const o of shrimp) if (o !== s && o.st === 'roam' && Math.hypot(o.x - bait.x, o.y - bait.y) < 120) flee(o, .7);
-      say(pick(Q.early)); setMood('meh', 1.4); pop(bait.x, bait.y - 20, '太早！', '#c2402a', 18);
+      // easy mode: an early tap costs nothing; wait for the float to go under
+      say(pick(Q.early)); setMood('meh', 1.2); pop(bait.x, bait.y - 20, '再等一下～', '#c2402a', 18);
+      return;
     } else { say(pick(Q.empty)); pop(bait.x, bait.y - 20, '空竿', '#7a6555', 16); }
     ripple(bait.x, bait.y, 26, 90);
     bait = null; state = 'aim'; $('hint').textContent = '點水面下竿'; $('hint').hidden = false;
@@ -589,15 +589,16 @@ button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
         if (s.nibT <= 0) {
           if (s.nib > 0) {
             s.nib--;
-            const fake = Math.random() < .15 + d * .4;
+            const fake = false;
             bait.dip = fake ? .7 : .38; bait.wob = 1; s.wig = .4;
             s.x += Math.cos(s.a) * 3; s.y += Math.sin(s.a) * 3;
             sfx.plip(); ripple(bait.x, bait.y, fake ? 22 : 14, 40);
             s.nibT = rand(.45, 1.1) - d * .15;
           } else {
             s.st = 'bite';
-            s.biteT = clamp(.62 - d * .22 - (s.len - 30) / 260, .28, .65) * (s.king ? .8 : 1);
-            sfx.bite(); ripple(bait.x, bait.y, 36, 120); buzz(12);
+            s.biteT = s.king ? 1.4 : 1.8;
+            sfx.bite(); ripple(bait.x, bait.y, 36, 120); buzz([30, 40, 30]);
+            pop(bait.x, bait.y - 30, '咬了！快點！', '#c2402a', 24);
           }
         }
       } else {
@@ -633,24 +634,24 @@ button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
     const f = fight;
     const hard = 1 + d * .5;
     f.surgeT -= dt;
-    if (f.surge > 0) { f.surge -= dt; if (f.surge <= 0) { f.surge = 0; f.surgeT = rand(1.1, 2.6) / (1 + f.str) / hard; } }
+    if (f.surge > 0) { f.surge -= dt; if (f.surge <= 0) { f.surge = 0; f.surgeT = rand(2, 3.6) / (1 + f.str * .5); } }
     else if (f.surgeT <= 0 && !f.j) { f.surge = rand(.35, .75) * (.7 + f.str * .6); sfx.flop(); ripple(lerp(f.x0, TIP.x, f.prog), lerp(f.y0, TIP.y, f.prog), 30, 120); }
     const sg = f.surge > 0 ? 1 : 0;
     if (holding) {
-      f.prog += dt * (.34 - f.str * .14) * (sg ? .25 : 1);
-      f.ten += dt * (.42 + f.str * .75 + sg * (1.3 + f.str * 1.4));
+      f.prog += dt * (.5 - f.str * .12) * (sg ? .4 : 1);
+      f.ten += dt * (.22 + f.str * .3 + sg * (.6 + f.str * .5));
       f.clickT -= dt; if (f.clickT <= 0) { sfx.click(); f.clickT = .055; }
     } else {
       f.prog -= dt * (.04 + f.str * .09) * (sg ? 2.2 : 1);
-      f.ten -= dt * (1.05 - sg * .7);
+      f.ten -= dt * (1.4 - sg * .5);
     }
-    if (!holding && sg) f.ten += dt * f.str * .5;
+    if (!holding && sg) f.ten += dt * f.str * .15;
     f.prog = clamp(f.prog, 0, 1); f.ten = Math.max(0, f.ten);
     f.th += dt * (sg ? 26 : 9);
     if (f.ten > .86) { f.warn -= dt; if (f.warn <= 0) { sfx.creak(); f.warn = .12; buzz(6); } if (warnT <= 0 && Math.random() < dt * 1.2) { say(pick(Q.tense), 1); warnT = 3; } }
-    if (f.ten < .12 && !f.j) f.slack += dt; else f.slack = Math.max(0, f.slack - dt * 2);
+    if (f.ten < .05 && !f.j) f.slack += dt * .5; else f.slack = Math.max(0, f.slack - dt * 2);
     if (f.ten >= 1) return endFight('snap');
-    if (f.slack > 1.15) return endFight('escape');
+    if (f.slack > 3) return endFight('escape');
     if (f.prog >= 1) return endFight('catch');
   }
 
@@ -1104,7 +1105,7 @@ button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
 .dgh-how .dgh-hgo { margin-top: 4px; padding: 14px; border: 0; border-radius: 14px; background: #3a2a20; color: #fffaf2; font: 900 16px/1 "Noto Sans TC", system-ui, sans-serif; letter-spacing: .1em; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .dgh-how .hand, .dgh-how .ring { animation: none; } }
 </style>
-<script>(function(){var D={"key": "shrimp", "title": "釣蝦", "steps": ["點水面下竿，餌會沉下去", "浮標小小抖是在試吃，等它「整個被拉下去」", "這時候點一下提竿！", "按住收線，張力條保持在「剛好」，太緊會斷線"], "icon": "<svg viewBox=\"0 0 80 80\"><circle class=\"ring tapr\" cx=\"40\" cy=\"30\" r=\"10\"/><path class=\"hand tap\" d=\"M34 64V34a6 6 0 0 1 12 0v12l8 2a6 6 0 0 1 5 7l-3 13H38z\"/></svg>"};function show(){if(document.querySelector('.dgh-how'))return;var w=document.createElement('div');w.className='dgh-how';w.setAttribute('role','dialog');w.setAttribute('aria-label','怎麼玩');w.innerHTML='<div class="dgh-hc"><p class="dgh-hk">HOW TO PLAY</p><h2 class="dgh-hh">'+D.title+' 怎麼玩</h2><div class="dgh-hd">'+D.icon+'</div><ol class="dgh-hol">'+D.steps.map(function(t){return '<li>'+t+'</li>'}).join('')+'</ol><button class="dgh-hgo" type="button">知道了，開始！</button></div>';function close(){w.remove();try{localStorage.setItem('dgh-howto-'+D.key,'1')}catch(e){}}w.querySelector('.dgh-hgo').addEventListener('click',close);w.addEventListener('click',function(e){if(e.target===w)close()});w.addEventListener('pointerdown',function(e){e.stopPropagation()});document.body.appendChild(w);w.querySelector('.dgh-hgo').focus()}var b=document.createElement('button');b.className='dgh-howbtn';b.type='button';b.textContent='?';b.setAttribute('aria-label','怎麼玩');b.addEventListener('click',function(e){e.stopPropagation();show()});b.addEventListener('pointerdown',function(e){e.stopPropagation()});document.body.appendChild(b);var seen=false;try{seen=localStorage.getItem('dgh-howto-'+D.key)==='1'}catch(e){}if(!seen)show()})();</script>
+<script>(function(){var D={"key": "shrimp", "title": "釣蝦", "steps": ["點水面下竿，餌會沉下去", "等浮標「整個被拉下去」、跳出「咬了！」", "這時候點一下提竿（點太早沒關係，再等就好）", "按住收線，蝦子掙扎時放開一下就不會斷"], "icon": "<svg viewBox=\"0 0 80 80\"><circle class=\"ring tapr\" cx=\"40\" cy=\"30\" r=\"10\"/><path class=\"hand tap\" d=\"M34 64V34a6 6 0 0 1 12 0v12l8 2a6 6 0 0 1 5 7l-3 13H38z\"/></svg>"};function show(){if(document.querySelector('.dgh-how'))return;var w=document.createElement('div');w.className='dgh-how';w.setAttribute('role','dialog');w.setAttribute('aria-label','怎麼玩');w.innerHTML='<div class="dgh-hc"><p class="dgh-hk">HOW TO PLAY</p><h2 class="dgh-hh">'+D.title+' 怎麼玩</h2><div class="dgh-hd">'+D.icon+'</div><ol class="dgh-hol">'+D.steps.map(function(t){return '<li>'+t+'</li>'}).join('')+'</ol><button class="dgh-hgo" type="button">知道了，開始！</button></div>';function close(){w.remove();try{localStorage.setItem('dgh-howto-'+D.key,'1')}catch(e){}}w.querySelector('.dgh-hgo').addEventListener('click',close);w.addEventListener('click',function(e){if(e.target===w)close()});w.addEventListener('pointerdown',function(e){e.stopPropagation()});document.body.appendChild(w);w.querySelector('.dgh-hgo').focus()}var b=document.createElement('button');b.className='dgh-howbtn';b.type='button';b.textContent='?';b.setAttribute('aria-label','怎麼玩');b.addEventListener('click',function(e){e.stopPropagation();show()});b.addEventListener('pointerdown',function(e){e.stopPropagation()});document.body.appendChild(b);var seen=false;try{seen=localStorage.getItem('dgh-howto-'+D.key)==='1'}catch(e){}if(!seen)show()})();</script>
 <!-- /dgh-howto -->
 </body>
 </html>
