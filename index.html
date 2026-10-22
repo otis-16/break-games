@@ -146,6 +146,15 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--rose); outline-
 .sign p { margin: 18px 0 0; font-size: 12px; color: var(--muted); }
 .sign p b { font-family: var(--f-serif); font-style: italic; font-weight: 400; font-size: 16px; color: var(--ink); }
 
+/* ---------- film grain + smooth scroll ---------- */
+.grain { position: fixed; inset: -50%; z-index: 80; pointer-events: none; opacity: .07; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.2s steps(6) infinite; }
+@keyframes grain { 0% { transform: translate(0, 0); } 20% { transform: translate(-3%, 2%); } 40% { transform: translate(2%, -3%); } 60% { transform: translate(-2%, -1%); } 80% { transform: translate(3%, 3%); } 100% { transform: translate(0, 0); } }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.split-line { overflow: hidden; display: block; }
+
 /* ---------- curtain transition ---------- */
 #curtain { position: fixed; inset: 0; z-index: 90; pointer-events: none; background: var(--pink); transform: translateY(100%); display: grid; place-items: center; }
 #curtain.on { pointer-events: auto; animation: curtain .7s cubic-bezier(.7, 0, .3, 1) forwards; }
@@ -158,6 +167,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--rose); outline-
   .manifesto .w { opacity: 1; }
   .card { transition: none; }
   #curtain.on { animation: none; transform: none; }
+  .grain { animation: none; }
 }
 </style>
 </head>
@@ -232,6 +242,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--rose); outline-
   </footer>
 </main>
 
+<div class="grain" aria-hidden="true"></div>
 <div id="curtain" aria-hidden="true"><b>Here<br>we go<i>— KEWEI</i></b></div>
 
 <script>
@@ -362,6 +373,48 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--rose); outline-
   }
   let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawFur, 150); });
   drawFur();
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+// motion layer: smooth scroll (Lenis) + scroll-driven reveals (GSAP). Everything stays visible if a library fails to load.
+(() => {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !window.gsap) return;
+  const gsap = window.gsap;
+  if (window.ScrollTrigger) gsap.registerPlugin(window.ScrollTrigger);
+  if (window.SplitText) gsap.registerPlugin(window.SplitText);
+  if (window.Lenis) {
+    const lenis = new window.Lenis({ lerp: .09, wheelMultiplier: 1 });
+    if (window.ScrollTrigger) lenis.on('scroll', window.ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+    document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+      const id = a.getAttribute('href'); if (id.length < 2) return;
+      const el = document.querySelector(id); if (!el) return;
+      e.preventDefault(); lenis.scrollTo(el, { offset: -10, duration: 1.4 });
+    }));
+  }
+  if (!window.ScrollTrigger) return;
+  // section titles: characters rise in
+  document.querySelectorAll('.games-intro h2, .rooms-wrap h2').forEach(h => {
+    const targets = window.SplitText ? new window.SplitText(h, { type: 'chars' }).chars : [h];
+    gsap.from(targets, { yPercent: 110, rotate: 6, opacity: 0, duration: .9, ease: 'expo.out', stagger: .035,
+      scrollTrigger: { trigger: h, start: 'top 85%' } });
+  });
+  // ribbons sweep in
+  gsap.from('.band .strip', { xPercent: (i) => i ? 30 : -30, opacity: 0, duration: 1.1, ease: 'power3.out', stagger: .1,
+    scrollTrigger: { trigger: '.band', start: 'top 90%' } });
+  // carousel rises
+  gsap.from('.carousel', { y: 60, opacity: 0, duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: '.carousel', start: 'top 88%' } });
+  // rooms stagger
+  gsap.from('.room', { y: 70, opacity: 0, scale: .96, duration: .9, ease: 'power3.out', stagger: .12, scrollTrigger: { trigger: '.rooms', start: 'top 85%' } });
+  // giant sign-off grows as you reach the end
+  gsap.fromTo('.sign .giant', { scale: .7, opacity: .2 }, { scale: 1, opacity: 1, ease: 'none', scrollTrigger: { trigger: '.sign', start: 'top bottom', end: 'bottom bottom', scrub: true } });
+  // hero copy drifts away on scroll
+  gsap.to('.hcopy', { y: -80, opacity: 0, ease: 'none', scrollTrigger: { trigger: '.phero', start: 'top top', end: 'bottom top', scrub: true } });
 })();
 </script>
 <script type="importmap">
