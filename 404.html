@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ff6fab">
+<title>KEWEI 迷路了</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+TC:wght@500;900&display=swap">
+<style>
+:root { --pink: #ff6fab; --deep: #e2367a; --ink: #4a2132; color-scheme: light; }
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  display: grid; place-items: center; text-align: center;
+  background: radial-gradient(circle at 50% 40%, #ffe3ee, var(--pink) 75%);
+  color: #fff; font-family: "Noto Sans TC", system-ui, sans-serif;
+  padding: calc(env(safe-area-inset-top, 0px) + 24px) max(20px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 24px) max(20px, env(safe-area-inset-left, 0px));
+}
+main { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+h1 { margin: 0; font-family: "Anton", sans-serif; font-weight: 400; font-size: clamp(90px, 30vw, 180px); line-height: .9; text-shadow: 0 5px 0 var(--deep); }
+p { margin: 0; font-weight: 900; font-size: 20px; text-shadow: 0 2px 10px rgba(140, 20, 70, .3); }
+small { font-size: 14px; opacity: .9; font-weight: 500; }
+a { margin-top: 14px; padding: 12px 24px; border-radius: 999px; background: #fff; color: var(--deep); font-weight: 900; text-decoration: none; box-shadow: 0 8px 24px rgba(140, 20, 70, .25); }
+svg { width: 150px; animation: bob 2.4s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(-10px) rotate(3deg); } }
+@media (prefers-reduced-motion: reduce) { svg { animation: none; } }
+</style>
+</head>
+<body>
+<main>
+  <svg viewBox="0 0 120 110" aria-hidden="true"><path d="M30 40 34 12l20 18M90 40 86 12 66 30" fill="#fff1e6" stroke="#f0b89a" stroke-width="2"/><ellipse cx="60" cy="62" rx="42" ry="38" fill="#fff1e6" stroke="#f0b89a" stroke-width="2"/><path d="M52 34v8M60 32v9M68 34v8" stroke="#f0b89a" stroke-width="3" stroke-linecap="round"/><path d="M42 60q5-6 10 0M68 60q5-6 10 0" stroke="#2a1520" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="38" cy="72" r="6" fill="#ff9cbc" opacity=".7"/><circle cx="82" cy="72" r="6" fill="#ff9cbc" opacity=".7"/><path d="M54 76q3 4 6 0q3 4 6 0" stroke="#6a2a40" stroke-width="2" fill="none"/><path d="M84 22l12-6v12zM104 22l-12-6v12z" fill="#ff4f93"/><circle cx="94" cy="22" r="4" fill="#ff4f93"/><text x="98" y="58" font-size="20" fill="#e2367a" font-family="Anton">?</text></svg>
+  <h1>404</h1>
+  <p>KEWEI 迷路了喵…</p>
+  <small>這一頁不存在，可能被熱氣球吹走了。</small>
+  <a href="/break-games/">帶 KEWEI 回首頁 →</a>
+</main>
+</body>
+</html>

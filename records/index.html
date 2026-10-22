@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ff5fa2">
+<title>我的紀錄・KEWEI遊戲室</title>
+<meta name="description" content="KEWEI遊戲室的個人紀錄與稱號收集：八款小遊戲的最高分、評級印章與 32 個稱號。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+TC:wght@400;500;700;900&family=Manrope:wght@600;800&display=swap">
+<style>
+:root {
+  --fur: #ff5fa2;
+  --pink: #ff6f9c;
+  --pink-deep: #e2367a;
+  --blush: #ffe3ee;
+  --cream: #fff7fa;
+  --ink: #4a2132;
+  --muted: #a3718a;
+  --white: #ffffff;
+  --gold: #e8a21c;
+  --f-display: "Anton", "Noto Sans TC", Impact, sans-serif;
+  --f-body: "Noto Sans TC", "PingFang TC", system-ui, sans-serif;
+  --f-latin: "Manrope", "Noto Sans TC", system-ui, sans-serif;
+  --gx: max(16px, env(safe-area-inset-left, 0px));
+  --gy: max(16px, env(safe-area-inset-right, 0px));
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--cream); color: var(--ink); font-family: var(--f-body); line-height: 1.6; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 12px; }
+
+/* header: hot-pink fur band with the kitten peeking in */
+.top {
+  position: relative; overflow: hidden;
+  background: var(--fur); color: var(--white);
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) var(--gy) 26px var(--gx);
+  border-radius: 0 0 32px 32px;
+  background-image:
+    radial-gradient(circle at 12% 20%, rgba(255,255,255,.18) 0 14px, transparent 15px),
+    radial-gradient(circle at 88% 70%, rgba(255,255,255,.14) 0 22px, transparent 23px),
+    radial-gradient(circle at 70% 12%, rgba(255,255,255,.12) 0 8px, transparent 9px);
+}
+.top-in { max-width: 820px; margin: 0 auto; position: relative; }
+.back { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,.22); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.top h1 { margin: 18px 0 0; font-size: 30px; font-weight: 900; letter-spacing: .06em; line-height: 1.2; }
+.top .en {
+  margin: 2px 0 0; font-family: var(--f-display); font-weight: 400;
+  font-size: clamp(52px, 16vw, 104px); line-height: .9; letter-spacing: .01em;
+  text-shadow: 0 4px 0 var(--pink-deep), 0 10px 26px rgba(140,20,70,.3);
+}
+.kitten { position: absolute; right: -4px; top: 30px; width: 104px; height: 104px; filter: drop-shadow(0 6px 12px rgba(140,20,70,.25)); }
+
+main {
+  max-width: 820px; margin: 0 auto;
+  padding: 20px var(--gy) calc(env(safe-area-inset-bottom, 0px) + 40px) var(--gx);
+  display: flex; flex-direction: column; gap: 26px;
+}
+.sec-h { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.sec-h h2 { margin: 0; font-size: 22px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+.sec-h h2 svg { width: 22px; height: 22px; flex: none; }
+.sec-h span { font-family: var(--f-display); font-size: 18px; color: var(--pink); letter-spacing: .02em; white-space: nowrap; }
+
+/* summary */
+.summary { background: var(--white); border: 2px solid var(--blush); border-radius: 24px; padding: 16px; box-shadow: 0 8px 22px rgba(226,54,122,.08); margin-top: -40px; position: relative; z-index: 2; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.stat { background: var(--cream); border-radius: 16px; padding: 10px 6px 8px; text-align: center; min-width: 0; }
+.stat b { display: block; font-family: var(--f-display); font-weight: 400; font-size: 30px; line-height: 1.1; color: var(--pink-deep); font-variant-numeric: tabular-nums; }
+.stat b small { font-size: 17px; color: var(--muted); }
+.stat span { font-size: 12px; color: var(--muted); font-weight: 700; }
+.level { margin-top: 14px; }
+.level-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.level-row small { font-size: 12px; color: var(--muted); font-weight: 700; }
+.level-name { font-size: 22px; font-weight: 900; color: var(--pink-deep); letter-spacing: .04em; }
+.bar { margin-top: 8px; height: 14px; border-radius: 999px; background: var(--blush); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; border-radius: inherit; background: repeating-linear-gradient(-45deg, var(--pink) 0 8px, var(--fur) 8px 16px); transition: width .9s cubic-bezier(.2,.9,.3,1); }
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 6px; font-size: 11px; color: var(--muted); font-weight: 700; }
+.steps span { text-align: center; }
+.steps span:first-child { text-align: left; }
+.steps span:last-child { text-align: right; }
+.steps span.on { color: var(--pink-deep); }
+.next { margin: 8px 0 0; font-size: 13px; color: var(--ink); }
+
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 14px; border-radius: 999px; font-weight: 900; font-size: 15px; transition: transform .15s ease; min-height: 46px; }
+.btn:active { transform: scale(.96); }
+.btn-share { background: var(--pink-deep); color: var(--white); box-shadow: 0 8px 20px rgba(226,54,122,.28); }
+.btn-clear { background: var(--white); color: var(--muted); border: 2px solid var(--blush); }
+.confirm { grid-column: 1 / -1; background: var(--cream); border: 2px dashed var(--pink); border-radius: 18px; padding: 12px; text-align: center; }
+.confirm p { margin: 0 0 10px; font-size: 14px; font-weight: 700; }
+.confirm .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn-danger { background: var(--ink); color: var(--white); }
+.btn-ghost { background: var(--white); color: var(--ink); border: 2px solid var(--blush); }
+.toast { grid-column: 1 / -1; margin: 0; text-align: center; font-size: 13px; color: var(--pink-deep); font-weight: 700; min-height: 1.2em; }
+.toast:empty { display: none; }
+
+/* game cards */
+.cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+@media (min-width: 700px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.card {
+  display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; gap: 12px; align-items: center;
+  padding: 10px 12px 10px 10px; background: var(--white);
+  border-radius: 22px; border: 2px solid var(--blush);
+  box-shadow: 0 6px 18px rgba(226,54,122,.07);
+  transition: transform .2s ease, border-color .2s ease;
+  min-width: 0;
+}
+.card:hover { transform: translateY(-2px); border-color: var(--pink); }
+.thumb { width: 76px; height: 76px; border-radius: 16px; overflow: hidden; background: var(--blush); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card.none .thumb img { filter: grayscale(.55) opacity(.75); }
+.info { min-width: 0; }
+.no { font-family: var(--f-latin); font-size: 10px; font-weight: 800; letter-spacing: .14em; color: var(--pink); }
+.info h3 { margin: 0; font-size: 17px; font-weight: 900; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.score { margin: 2px 0 0; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.score b { font-family: var(--f-display); font-weight: 400; font-size: 22px; color: var(--ink); margin-right: 2px; letter-spacing: .01em; }
+.role { margin: 0; font-size: 13px; font-weight: 900; color: var(--pink-deep); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.go { display: inline-flex; margin-top: 4px; font-size: 12px; font-weight: 900; padding: 4px 12px; border-radius: 999px; background: var(--pink); color: var(--white); }
+
+.stamp {
+  --c: var(--pink-deep);
+  width: 58px; height: 58px; border-radius: 50%;
+  border: 3px solid var(--c); color: var(--c);
+  display: grid; place-items: center;
+  font-family: var(--f-latin); font-weight: 800; font-size: 32px; line-height: 1;
+  transform: rotate(-12deg);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.9), inset 0 0 0 4px var(--c);
+  background: var(--white);
+  animation: stamp .35s cubic-bezier(.3,1.6,.5,1) both;
+}
+.stamp.S { --c: var(--gold); }
+.stamp.A { --c: var(--pink-deep); }
+.stamp.B { --c: var(--pink); }
+.stamp.C { --c: var(--muted); }
+.stamp.empty { --c: var(--blush); color: var(--blush); box-shadow: none; border-style: dashed; font-size: 22px; animation: none; }
+@keyframes stamp { from { transform: rotate(-12deg) scale(2.2); opacity: 0; } }
+
+/* title collection */
+.titles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 560px) { .titles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.tt {
+  position: relative; min-width: 0;
+  padding: 12px 10px 10px; border-radius: 18px; text-align: center;
+  background: var(--white); border: 2px solid var(--blush);
+}
+.tt .r { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font-family: var(--f-latin); font-weight: 800; font-size: 15px; color: var(--white); background: var(--c, var(--pink)); transform: rotate(-10deg); }
+.tt.S { --c: var(--gold); } .tt.A { --c: var(--pink-deep); } .tt.B { --c: var(--pink); } .tt.C { --c: var(--muted); }
+.tt.on { border-color: var(--c); background: linear-gradient(180deg, var(--white), var(--cream)); }
+.tt .n { display: block; margin-top: 6px; font-size: 14px; font-weight: 900; line-height: 1.35; overflow-wrap: anywhere; }
+.tt .g { display: block; margin-top: 2px; font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tt.off { background: repeating-linear-gradient(-45deg, var(--cream) 0 6px, #fff0f5 6px 12px); border-style: dashed; }
+.tt.off .r { background: #e9cbd7; }
+.tt.off .n { color: #d8b3c3; letter-spacing: .2em; }
+.legend { margin: 10px 0 0; font-size: 12px; color: var(--muted); }
+
+footer { text-align: center; font-size: 12px; color: var(--muted); padding-top: 4px; }
+footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); font-size: 16px; letter-spacing: .04em; }
+
+@media (max-width: 374px) {
+  .card { grid-template-columns: 64px minmax(0, 1fr) auto; gap: 10px; }
+  .thumb { width: 64px; height: 64px; }
+  .stamp { width: 50px; height: 50px; font-size: 27px; }
+  .kitten { width: 88px; height: 88px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stamp { animation: none; }
+  .bar i, .card, .btn { transition: none; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <a class="back" href="../">← 回首頁</a>
+    <h1>我的紀錄</h1>
+    <p class="en">HALL OF<br>FAME</p>
+    <!-- KEWEI: cream tabby kitten with a pink bow by the ear -->
+    <svg class="kitten" viewBox="0 0 120 120" aria-hidden="true">
+      <path d="M22 50 L28 14 L52 34 Z" fill="#fbe7cf" stroke="#4a2132" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M98 50 L92 14 L68 34 Z" fill="#fbe7cf" stroke="#4a2132" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M30 40 L32 24 L44 34 Z" fill="#ffb3cc"/>
+      <path d="M90 40 L88 24 L76 34 Z" fill="#ffb3cc"/>
+      <ellipse cx="60" cy="66" rx="44" ry="38" fill="#fbe7cf" stroke="#4a2132" stroke-width="3"/>
+      <path d="M52 30 q2 8 0 14 M60 29 v15 M68 30 q-2 8 0 14" stroke="#e4b98a" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <path d="M18 62 h12 M18 72 h11 M102 62 h-12 M102 72 h-11" stroke="#e4b98a" stroke-width="4" stroke-linecap="round"/>
+      <ellipse cx="44" cy="66" rx="5" ry="6.5" fill="#4a2132"/>
+      <ellipse cx="76" cy="66" rx="5" ry="6.5" fill="#4a2132"/>
+      <circle cx="46" cy="63.5" r="1.8" fill="#fff"/><circle cx="78" cy="63.5" r="1.8" fill="#fff"/>
+      <path d="M57 76 h6 l-3 3.5 z" fill="#ff6f9c"/>
+      <path d="M60 79.5 q-4 6 -9 3 M60 79.5 q4 6 9 3" stroke="#4a2132" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="34" cy="80" rx="7" ry="4" fill="#ffb3cc" opacity=".7"/>
+      <ellipse cx="86" cy="80" rx="7" ry="4" fill="#ffb3cc" opacity=".7"/>
+      <g transform="translate(88 30) rotate(18)">
+        <path d="M0 0 L-16 -10 L-16 10 Z M0 0 L16 -10 L16 10 Z" fill="#ff5fa2" stroke="#4a2132" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle r="5" fill="#e2367a" stroke="#4a2132" stroke-width="2.5"/>
+      </g>
+    </svg>
+  </div>
+</header>
+
+<main>
+  <section class="summary" aria-label="紀錄總覽">
+    <div class="stats">
+      <div class="stat"><b id="played">0<small>/8</small></b><span>玩過的遊戲</span></div>
+      <div class="stat"><b id="sCount">0</b><span>S 級數量</span></div>
+      <div class="stat"><b id="tCount">0<small>/32</small></b><span>稱號收集</span></div>
+    </div>
+    <div class="level">
+      <div class="level-row"><small>KEWEI 認證等級</small><span class="level-name" id="levelName">見習貓奴</span></div>
+      <div class="bar" role="progressbar" aria-label="認證進度" aria-valuemin="0" aria-valuemax="32" aria-valuenow="0" id="bar"><i id="barFill"></i></div>
+      <div class="steps" id="steps"><span>見習貓奴</span><span>資深貓奴</span><span>貓咪大師</span><span>KEWEI 本貓</span></div>
+      <p class="next" id="nextTip"></p>
+    </div>
+    <div class="actions">
+      <button class="btn btn-share" id="share" type="button">分享我的紀錄</button>
+      <button class="btn btn-clear" id="clear" type="button">清除紀錄</button>
+      <div class="confirm" id="confirm" hidden>
+        <p>確定要清除 8 款遊戲的最高紀錄嗎？<br>清掉就回不來了喔。</p>
+        <div class="row">
+          <button class="btn btn-ghost" id="cancelClear" type="button">先不要</button>
+          <button class="btn btn-danger" id="doClear" type="button">確定清除</button>
+        </div>
+      </div>
+      <p class="toast" id="toast" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-games">
+    <div class="sec-h">
+      <h2 id="h-games"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.3 5.3 3.3 1.7-2 3.1-3.3 5.3-3.3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="#ff6f9c"/></svg>各遊戲最高分</h2>
+      <span>BEST SCORES</span>
+    </div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section aria-labelledby="h-titles">
+    <div class="sec-h">
+      <h2 id="h-titles"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#ff6f9c"/></svg>稱號收集</h2>
+      <span id="tLabel">0 / 32</span>
+    </div>
+    <div class="titles" id="titles"></div>
+    <p class="legend">拿到某個評級，就會一起解鎖同款遊戲比它低的所有稱號。</p>
+  </section>
+
+  <footer><b>KEWEI</b> 遊戲室　·　紀錄只存在你自己的手機裡</footer>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const RANKS = ['S', 'A', 'B', 'C'];
+  const RV = { S: 3, A: 2, B: 1, C: 0 };
+
+  // Rank logic mirrors each game's result sheet. Only the best score is stored,
+  // so rules that depend on more than the score are approximated (noted inline).
+  const GAMES = [
+    { key: 'tea', name: '倒剛好', unit: '分', fmt: v => String(Math.round(v)),
+      roles: { S: '飲料店店長', A: '資深店員', B: '新來的工讀生', C: '老闆的小孩' },
+      // tea never saves an overflowed pour as best, so score-only is exact here.
+      rank: v => v >= 97 ? 'S' : v >= 88 ? 'A' : v >= 70 ? 'B' : 'C' },
+    { key: 'circle', name: '一筆畫正圓', unit: '%', fmt: v => v.toFixed(1),
+      roles: { S: '圓規本人', A: '數學老師', B: '美術課代表', C: '雞蛋畫家' },
+      rank: v => v >= 95 ? 'S' : v >= 90 ? 'A' : v >= 80 ? 'B' : 'C' },
+    { key: 'cake', name: '蛋糕切一半', unit: '分', fmt: v => v.toFixed(1),
+      roles: { S: '甜點主廚', A: '公平的大哥', B: '會被抱怨的人', C: '自己吃大塊' },
+      rank: v => v >= 96 ? 'S' : v >= 88 ? 'A' : v >= 70 ? 'B' : 'C' },
+    { key: 'stack', name: '雞排疊疊樂', unit: '片', fmt: v => String(Math.round(v)),
+      roles: { S: '雞排之神', A: '排隊名店老闆', B: '認真的工讀生', C: '掉滿地的人' },
+      rank: v => v >= 30 ? 'S' : v >= 15 ? 'A' : v >= 6 ? 'B' : 'C' },
+    { key: 'claw', name: '夾娃娃機', unit: '隻', fmt: v => String(Math.round(v)),
+      roles: { S: '台主的惡夢', A: '夾娃娃高手', B: '有拿到就好', C: '幫台主繳電費' },
+      rank: v => v >= 4 ? 'S' : v >= 2 ? 'A' : v >= 1 ? 'B' : 'C' },
+    { key: 'goldfish', name: '撈金魚', unit: '分', fmt: v => String(Math.round(v)),
+      roles: { S: '撈魚達人', A: '很會撈', B: '撈到就好', C: '紙破了' },
+      // Approximation: the game also gives S for clearing every fish (allClear),
+      // which the stored best score can't tell us; here S needs >= 9 points.
+      rank: v => v >= 9 ? 'S' : v >= 6 ? 'A' : v >= 3 ? 'B' : 'C' },
+    { key: 'bubble', name: '吹泡泡糖', unit: 'cm', pre: '直徑 ', fmt: v => v.toFixed(1),
+      roles: { S: '泡泡糖冠軍', A: '吹氣高手', B: '普通小孩', C: '黏得滿臉都是' },
+      // Approximation: in-game B also requires fewer than 2 popped bubbles;
+      // pops aren't stored, so B here is total >= 36 cm regardless of pops.
+      rank: v => v >= 70 ? 'S' : v >= 54 ? 'A' : v >= 36 ? 'B' : 'C' },
+    { key: 'scooter', name: '載阿嬤回家', unit: '分', fmt: v => String(Math.round(v)),
+      roles: { S: '阿嬤的驕傲', A: '孝順乖孫', B: '被唸一路', C: '阿嬤自己走回家' },
+      // Approximation: in-game C means "didn't reach home" (win flag not stored).
+      // A run that reaches home scores at least 2000 (full 2000 m distance), so
+      // < 2000 is treated as C; a failed run padded by snacks could exceed 2000.
+      rank: v => v >= 3000 ? 'S' : v >= 2550 ? 'A' : v >= 2000 ? 'B' : 'C' }
+  ];
+
+  const LEVELS = [
+    { name: '見習貓奴', min: 0 },
+    { name: '資深貓奴', min: 10 },
+    { name: '貓咪大師', min: 20 },
+    { name: 'KEWEI 本貓', min: 32 }
+  ];
+
+  function readBest(key) {
+    try {
+      const v = localStorage.getItem('dgh-' + key + '-best');
+      if (v == null || v === '') return null;
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    } catch (e) { return null; }
+  }
+
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let state = [];
+
+  function compute() {
+    state = GAMES.map((g, i) => {
+      const best = readBest(g.key);
+      const rk = best == null ? null : g.rank(best);
+      return { g, i, best, rk };
+    });
+  }
+
+  function render() {
+    compute();
+    const played = state.filter(s => s.rk).length;
+    const sN = state.filter(s => s.rk === 'S').length;
+    const titlesN = state.reduce((n, s) => n + (s.rk ? RV[s.rk] + 1 : 0), 0);
+
+    $('played').innerHTML = played + '<small>/8</small>';
+    $('sCount').textContent = sN;
+    $('tCount').innerHTML = titlesN + '<small>/32</small>';
+    $('tLabel').textContent = titlesN + ' / 32';
+
+    let li = 0;
+    LEVELS.forEach((l, i) => { if (titlesN >= l.min) li = i; });
+    $('levelName').textContent = LEVELS[li].name;
+    [...$('steps').children].forEach((el, i) => el.classList.toggle('on', i <= li));
+    $('barFill').style.width = (titlesN / 32 * 100).toFixed(1) + '%';
+    $('bar').setAttribute('aria-valuenow', titlesN);
+    const nx = LEVELS[li + 1];
+    $('nextTip').textContent = played === 0
+      ? '還沒有任何紀錄。先去玩一款，KEWEI 在等你！'
+      : nx ? `再收集 ${nx.min - titlesN} 個稱號，升級成「${nx.name}」。`
+      : '全部 32 個稱號到手，你就是 KEWEI 本貓！';
+
+    $('cards').innerHTML = state.map(({ g, i, best, rk }) => {
+      const no = 'NO.' + String(i + 1).padStart(2, '0');
+      const img = `<div class="thumb"><img src="../covers/${g.key}.jpg" alt="" width="640" height="640" loading="lazy"></div>`;
+      if (!rk) {
+        return `<a class="card none" href="../${g.key}/">${img}<div class="info"><span class="no">${no}</span><h3>${esc(g.name)}</h3><p class="score">還沒玩</p><span class="go">去玩 →</span></div><div class="stamp empty" aria-hidden="true">?</div></a>`;
+      }
+      return `<a class="card" href="../${g.key}/" aria-label="${esc(g.name)}，最高 ${esc((g.pre || '') + g.fmt(best))} ${g.unit}，${rk} 級 ${esc(g.roles[rk])}">${img}<div class="info"><span class="no">${no}</span><h3>${esc(g.name)}</h3><p class="score">${g.pre ? esc(g.pre) : '最高 '}<b>${esc(g.fmt(best))}</b>${g.unit}</p><p class="role">${esc(g.roles[rk])}</p></div><div class="stamp ${rk}" style="animation-delay:${(i * .06).toFixed(2)}s">${rk}</div></a>`;
+    }).join('');
+
+    const cells = [];
+    state.forEach(({ g, rk }) => {
+      RANKS.forEach(r => {
+        const on = rk && RV[r] <= RV[rk];
+        cells.push(on
+          ? `<div class="tt on ${r}"><span class="r">${r}</span><span class="n">${esc(g.roles[r])}</span><span class="g">${esc(g.name)}</span></div>`
+          : `<div class="tt off ${r}" aria-label="未解鎖：${esc(g.name)} ${r} 級稱號"><span class="r">${r}</span><span class="n">？？？</span><span class="g">${esc(g.name)}</span></div>`);
+      });
+    });
+    $('titles').innerHTML = cells.join('');
+    return { played, sN, titlesN, level: LEVELS[li].name };
+  }
+
+  let toastT = 0;
+  function toast(msg) {
+    $('toast').textContent = msg;
+    clearTimeout(toastT);
+    toastT = setTimeout(() => { $('toast').textContent = ''; }, 2600);
+  }
+
+  function siteRoot() {
+    const u = new URL('../', location.href);
+    return (location.origin && location.origin !== 'null' ? location.origin : u.origin) + u.pathname;
+  }
+
+  function shareText() {
+    const { played, sN, titlesN, level } = render();
+    const lines = state.filter(s => s.rk).map(s => `${s.g.name}：${s.rk} 級・${s.g.roles[s.rk]}`);
+    const head = played
+      ? `我在 KEWEI 遊戲室玩了 ${played}/8 款，拿到 ${sN} 個 S，收集 ${titlesN}/32 個稱號，認證等級「${level}」！`
+      : '我要開始挑戰 KEWEI 遊戲室了！';
+    return [head, ...lines, '一起來玩：'].join('\n');
+  }
+
+  async function copy(text) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return true; }
+    } catch (e) {}
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand('copy');
+      ta.remove(); return ok;
+    } catch (e) { return false; }
+  }
+
+  $('share').addEventListener('click', async () => {
+    const text = shareText(), url = siteRoot();
+    if (navigator.share) {
+      try { await navigator.share({ title: 'KEWEI 遊戲室・我的紀錄', text, url }); return; }
+      catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    toast(await copy(text + ' ' + url) ? '已複製紀錄，貼給朋友吧！' : '複製失敗，請手動截圖分享');
+  });
+
+  $('clear').addEventListener('click', () => {
+    $('confirm').hidden = false; $('clear').disabled = true; $('cancelClear').focus();
+  });
+  $('cancelClear').addEventListener('click', () => {
+    $('confirm').hidden = true; $('clear').disabled = false; $('clear').focus();
+  });
+  $('doClear').addEventListener('click', () => {
+    try {
+      const keys = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && /^dgh-.+-best$/.test(k)) keys.push(k);
+      }
+      keys.forEach(k => localStorage.removeItem(k));
+    } catch (e) {}
+    $('confirm').hidden = true; $('clear').disabled = false;
+    render();
+    toast('紀錄已清除，重新開始吧！');
+  });
+
+  // refresh when coming back from a game (bfcache) or another tab updates storage
+  window.addEventListener('pageshow', e => { if (e.persisted) render(); });
+  window.addEventListener('storage', e => { if (!e.key || /^dgh-.+-best$/.test(e.key)) render(); });
+
+  render();
+})();
+</script>
+</body>
+</html>

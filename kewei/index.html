@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ff5fa2">
+<title>KEWEI｜遊戲室的看板貓</title>
+<meta name="description" content="認識 KEWEI：KEWEI遊戲室的看板貓。奶油虎斑、身高三顆珍珠、口頭禪「剛剛好喵」。點她一下，她會跳起來跟你說話。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+TC:wght@400;500;700;900&family=Manrope:wght@600;800&display=swap">
+<style>
+/* KEWEI's own room: the same hot-pink fur burst as the home page, with the kitten sitting big on a striped pedestal. Below, a trading card and her day. */
+:root {
+  --fur: #ff5fa2;
+  --pink: #ff6f9c;
+  --pink-deep: #e2367a;
+  --blush: #ffe3ee;
+  --cream: #fff7fa;
+  --ink: #4a2132;
+  --muted: #a3718a;
+  --white: #ffffff;
+  --tabby: #f0b89a;
+  --f-display: "Anton", "Noto Sans TC", Impact, sans-serif;
+  --f-body: "Noto Sans TC", "PingFang TC", system-ui, sans-serif;
+  --f-latin: "Manrope", "Noto Sans TC", system-ui, sans-serif;
+  --gx: max(16px, env(safe-area-inset-left, 0px));
+  --gr: max(16px, env(safe-area-inset-right, 0px));
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+html, body { overflow-x: hidden; }
+body { margin: 0; background: var(--cream); color: var(--ink); font-family: var(--f-body); line-height: 1.6; -webkit-tap-highlight-color: transparent; }
+a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 12px; }
+button { font: inherit; color: inherit; }
+
+/* ---------- stage ---------- */
+.stage { position: relative; height: 92svh; min-height: 600px; max-height: 960px; overflow: hidden; background: var(--fur); color: var(--white); cursor: pointer; touch-action: pan-y; }
+#fur { position: absolute; left: 50%; top: 42%; translate: -50% -50%; pointer-events: none; animation: spin 160s linear infinite; }
+@keyframes spin { to { rotate: 360deg; } }
+#kc { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+.top {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 4;
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 14px);
+  padding-left: var(--gx); padding-right: var(--gr);
+}
+.pill { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 8px 16px; border-radius: 999px; border: 0; background: rgba(255, 255, 255, .24); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: var(--white); font-size: 14px; font-weight: 700; cursor: pointer; transition: transform .15s ease; }
+.pill:active { transform: scale(.95); }
+#mute { width: 44px; height: 44px; padding: 0; justify-content: center; }
+#mute svg { width: 22px; height: 22px; }
+
+.bubble {
+  position: absolute; z-index: 3; left: 50%; top: var(--hy, 16%);
+  width: max-content; max-width: min(300px, calc(100% - 32px));
+  translate: -50% calc(-100% - 6px);
+  padding: 10px 16px; border-radius: 20px;
+  background: var(--white); color: var(--ink);
+  font-size: 16px; font-weight: 900; line-height: 1.45; text-align: center;
+  box-shadow: 0 10px 26px rgba(140, 20, 70, .25);
+  pointer-events: none; opacity: 0; transform: scale(.6); transform-origin: 50% 100%;
+  transition: opacity .2s ease, transform .25s cubic-bezier(.3, 1.6, .5, 1);
+}
+.bubble::after { content: ""; position: absolute; left: 50%; bottom: -9px; translate: -50% 0; border: 10px solid transparent; border-top-color: var(--white); border-bottom: 0; }
+.bubble.show { opacity: 1; transform: scale(1); }
+
+/* SVG kitten for when WebGL is not available */
+.fb { position: absolute; left: 50%; top: 40%; translate: -50% -50%; width: min(62vw, 46vh, 330px); z-index: 1; opacity: 0; animation: fbIn .4s 3s forwards; pointer-events: none; }
+.fb svg { width: 100%; height: auto; display: block; overflow: visible; filter: drop-shadow(0 14px 22px rgba(140, 20, 70, .3)); }
+.fb .sway { transform-origin: 50% 90%; animation: sway 4s ease-in-out infinite; }
+.fb.boing .sway { animation: boing .7s cubic-bezier(.3, 1.4, .5, 1); }
+@keyframes fbIn { to { opacity: 1; } }
+@keyframes sway { 50% { transform: rotate(3deg); } }
+@keyframes boing { 0% { transform: scale(1.1, .86); } 40% { transform: translateY(-18%) scale(.94, 1.08); } 70% { transform: translateY(0) scale(1.06, .94); } 100% { transform: none; } }
+html.gl .fb { display: none; }
+html.nogl .fb { animation: none; opacity: 1; }
+html.nogl #kc { display: none; }
+
+.heart { position: absolute; z-index: 3; width: 28px; height: 28px; pointer-events: none; animation: heartUp 1.3s ease-out forwards; }
+@keyframes heartUp { 0% { transform: translate(0, 0) scale(.3); opacity: 0; } 15% { opacity: 1; transform: translate(calc(var(--dx) * .3), -20px) scale(1); } 100% { transform: translate(var(--dx), -150px) scale(.7) rotate(var(--r)); opacity: 0; } }
+
+.flash { position: absolute; inset: 0; z-index: 5; background: #fff; opacity: 0; pointer-events: none; }
+.flash.go { animation: flash .45s ease-out; }
+@keyframes flash { 0% { opacity: .9; } 100% { opacity: 0; } }
+
+.copy {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+  padding-left: var(--gx); padding-right: var(--gr);
+  display: flex; flex-direction: column; gap: 6px;
+  pointer-events: none;
+}
+.copy > * { pointer-events: auto; }
+.copy h1 {
+  margin: 0; font-family: var(--f-display); font-weight: 400;
+  font-size: clamp(88px, 30vw, 190px); line-height: .84; letter-spacing: .01em;
+  text-shadow: 0 5px 0 var(--pink-deep), 0 12px 32px rgba(140, 20, 70, .35);
+}
+.copy .zh { margin: 0; font-size: clamp(19px, 5.4vw, 28px); font-weight: 900; letter-spacing: .12em; text-shadow: 0 2px 12px rgba(140, 20, 70, .4); }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 12px 22px; border: 0; border-radius: 999px; background: var(--white); color: var(--pink-deep); font-weight: 900; font-size: 15px; cursor: pointer; box-shadow: 0 8px 24px rgba(140, 20, 70, .25); transition: transform .15s ease; }
+.btn svg { width: 20px; height: 20px; }
+.btn.ghost { background: rgba(255, 255, 255, .22); color: var(--white); box-shadow: none; border: 1.5px solid rgba(255, 255, 255, .65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.btn:active { transform: scale(.96); }
+
+/* ---------- sections ---------- */
+main {
+  max-width: 820px; margin: 0 auto;
+  padding-top: 44px; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 44px);
+  padding-left: var(--gx); padding-right: var(--gr);
+  display: flex; flex-direction: column; gap: 52px;
+}
+.sec-h { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.sec-h h2 { margin: 0; font-size: 26px; font-weight: 900; line-height: 1.3; }
+.sec-h span { font-family: var(--f-display); font-size: 20px; color: var(--pink); letter-spacing: .03em; white-space: nowrap; }
+
+/* trading card */
+.card-wrap { display: flex; justify-content: center; }
+.card {
+  position: relative; width: 100%; max-width: 440px; padding: 7px; border-radius: 28px;
+  background: conic-gradient(from 200deg, #ff6f9c, #ffd36f, #9fe8ff, #c8a6ff, #ff9cc8, #ff6f9c);
+  box-shadow: 0 18px 40px rgba(226, 54, 122, .25);
+  transform: rotate(-1.2deg);
+}
+.card-in { position: relative; border-radius: 22px; background: var(--white); padding: 14px 14px 16px; overflow: hidden; }
+.card-in::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(135deg, rgba(255, 111, 156, .05) 0 10px, transparent 10px 20px); pointer-events: none; }
+.card-top { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-family: var(--f-latin); font-size: 11px; font-weight: 800; letter-spacing: .14em; color: var(--pink-deep); }
+.rare { padding: 2px 10px; border-radius: 999px; background: linear-gradient(90deg, #ffcf5a, #ff8fbd); color: var(--white); letter-spacing: .1em; }
+.portrait { position: relative; margin-top: 10px; aspect-ratio: 5 / 4; border-radius: 16px; overflow: hidden; background: radial-gradient(circle at 50% 45%, #fff 0 18%, #ffc4dc 40%, #ff6f9c 100%); display: grid; place-items: center; }
+.portrait svg { width: 62%; height: auto; }
+.portrait .hp { position: absolute; top: 8px; right: 10px; font-family: var(--f-display); font-size: 22px; color: var(--white); text-shadow: 0 2px 0 var(--pink-deep); }
+.portrait .hp small { font-family: var(--f-latin); font-size: 10px; font-weight: 800; letter-spacing: .1em; margin-right: 3px; }
+.name-row { position: relative; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-top: 12px; }
+.name-row b { font-family: var(--f-display); font-weight: 400; font-size: 40px; line-height: 1; color: var(--ink); letter-spacing: .02em; }
+.name-row span { font-size: 13px; font-weight: 700; color: var(--muted); text-align: right; }
+.stats { position: relative; margin: 12px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 12px; font-size: 14px; }
+.stats dt { font-weight: 900; color: var(--pink-deep); white-space: nowrap; }
+.stats dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.stats dd small { color: var(--muted); }
+.moves { position: relative; margin-top: 14px; padding-top: 12px; border-top: 2px dashed var(--blush); }
+.moves h3 { margin: 0 0 8px; font-size: 14px; font-weight: 900; color: var(--pink-deep); }
+.moves ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.moves li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 10px; align-items: start; font-size: 13.5px; line-height: 1.5; }
+.tag { display: inline-block; text-align: center; padding: 2px 0; border-radius: 8px; background: var(--blush); color: var(--pink-deep); font-size: 12px; font-weight: 900; }
+.fine { position: relative; margin: 14px 0 0; font-size: 11px; color: var(--muted); text-align: center; }
+
+/* day timeline */
+.day { list-style: none; margin: 0; padding: 0; position: relative; display: flex; flex-direction: column; gap: 12px; }
+.day::before { content: ""; position: absolute; left: 27px; top: 20px; bottom: 20px; width: 4px; border-radius: 4px; background: repeating-linear-gradient(var(--pink) 0 8px, transparent 8px 16px); opacity: .5; }
+.day li { position: relative; }
+.day a, .day .row { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 12px; align-items: center; padding: 10px 14px 10px 0; border-radius: 20px; transition: background .2s ease, transform .2s ease; }
+.day a:hover { background: var(--white); transform: translateX(3px); }
+.ico { position: relative; width: 58px; height: 58px; border-radius: 50%; background: var(--white); border: 3px solid var(--blush); display: grid; place-items: center; color: var(--pink-deep); box-shadow: 0 6px 14px rgba(226, 54, 122, .12); }
+.ico svg { width: 30px; height: 30px; }
+.when { font-family: var(--f-latin); font-size: 12px; font-weight: 800; letter-spacing: .12em; color: var(--pink); }
+.day h3 { margin: 0; font-size: 17px; font-weight: 900; line-height: 1.35; }
+.day p { margin: 2px 0 0; font-size: 13.5px; color: var(--muted); }
+.day .go { color: var(--pink-deep); font-weight: 700; white-space: nowrap; }
+
+footer { text-align: center; font-size: 12px; color: var(--muted); }
+footer b { font-family: var(--f-display); font-weight: 400; color: var(--pink); font-size: 16px; letter-spacing: .04em; }
+footer a { display: inline-block; margin-top: 8px; font-weight: 700; color: var(--pink-deep); }
+
+/* photo dialog */
+dialog { border: 0; padding: 0; background: transparent; max-width: calc(100vw - 32px); max-height: calc(100svh - 32px); overflow: visible; }
+dialog::backdrop { background: rgba(74, 33, 50, .6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.shot { width: min(400px, calc(100vw - 32px)); max-height: calc(100svh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); overflow: auto; background: var(--white); border-radius: 26px; padding: 14px; display: flex; flex-direction: column; gap: 10px; color: var(--ink); }
+.shot img { width: 100%; height: auto; display: block; border-radius: 16px; background: var(--blush); -webkit-touch-callout: default; user-select: auto; }
+.shot p { margin: 0; text-align: center; font-size: 14px; font-weight: 700; color: var(--muted); }
+.shot .row2 { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.shot .btn { box-shadow: none; }
+.shot .btn.pinkbtn { background: var(--pink); color: var(--white); }
+.shot .btn.soft { background: var(--blush); }
+
+@media (min-width: 720px) {
+  .profile-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #fur { animation: none; }
+  .fb .sway, .fb.boing .sway { animation: none; }
+  .bubble { transition: opacity .2s ease; transform: none; }
+  .heart { animation-name: heartFade; }
+  @keyframes heartFade { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 0; } }
+  .flash.go { animation: none; }
+  .card { transform: none; }
+  .pill, .btn, .day a { transition: none; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="kewei" viewBox="0 0 200 220">
+      <ellipse cx="100" cy="198" rx="88" ry="20" fill="#ff8fbd"/>
+      <ellipse cx="100" cy="193" rx="80" ry="15" fill="#ffb6d3"/>
+      <path d="M146 182c34 2 40-30 22-40" fill="none" stroke="#fff1e6" stroke-width="13" stroke-linecap="round"/>
+      <ellipse cx="100" cy="150" rx="50" ry="44" fill="#fff1e6"/>
+      <path d="M62 140q6-6 12 0M126 140q6-6 12 0" fill="none" stroke="#f0b89a" stroke-width="4" stroke-linecap="round"/>
+      <ellipse cx="72" cy="188" rx="17" ry="9" fill="#fff1e6"/>
+      <ellipse cx="128" cy="188" rx="17" ry="9" fill="#fff1e6"/>
+      <path d="M44 70L50 18L90 44Z" fill="#fff1e6"/>
+      <path d="M156 70L150 18L110 44Z" fill="#fff1e6"/>
+      <path d="M56 54L58 32L76 46Z" fill="#ffb6cf"/>
+      <path d="M144 54L142 32L124 46Z" fill="#ffb6cf"/>
+      <ellipse cx="100" cy="88" rx="66" ry="56" fill="#fff1e6"/>
+      <rect x="86.5" y="38" width="5" height="16" rx="2.5" fill="#f0b89a"/>
+      <rect x="97.5" y="36" width="5" height="18" rx="2.5" fill="#f0b89a"/>
+      <rect x="108.5" y="38" width="5" height="16" rx="2.5" fill="#f0b89a"/>
+      <ellipse cx="76" cy="92" rx="9" ry="10.5" fill="#2a1520"/>
+      <ellipse cx="124" cy="92" rx="9" ry="10.5" fill="#2a1520"/>
+      <circle cx="73" cy="88" r="3.2" fill="#fff"/>
+      <circle cx="121" cy="88" r="3.2" fill="#fff"/>
+      <ellipse cx="56" cy="108" rx="12" ry="7" fill="#ff9cbc" opacity=".85"/>
+      <ellipse cx="144" cy="108" rx="12" ry="7" fill="#ff9cbc" opacity=".85"/>
+      <ellipse cx="100" cy="103" rx="5.5" ry="4.2" fill="#ff7aa3"/>
+      <path d="M89 110q5.5 7 11 0q5.5 7 11 0" fill="none" stroke="#6a2a40" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M40 100L16 95M40 107L16 110M160 100L184 95M160 107L184 110" stroke="#c89aa8" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="80" cy="140" rx="14" ry="11" fill="#fff1e6" stroke="#f6dccd" stroke-width="1.5"/>
+      <ellipse cx="120" cy="140" rx="14" ry="11" fill="#fff1e6" stroke="#f6dccd" stroke-width="1.5"/>
+      <g transform="rotate(-18 136 36)" fill="#ff4f93">
+        <path d="M136 36L114 23Q108 36 114 49Z"/>
+        <path d="M136 36L158 23Q164 36 158 49Z"/>
+        <circle cx="136" cy="36" r="7.5"/>
+      </g>
+    </symbol>
+    <symbol id="hrt" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.3 5.3 3.3 1.7-2 3.1-3.3 5.3-3.3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></symbol>
+  </defs>
+</svg>
+
+<header class="stage" id="stage">
+  <canvas id="fur" aria-hidden="true"></canvas>
+  <canvas id="kc" aria-hidden="true"></canvas>
+  <div class="fb" id="fb" aria-hidden="true"><svg viewBox="0 0 200 220"><g class="sway"><use href="#kewei"/></g></svg></div>
+  <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+  <div class="flash" id="flash"></div>
+  <div class="top">
+    <a class="pill" href="../">← 回首頁</a>
+    <button class="pill" id="mute" type="button" aria-label="關閉聲音" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><g id="wave"><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></g><g id="cross" hidden><path d="M17 9l5 6M22 9l-5 6"/></g></svg>
+    </button>
+  </div>
+  <div class="copy">
+    <h1>KEWEI</h1>
+    <p class="zh">遊戲室的看板貓</p>
+    <div class="cta">
+      <button class="btn" id="snap" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.5"/></svg>跟 KEWEI 合照</button>
+      <button class="btn ghost" id="pet" type="button"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#hrt"/></svg>摸摸頭</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section aria-labelledby="h-card">
+    <div class="sec-h"><h2 id="h-card">KEWEI 的角色卡</h2><span>NO.000</span></div>
+    <div class="card-wrap">
+      <article class="card">
+        <div class="card-in">
+          <div class="card-top"><span>KEWEI GAME ROOM · 看板貓</span><span class="rare">SSR</span></div>
+          <div class="portrait">
+            <svg viewBox="0 0 200 220" aria-hidden="true"><use href="#kewei"/></svg>
+            <span class="hp"><small>可愛力</small>999</span>
+          </div>
+          <div class="name-row"><b>KEWEI</b><span>奶油虎斑・坐鎮櫃台</span></div>
+          <dl class="stats">
+            <dt>名字</dt><dd>KEWEI <small>（大家都叫她「剛剛好小姐」）</small></dd>
+            <dt>品種</dt><dd>奶油虎斑 <small>額頭三條紋是天生的，不是奶茶滴到</small></dd>
+            <dt>生日</dt><dd>3 月 14 日 <small>圓周率日出生，所以圓畫得特別圓</small></dd>
+            <dt>身高</dt><dd>三顆珍珠疊起來</dd>
+            <dt>體重</dt><dd>一片雞排 <small>（不含脆皮）</small></dd>
+            <dt>最喜歡</dt><dd>珍珠奶茶的珍珠、雞排的脆皮、坐熱氣球</dd>
+            <dt>最討厭</dt><dd>紅燈、紙網破掉、蛋糕被切得一大一小</dd>
+            <dt>口頭禪</dt><dd>「剛剛好喵」</dd>
+            <dt>弱點</dt><dd>看到泡泡就想拍，拍完才想起那是自己吹的</dd>
+          </dl>
+          <div class="moves">
+            <h3>特技</h3>
+            <ul>
+              <li><span class="tag">倒奶茶</span><span>閉著眼睛也能倒到紅線上，連奶泡都不會多一毫米。</span></li>
+              <li><span class="tag">畫正圓</span><span>用尾巴一筆畫出 99.9% 的圓，剩下 0.1% 是鬍鬚抖到。</span></li>
+              <li><span class="tag">切蛋糕</span><span>下刀前會先用鬍鬚量左右，量完才切。</span></li>
+              <li><span class="tag">疊雞排</span><span>疊得比自己還高，然後偷吃最上面那片。</span></li>
+              <li><span class="tag">夾娃娃</span><span>第一爪就夾到自己的布偶，嚇到愣住三秒。</span></li>
+              <li><span class="tag">撈金魚</span><span>只看不撈，因為每一隻都取好名字了。</span></li>
+              <li><span class="tag">吹泡泡</span><span>泡泡糖吹得比頭還大，爆掉後黏在鬍鬚上一整天。</span></li>
+              <li><span class="tag">載阿嬤</span><span>坐在機車踏板上當導航：「左邊喵、右邊喵、紅燈不要喵」。</span></li>
+            </ul>
+          </div>
+          <p class="fine">※ 本卡不可兌換珍珠　·　卡片背面有一根貓毛</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-day">
+    <div class="sec-h"><h2 id="h-day">KEWEI 的一天</h2><span>A DAY</span></div>
+    <ol class="day">
+      <li><a href="../tea/"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 8h13l-1.6 12.2a1.2 1.2 0 0 1-1.2 1H8.3a1.2 1.2 0 0 1-1.2-1z"/><path d="M13 8l2.5-6"/><path d="M6.2 12.5h11.6" stroke-dasharray="2 2"/><circle cx="9.5" cy="18" r="1" fill="currentColor"/><circle cx="12.5" cy="18.6" r="1" fill="currentColor"/><circle cx="15" cy="17.6" r="1" fill="currentColor"/></svg></span><div><span class="when">07:30</span><h3>起床，先倒一杯剛剛好</h3><p>奶茶停在紅線上，今天才算開始。<span class="go">倒剛好 →</span></p></div></a></li>
+      <li><a href="../circle/"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M19 12a7 7 0 1 1-2.1-5"/><path d="M17 3.5l.2 3.6-3.6.3"/></svg></span><div><span class="when">09:00</span><h3>晨間運動：用尾巴畫圓</h3><p>畫一百圈，挑最圓的那圈貼在冰箱上。<span class="go">一筆畫正圓 →</span></p></div></a></li>
+      <li><a href="../stack/"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="16" width="16" height="4" rx="2"/><rect x="5.5" y="11" width="14" height="4" rx="2"/><rect x="3.5" y="6" width="14" height="4" rx="2"/><path d="M10 3.5l1-1.5 1 1.5" stroke-linecap="round"/></svg></span><div><span class="when">12:00</span><h3>午餐：雞排疊到天花板</h3><p>對不準的邊邊會被切掉，切掉的剛好當點心。<span class="go">雞排疊疊樂 →</span></p></div></a></li>
+      <li><a href="../cake/"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18v-6a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3z"/><path d="M3 15.5c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0"/><path d="M12 11V7"/><path d="M12 3.5c.8 1 .8 2 0 2.5-.8-.5-.8-1.5 0-2.5z" fill="currentColor"/><path d="M12 11v9" stroke-dasharray="1.5 2"/></svg></span><div><span class="when">15:00</span><h3>下午茶：蛋糕一刀切一半</h3><p>切得一大一小的話，她會兩塊都吃掉，問題就解決了。<span class="go">蛋糕切一半 →</span></p></div></a></li>
+      <li><a href="../claw/"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v7"/><rect x="9" y="9" width="6" height="3" rx="1"/><path d="M9.5 12L7 16l2 3M14.5 12L17 16l-2 3"/><circle cx="12" cy="20" r="2"/></svg></span><div><span class="when">17:00</span><h3>夾娃娃機巡邏</h3><p>五次機會，四次用來觀察，第五次一爪入魂。<span class="go">夾娃娃機 →</span></p></div></a></li>
+      <li><a href="../goldfish/"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12c3-4.5 9-5.5 13 0-4 5.5-10 4.5-13 0z"/><path d="M16 12l5-3.5v7z"/><circle cx="7" cy="11.2" r=".9" fill="currentColor"/><path d="M6 20c1.5-1 3-1 4.5 0s3 1 4.5 0"/></svg></span><div><span class="when">18:30</span><h3>去看金魚，順便練紙網</h3><p>紙網破掉那一刻，她會發出全世界最小聲的「喵…」。<span class="go">撈金魚 →</span></p></div></a></li>
+      <li><a href="../bubble/"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="10" r="7"/><path d="M7.5 8a4 4 0 0 1 3-2.5"/><circle cx="19" cy="18" r="2.2"/><circle cx="15" cy="21" r="1"/></svg></span><div><span class="when">20:00</span><h3>吹泡泡糖比賽</h3><p>對手是昨天的自己。今天又輸給鬍鬚了。<span class="go">吹泡泡糖 →</span></p></div></a></li>
+      <li><a href="../scooter/"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="17.5" r="2.5"/><circle cx="18.5" cy="17.5" r="2.5"/><path d="M8 17.5h7l2-6h-4"/><path d="M17 11.5L15.5 5H18"/><path d="M5.5 15l2.5-4h5"/></svg></span><div><span class="when">21:00</span><h3>載阿嬤回家</h3><p>一路喊「紅燈不要喵」，阿嬤笑到安全帽歪掉。<span class="go">載阿嬤回家 →</span></p></div></a></li>
+      <li><div class="row"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5c4 0 6.5 3 6.5 6.3 0 3.4-3.3 6.2-4.6 7.7h-3.8C8.8 15 5.5 12.2 5.5 8.8 5.5 5.5 8 2.5 12 2.5z"/><path d="M10 16.5l-.8 2.5h5.6l-.8-2.5"/><path d="M9.2 19h5.6v2.5H9.2z"/><path d="M12 2.5c-1.6 2-1.6 12 0 14M12 2.5c1.6 2 1.6 12 0 14"/></svg></span><div><span class="when">22:00</span><h3>坐熱氣球數星星</h3><p>數到第三顆就睡著了。因為三顆，剛剛好。</p></div></div></li>
+    </ol>
+  </section>
+
+  <footer><b>KEWEI</b> 遊戲室　·　看板貓今天也有上班<br><a href="../">← 回首頁玩遊戲</a></footer>
+</main>
+
+<dialog id="shotDlg" aria-labelledby="shotTitle">
+  <div class="shot">
+    <img id="shotImg" alt="你跟 KEWEI 的合照">
+    <p id="shotTitle">長按圖片就能存起來喵</p>
+    <div class="row2">
+      <button class="btn pinkbtn" id="shareBtn" type="button" hidden>分享合照</button>
+      <button class="btn soft" id="closeShot" type="button">關閉</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const root = document.documentElement;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stage = $('stage');
+
+  // ---------- plush fur burst (same recipe as the home page) ----------
+  const fur = $('fur');
+  function drawFur() {
+    const W = stage.clientWidth, H = stage.clientHeight;
+    const S = Math.ceil(2 * Math.hypot(W / 2, H * .58) * 1.04);
+    const dpr = Math.min(devicePixelRatio || 1, 1.5);
+    fur.width = S * dpr; fur.height = S * dpr; fur.style.width = S + 'px'; fur.style.height = S + 'px';
+    const g = fur.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const c = S / 2, inner = Math.min(W, H) * .22;
+    const bg = g.createRadialGradient(c, c, inner * .5, c, c, S / 2);
+    bg.addColorStop(0, '#ffd0e4'); bg.addColorStop(.25, '#ff8cc0'); bg.addColorStop(1, '#ff4f97');
+    g.fillStyle = bg; g.fillRect(0, 0, S, S);
+    const cols = ['#ff3d8c', '#ff5fa2', '#ff7fb6', '#ffa6cc', '#ffc4dc', '#e8327d', '#fff0f6'];
+    const N = Math.min(14000, Math.round(S * S / 40));
+    g.lineCap = 'round';
+    for (let i = 0; i < N; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const r0 = inner * .7 + Math.pow(Math.random(), .8) * (S / 2);
+      const len = 18 + Math.random() * 46 * (r0 / (S / 2) + .5);
+      const curl = (Math.random() - .5) * .5;
+      const x0 = c + Math.cos(a) * r0, y0 = c + Math.sin(a) * r0;
+      const x1 = c + Math.cos(a + curl * .08) * (r0 + len), y1 = c + Math.sin(a + curl * .08) * (r0 + len);
+      g.strokeStyle = cols[(Math.random() * cols.length) | 0];
+      g.globalAlpha = .35 + Math.random() * .5;
+      g.lineWidth = .8 + Math.random() * 2.2;
+      g.beginPath(); g.moveTo(x0, y0);
+      g.quadraticCurveTo((x0 + x1) / 2 + Math.cos(a + 1.57) * curl * len, (y0 + y1) / 2 + Math.sin(a + 1.57) * curl * len, x1, y1);
+      g.stroke();
+    }
+    g.globalAlpha = 1;
+    const glow = g.createRadialGradient(c, c, 0, c, c, inner * 1.6);
+    glow.addColorStop(0, 'rgba(255,255,255,.95)'); glow.addColorStop(.55, 'rgba(255,255,255,.75)'); glow.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = glow; g.beginPath(); g.arc(c, c, inner * 1.6, 0, 7); g.fill();
+  }
+  let rt; let lastW = 0;
+  addEventListener('resize', () => { if (stage.clientWidth === lastW) return; clearTimeout(rt); rt = setTimeout(() => { lastW = stage.clientWidth; drawFur(); }, 150); });
+  lastW = stage.clientWidth; drawFur();
+
+  // ---------- lines ----------
+  const LINES = [
+    '你今天倒剛好了嗎？',
+    '雞排要疊到天花板喵',
+    '剛剛好喵！',
+    '珍珠要先吃，奶茶後喝，這是規矩',
+    '紙網破掉不是我的錯喵…',
+    '我畫的圓，圓周率看了都害羞',
+    '蛋糕切一半，一半給你，另一半也給我',
+    '夾娃娃機裡那隻是我表妹喵',
+    '泡泡糖黏到鬍鬚了…幫我拔',
+    '紅燈為什麼要那麼久喵',
+    '熱氣球再飛高一點點就好',
+    '摸頭可以，摸肚子要先預約喵',
+    '今日運勢：剛剛好',
+    '金魚好可愛…我真的只是看看',
+    '阿嬤說今天晚餐有雞排！',
+    '再點一下，我就再跳一下喵'
+  ];
+  const bubble = $('bubble');
+  let lastLine = -1, bubbleT = 0;
+  function say(text) {
+    if (text == null) {
+      let i; do { i = Math.floor(Math.random() * LINES.length); } while (i === lastLine);
+      lastLine = i; text = LINES[i];
+    }
+    bubble.classList.remove('show'); void bubble.offsetWidth;
+    bubble.textContent = text; bubble.classList.add('show');
+    clearTimeout(bubbleT); bubbleT = setTimeout(() => bubble.classList.remove('show'), 3600);
+  }
+
+  // ---------- audio: synthesized meow ----------
+  let AC = null, master = null, muted = false;
+  try { muted = localStorage.getItem('dgh-muted') === '1'; } catch (e) {}
+  function initAudio() {
+    if (!AC) {
+      const C = window.AudioContext || window.webkitAudioContext; if (!C) return;
+      try { AC = new C(); } catch (e) { return; }
+      master = AC.createGain(); master.gain.value = .8; master.connect(AC.destination);
+    }
+    if (AC.state === 'suspended') AC.resume();
+  }
+  function meow() {
+    if (muted || !AC) return;
+    const t = AC.currentTime + .01;
+    const base = 520 + Math.random() * 180, dur = .5 + Math.random() * .3, peak = 1.35 + Math.random() * .3;
+    const o = AC.createOscillator(); o.type = 'sawtooth';
+    o.frequency.setValueAtTime(base * .78, t);
+    o.frequency.exponentialRampToValueAtTime(base * peak, t + dur * .32);
+    o.frequency.exponentialRampToValueAtTime(base * .7, t + dur);
+    const lfo = AC.createOscillator(); lfo.frequency.value = 6 + Math.random() * 2;
+    const lg = AC.createGain(); lg.gain.value = base * .025; lfo.connect(lg); lg.connect(o.frequency);
+    // a moving formant makes the "mi-aa-ow" vowel
+    const f1 = AC.createBiquadFilter(); f1.type = 'bandpass'; f1.Q.value = 4;
+    f1.frequency.setValueAtTime(900, t); f1.frequency.linearRampToValueAtTime(1900, t + dur * .35); f1.frequency.linearRampToValueAtTime(750, t + dur);
+    const f2 = AC.createBiquadFilter(); f2.type = 'lowpass'; f2.frequency.value = 3200;
+    const dry = AC.createGain(); dry.gain.value = .25;
+    const g = AC.createGain();
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(.5, t + .05);
+    g.gain.setValueAtTime(.45, t + dur * .55);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(f1); f1.connect(g);
+    o.connect(f2); f2.connect(dry); dry.connect(g);
+    g.connect(master);
+    o.start(t); lfo.start(t); o.stop(t + dur + .05); lfo.stop(t + dur + .05);
+  }
+  function renderMute() {
+    $('wave').hidden = muted; $('cross').hidden = !muted;
+    $('mute').setAttribute('aria-pressed', muted ? 'true' : 'false');
+    $('mute').setAttribute('aria-label', muted ? '開啟聲音' : '關閉聲音');
+  }
+  renderMute();
+  $('mute').addEventListener('click', e => {
+    e.stopPropagation(); muted = !muted; renderMute(); initAudio();
+    try { localStorage.setItem('dgh-muted', muted ? '1' : '0'); } catch (err) {}
+  });
+
+  // ---------- poke ----------
+  const fb = $('fb');
+  function cssHearts(x, y, n) {
+    for (let i = 0; i < n; i++) {
+      const h = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      h.setAttribute('viewBox', '0 0 24 24'); h.setAttribute('class', 'heart'); h.setAttribute('aria-hidden', 'true');
+      h.innerHTML = '<use href="#hrt"/>';
+      h.style.fill = ['#ff4f93', '#ff8fbd', '#ffffff'][i % 3];
+      h.style.left = (x - 14 + (Math.random() - .5) * 60) + 'px'; h.style.top = (y - 14 + (Math.random() - .5) * 30) + 'px';
+      h.style.setProperty('--dx', ((Math.random() - .5) * 140) + 'px');
+      h.style.setProperty('--r', ((Math.random() - .5) * 60) + 'deg');
+      h.style.animationDelay = (i * .06) + 's';
+      h.addEventListener('animationend', () => h.remove());
+      stage.appendChild(h);
+    }
+  }
+  function poke() {
+    initAudio(); meow(); say();
+    if (window.KEWEI3D && root.classList.contains('gl')) { window.KEWEI3D.poke(); return; }
+    fb.classList.remove('boing'); void fb.offsetWidth; fb.classList.add('boing');
+    const r = fb.getBoundingClientRect(), s = stage.getBoundingClientRect();
+    cssHearts(r.left - s.left + r.width / 2, r.top - s.top + r.height * .3, reduced ? 3 : 7);
+  }
+  stage.addEventListener('click', e => { if (e.target.closest('a, button')) return; poke(); });
+  $('pet').addEventListener('click', poke);
+  setTimeout(() => say('嗨！我是 KEWEI，點我一下喵'), 900);
+
+  // ---------- photo ----------
+  const dlg = $('shotDlg'), shotImg = $('shotImg'), shareBtn = $('shareBtn');
+  let shareFile = null;
+  function svgKittenImage() {
+    return new Promise((res, rej) => {
+      const sym = document.getElementById('kewei');
+      const src = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" width="600" height="660">' + sym.innerHTML + '</svg>';
+      const img = new Image(); img.onload = () => res(img); img.onerror = rej;
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(src);
+    });
+  }
+  function roundRect(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+  function heartPath(g, cx, cy, s) {
+    g.beginPath(); g.moveTo(cx, cy + s * .9);
+    g.bezierCurveTo(cx - s * 1.6, cy - s * .1, cx - s * .8, cy - s * 1.3, cx, cy - s * .45);
+    g.bezierCurveTo(cx + s * .8, cy - s * 1.3, cx + s * 1.6, cy - s * .1, cx, cy + s * .9); g.fill();
+  }
+  async function makeShot() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    const OW = 1080, OH = 1350;
+    // crop the stage (CSS px) to 4:5, centred on the kitten
+    let cw = w, ch = w * OH / OW;
+    if (ch > h) { ch = h; cw = h * OW / OH; }
+    const cx0 = (w - cw) / 2, cy0 = Math.max(0, Math.min(h - ch, h * .38 - ch / 2));
+    const k = OW / cw;
+    const out = document.createElement('canvas'); out.width = OW; out.height = OH;
+    const g = out.getContext('2d');
+    g.fillStyle = '#ff5fa2'; g.fillRect(0, 0, OW, OH);
+    const S = parseFloat(fur.style.width) || fur.width;
+    g.drawImage(fur, (w / 2 - S / 2 - cx0) * k, (h * .42 - S / 2 - cy0) * k, S * k, S * k);
+    if (window.KEWEI3D && root.classList.contains('gl')) {
+      const c = window.KEWEI3D.snap();
+      g.drawImage(c, cx0 * c.width / w, cy0 * c.height / h, cw * c.width / w, ch * c.height / h, 0, 0, OW, OH);
+    } else {
+      const img = await svgKittenImage();
+      const r = fb.getBoundingClientRect(), s = stage.getBoundingClientRect();
+      const fw = r.width || Math.min(w * .62, 330), fh = fw * 1.1;
+      const fx = r.width ? r.left - s.left : (w - fw) / 2, fy = r.width ? r.top - s.top : h * .4 - fh / 2;
+      g.drawImage(img, (fx - cx0) * k, (fy - cy0) * k, fw * k, fh * k);
+    }
+    try { await document.fonts.ready; } catch (e) {}
+    // frame
+    g.lineWidth = 18; g.strokeStyle = '#ffffff'; roundRect(g, 30, 30, OW - 60, OH - 60, 48); g.stroke();
+    const grd = g.createLinearGradient(0, OH - 380, 0, OH);
+    grd.addColorStop(0, 'rgba(226,54,122,0)'); grd.addColorStop(1, 'rgba(160,20,80,.55)');
+    g.fillStyle = grd; g.fillRect(39, OH - 380, OW - 78, 341);
+    g.fillStyle = '#ffffff'; g.textBaseline = 'alphabetic';
+    g.shadowColor = '#e2367a'; g.shadowOffsetY = 8; g.shadowBlur = 0;
+    g.font = '400 210px Anton, Impact, sans-serif'; g.fillText('KEWEI', 80, OH - 150);
+    g.shadowOffsetY = 0; g.shadowColor = 'rgba(140,20,70,.4)'; g.shadowBlur = 14;
+    g.font = '900 50px "Noto Sans TC", "PingFang TC", sans-serif'; g.fillText('跟看板貓的合照', 86, OH - 86);
+    g.shadowBlur = 0;
+    const d = new Date(), ds = d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + String(d.getDate()).padStart(2, '0');
+    g.font = '800 30px Manrope, sans-serif'; g.textAlign = 'right'; g.fillText(ds, OW - 86, OH - 92); g.textAlign = 'left';
+    // stamp
+    g.save(); g.translate(OW - 175, 175); g.rotate(.18);
+    g.fillStyle = '#ffffff'; g.beginPath(); g.arc(0, 0, 105, 0, 7); g.fill();
+    g.strokeStyle = '#ff6f9c'; g.lineWidth = 6; g.setLineDash([10, 8]); g.beginPath(); g.arc(0, 0, 90, 0, 7); g.stroke(); g.setLineDash([]);
+    g.fillStyle = '#e2367a'; g.textAlign = 'center';
+    g.font = '900 40px "Noto Sans TC", "PingFang TC", sans-serif'; g.fillText('剛剛好', 0, 2);
+    g.font = '900 34px "Noto Sans TC", "PingFang TC", sans-serif'; g.fillText('喵！', 0, 46);
+    g.fillStyle = '#ff6f9c'; heartPath(g, 0, -52, 16);
+    g.restore();
+    g.fillStyle = 'rgba(255,255,255,.9)'; heartPath(g, 120, 140, 26); heartPath(g, 190, 95, 15);
+    return out;
+  }
+  $('snap').addEventListener('click', async () => {
+    const fl = $('flash'); fl.classList.remove('go'); void fl.offsetWidth; if (!reduced) fl.classList.add('go');
+    initAudio(); meow();
+    let out;
+    try { out = await makeShot(); } catch (e) { say('相機卡住了喵…再試一次'); return; }
+    shotImg.src = out.toDataURL('image/jpeg', .9);
+    shareFile = null; shareBtn.hidden = true;
+    if (navigator.share && navigator.canShare && window.File) {
+      out.toBlob(b => {
+        if (!b) return;
+        try {
+          const f = new File([b], 'kewei.jpg', { type: 'image/jpeg' });
+          if (navigator.canShare({ files: [f] })) { shareFile = f; shareBtn.hidden = false; }
+        } catch (e) {}
+      }, 'image/jpeg', .9);
+    }
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+  });
+  shareBtn.addEventListener('click', () => {
+    if (!shareFile) return;
+    navigator.share({ files: [shareFile], title: '跟 KEWEI 合照', text: '我跟 KEWEI 的合照，剛剛好喵！' }).catch(() => {});
+  });
+  function closeShot() { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); }
+  $('closeShot').addEventListener('click', closeShot);
+  dlg.addEventListener('click', e => { if (e.target === dlg) closeShot(); });
+})();
+</script>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const root = document.documentElement;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const canvas = document.getElementById('kc');
+const stage = document.getElementById('stage');
+let renderer = null;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true }); } catch (e) { renderer = null; }
+if (!renderer) root.classList.add('nogl');
+else {
+  canvas.addEventListener('webglcontextlost', () => { root.classList.remove('gl'); root.classList.add('nogl'); });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.setClearColor(0x000000, 0);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.1;
+  const scene = new THREE.Scene();
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(renderer), .04).texture;
+  const camera = new THREE.PerspectiveCamera(34, 1, .1, 100);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xffb3d1, 1.1));
+  const key = new THREE.DirectionalLight(0xfff4f8, 2.2); key.position.set(3, 4, 5); scene.add(key);
+
+  const M = (color, o = {}) => new THREE.MeshPhysicalMaterial({ color, roughness: .45, clearcoat: .4, ...o });
+
+  // ---------- kitten (same build as the home-page balloon kitten) ----------
+  const eyes = [], sparks = [];
+  const kit = new THREE.Group();
+  const fluff = M(0xfff1e6, { roughness: .95, clearcoat: 0, sheen: 1, sheenColor: new THREE.Color(0xffffff) });
+  const head = new THREE.Mesh(new THREE.SphereGeometry(.3, 40, 30), fluff); head.scale.set(1.08, .95, 1); kit.add(head);
+  for (const s of [-1, 1]) {
+    const ear = new THREE.Mesh(new THREE.ConeGeometry(.11, .2, 24), fluff); ear.position.set(s * .2, .27, 0); ear.rotation.z = -s * .35; kit.add(ear);
+    const inner = new THREE.Mesh(new THREE.ConeGeometry(.06, .12, 16), M(0xffb6cf, { roughness: .9 })); inner.position.set(s * .2, .26, .05); inner.rotation.z = -s * .35; kit.add(inner);
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(.042, 20, 16), M(0x2a1520, { roughness: .15, clearcoat: 1 })); eye.position.set(s * .11, .03, .275); kit.add(eye); eyes.push(eye);
+    const spark = new THREE.Mesh(new THREE.SphereGeometry(.013, 10, 8), new THREE.MeshBasicMaterial({ color: 0xffffff })); spark.position.set(s * .11 - .012, .048, .31); kit.add(spark); sparks.push(spark);
+    const cheek = new THREE.Mesh(new THREE.SphereGeometry(.05, 16, 12), M(0xff9cbc, { roughness: .9 })); cheek.scale.z = .3; cheek.position.set(s * .19, -.07, .245); kit.add(cheek);
+    const paw = new THREE.Mesh(new THREE.SphereGeometry(.07, 20, 16), fluff); paw.position.set(s * .15, -.17, .27); kit.add(paw);
+    for (let w = -1; w <= 1; w += 2) {
+      const wh = new THREE.Mesh(new THREE.CylinderGeometry(.004, .004, .16, 4), M(0xc89aa8)); wh.position.set(s * .27, -.04 + w * .02, .23); wh.rotation.z = Math.PI / 2 + w * .12 * s; kit.add(wh);
+    }
+  }
+  for (let i = -1; i <= 1; i++) { const st = new THREE.Mesh(new THREE.BoxGeometry(.025, .07, .01), M(0xf0b89a)); st.position.set(i * .05, .2, .245); st.rotation.x = -.6; kit.add(st); }
+  const nose = new THREE.Mesh(new THREE.SphereGeometry(.024, 12, 10), M(0xff7aa3)); nose.position.set(0, -.04, .3); kit.add(nose);
+  const mouth = new THREE.Mesh(new THREE.TorusGeometry(.022, .006, 6, 16, Math.PI), M(0x6a2a40));
+  for (const s of [-1, 1]) { const m2 = mouth.clone(); m2.position.set(s * .022, -.075, .292); m2.rotation.z = Math.PI; kit.add(m2); }
+  // bow on the head, next to the right ear
+  const bowMat = M(0xff4f93, { roughness: .3, clearcoat: 1 });
+  const bow = new THREE.Group();
+  bow.add(new THREE.Mesh(new THREE.SphereGeometry(.035, 16, 12), bowMat));
+  for (const s of [-1, 1]) { const loop = new THREE.Mesh(new THREE.ConeGeometry(.07, .13, 20), bowMat); loop.position.x = s * .075; loop.rotation.z = s * Math.PI / 2; loop.scale.z = .55; bow.add(loop); }
+  bow.position.set(.12, .3, .1); bow.rotation.set(-.3, 0, -.35); bow.scale.setScalar(1.5);
+  kit.add(bow);
+
+  // ---------- body (she sits on the cushion with her paws up) ----------
+  const cat = new THREE.Group();
+  const bodyRig = new THREE.Group(); cat.add(bodyRig);
+  const body = new THREE.Mesh(new THREE.SphereGeometry(.27, 40, 30), fluff); body.scale.set(1, .9, .85); body.position.set(0, -.33, -.04); bodyRig.add(body);
+  const tabbyMat = M(0xf0b89a, { roughness: .9, clearcoat: 0 });
+  [[.02, .245], [.1, .215], [-.07, .24]].forEach(([dy, r]) => {
+    const g = new THREE.Group(); g.position.set(0, -.33 + dy, -.04); g.rotation.y = Math.PI / 2 + .7;
+    const st = new THREE.Mesh(new THREE.TorusGeometry(r, .014, 6, 24, 1.4), tabbyMat); st.rotation.x = Math.PI / 2; st.scale.set(1, 1, 1); g.add(st); bodyRig.add(g);
+  });
+  for (const s of [-1, 1]) {
+    const foot = new THREE.Mesh(new THREE.SphereGeometry(.08, 20, 14), fluff); foot.scale.set(1, .6, 1.3); foot.position.set(s * .16, -.58, .12); bodyRig.add(foot);
+  }
+  const tailCurve = new THREE.CatmullRomCurve3([[0, -.5, -.26], [.2, -.58, -.24], [.36, -.52, -.06], [.4, -.36, .06], [.34, -.24, .1]].map(p => new THREE.Vector3(...p)));
+  const tail = new THREE.Mesh(new THREE.TubeGeometry(tailCurve, 40, .045, 12, false), fluff); bodyRig.add(tail);
+  const tailTip = new THREE.Mesh(new THREE.SphereGeometry(.045, 14, 10), tabbyMat); tailTip.position.copy(tailCurve.getPoint(1)); bodyRig.add(tailTip);
+  cat.add(kit);
+  const CS = 2.2;
+  cat.scale.setScalar(CS);
+  const CAT_Y = .2 + .63 * CS - .1;
+
+  // ---------- cushion + striped pedestal ----------
+  const turn = new THREE.Group();
+  const stripes = document.createElement('canvas'); stripes.width = 512; stripes.height = 256;
+  { const x = stripes.getContext('2d'); const n = 16;
+    for (let i = 0; i < n; i++) { x.fillStyle = i % 2 ? '#ffffff' : '#ff6fa8'; x.fillRect(i * 512 / n, 0, 512 / n + 1, 256); }
+    x.fillStyle = '#ff6fa8';
+    for (let i = 1; i < n; i += 2) { const cx = (i + .5) * 512 / n, cy = 128, s = 8;
+      x.beginPath(); x.moveTo(cx, cy + s); x.bezierCurveTo(cx - s * 1.6, cy - s * .2, cx - s * .8, cy - s * 1.4, cx, cy - s * .5); x.bezierCurveTo(cx + s * .8, cy - s * 1.4, cx + s * 1.6, cy - s * .2, cx, cy + s); x.fill(); } }
+  const tex = new THREE.CanvasTexture(stripes); tex.colorSpace = THREE.SRGBColorSpace;
+  const drum = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.06, .75, 72, 1, true), M(0xffffff, { map: tex, roughness: .35, clearcoat: .8, side: THREE.DoubleSide }));
+  drum.position.y = -.56; turn.add(drum);
+  const lid = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, .04, 72), M(0xfff0f6)); lid.position.y = -.19; turn.add(lid);
+  const rimMat = M(0xff8fb8, { roughness: .3, clearcoat: 1 });
+  const rimT = new THREE.Mesh(new THREE.TorusGeometry(1.01, .055, 14, 72), rimMat); rimT.rotation.x = Math.PI / 2; rimT.position.y = -.19; turn.add(rimT);
+  const rimB = new THREE.Mesh(new THREE.TorusGeometry(1.07, .06, 14, 72), rimMat); rimB.rotation.x = Math.PI / 2; rimB.position.y = -.93; turn.add(rimB);
+  const cushProf = [[0, -.17], [.7, -.17], [.98, -.13], [1.1, -.04], [1.12, .02], [1.06, .1], [.86, .17], [.4, .2], [0, .19]].map(p => new THREE.Vector2(p[0], p[1]));
+  const cushion = new THREE.Mesh(new THREE.LatheGeometry(new THREE.SplineCurve(cushProf).getPoints(40), 72), M(0xffa6c9, { roughness: .8, clearcoat: .1, sheen: 1, sheenColor: new THREE.Color(0xffe0ee) }));
+  turn.add(cushion);
+  const piping = new THREE.Mesh(new THREE.TorusGeometry(1.115, .03, 10, 90), M(0xffffff, { roughness: .5 })); piping.rotation.x = Math.PI / 2; piping.position.y = -.01; turn.add(piping);
+  for (let i = 0; i < 4; i++) {
+    const a = i / 4 * Math.PI * 2 + Math.PI / 4;
+    const tas = new THREE.Mesh(new THREE.SphereGeometry(.07, 14, 10), M(0xff4f93, { roughness: .4, clearcoat: .8 })); tas.position.set(Math.cos(a) * 1.13, -.02, Math.sin(a) * 1.13); turn.add(tas);
+  }
+  const shC = document.createElement('canvas'); shC.width = shC.height = 128;
+  { const x = shC.getContext('2d'); const gr = x.createRadialGradient(64, 64, 0, 64, 64, 64); gr.addColorStop(0, 'rgba(140,20,70,.45)'); gr.addColorStop(1, 'rgba(140,20,70,0)'); x.fillStyle = gr; x.fillRect(0, 0, 128, 128); }
+  const shadow = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 3.4), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(shC), transparent: true, depthWrite: false }));
+  shadow.rotation.x = -Math.PI / 2; shadow.position.y = -.99;
+
+  const char = new THREE.Group();
+  char.add(turn, cat, shadow);
+  cat.position.y = CAT_Y;
+  char.rotation.x = .16;
+  scene.add(char);
+  const CHAR_CENTER = .7; // middle of pedestal-to-bow, in char space
+
+  // ---------- hearts on tap ----------
+  const hs = new THREE.Shape();
+  hs.moveTo(0, -.5); hs.bezierCurveTo(-.55, -.05, -.62, .45, -.28, .5); hs.bezierCurveTo(-.1, .53, 0, .38, 0, .28);
+  hs.bezierCurveTo(0, .38, .1, .53, .28, .5); hs.bezierCurveTo(.62, .45, .55, -.05, 0, -.5);
+  const hg = new THREE.ExtrudeGeometry(hs, { depth: .18, bevelEnabled: true, bevelThickness: .1, bevelSize: .08, bevelSegments: 6, curveSegments: 24 }); hg.center();
+  const heartCols = [0xff4f93, 0xff8fbd, 0xffffff];
+  const pool = [];
+  for (let i = 0; i < 24; i++) {
+    const m = new THREE.Mesh(hg, M(heartCols[i % 3], { roughness: .2, clearcoat: 1, transparent: true }));
+    m.visible = false; scene.add(m); pool.push({ m, age: 0, life: 1, v: new THREE.Vector3(), s: .2, vr: 0 });
+  }
+  const tmp = new THREE.Vector3();
+  function spawnHearts(n) {
+    kit.getWorldPosition(tmp);
+    for (let i = 0; i < n; i++) {
+      const h = pool.find(p => !p.m.visible) || pool[i];
+      h.m.visible = true; h.age = 0; h.life = 1.2 + Math.random() * .6; h.s = .14 + Math.random() * .14;
+      h.m.position.copy(tmp).add(new THREE.Vector3((Math.random() - .5) * .6, .3 + Math.random() * .4, .4));
+      const a = (Math.random() - .5) * 2.4;
+      h.v.set(Math.sin(a) * 2.2, 1.6 + Math.random() * 1.4, (Math.random() - .2) * .8);
+      if (reduced) h.v.multiplyScalar(.3);
+      h.vr = (Math.random() - .5) * 5; h.m.rotation.set(0, 0, (Math.random() - .5) * .6);
+    }
+  }
+
+  // ---------- sizing ----------
+  let W = 0, H = 0, camZ = 10;
+  const TAN = Math.tan(THREE.MathUtils.degToRad(17));
+  function resize() {
+    W = stage.clientWidth; H = stage.clientHeight;
+    renderer.setSize(W, H, false);
+    camera.aspect = W / H;
+    camZ = Math.max(3.5 / (.5 * 2 * TAN), 3.0 / (2 * TAN * camera.aspect));
+    camera.updateProjectionMatrix();
+  }
+  addEventListener('resize', resize); resize();
+  function worldYAt(frac) { const h = 2 * TAN * camZ; return (.5 - frac) * h; }
+
+  // ---------- input ----------
+  let tx = 0, ty = 0, yaw = 0, pitch = 0, lastMove = -9, headY = 0;
+  function aim(e) {
+    const r = stage.getBoundingClientRect();
+    tx = Math.max(-1, Math.min(1, (e.clientX - r.left) / r.width * 2 - 1));
+    ty = Math.max(-1, Math.min(1, (e.clientY - r.top - headY) / (r.height * .5)));
+    lastMove = t;
+  }
+  addEventListener('pointermove', aim, { passive: true });
+  addEventListener('pointerdown', aim, { passive: true });
+
+  let t = 0, bounceT = -9, nextBlink = 2;
+  window.KEWEI3D = {
+    poke() { bounceT = t; spawnHearts(reduced ? 3 : 8); },
+    snap() { renderer.render(scene, camera); return canvas; }
+  };
+
+  let visible = true;
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(stage);
+
+  const clock = new THREE.Clock();
+  const headTop = new THREE.Vector3();
+  let first = true, lastHy = -1;
+  function frame() {
+    requestAnimationFrame(frame);
+    const dt = Math.min(clock.getDelta(), .05);
+    t += dt;
+    if (!visible && !first) return;
+    const tm = reduced ? t * .3 : t;
+    // look: follow the pointer for a while, then drift back to a slow idle turn
+    const idle = t - lastMove > 2.5;
+    const ty0 = idle ? Math.sin(tm * .35) * .55 : tx * .75;
+    const tp0 = idle ? Math.sin(tm * .5) * .04 : ty * .28;
+    yaw += (ty0 - yaw) * (idle ? .02 : .08); pitch += (tp0 - pitch) * .08;
+    cat.rotation.y = yaw * .55;
+    kit.rotation.y = yaw * .5;
+    kit.rotation.x = pitch;
+    // bounce
+    const u = (t - bounceT) / .75;
+    let lift = 0, sq = 1;
+    if (u >= 0 && u < 1) {
+      lift = Math.sin(Math.PI * u) * (reduced ? .15 : .7) * (1 - u * .2);
+      sq = 1 - (reduced ? .03 : .12) * Math.cos(u * Math.PI * 2) * (1 - u);
+      kit.rotation.z = Math.sin(u * Math.PI * 3) * .18 * (1 - u);
+    } else {
+      kit.rotation.z = Math.sin(tm * 1.3) * .05;
+    }
+    // idle breathing
+    const breathe = 1 + Math.sin(tm * 2.2) * .012;
+    cat.scale.set(CS / Math.sqrt(sq), CS * sq * breathe, CS / Math.sqrt(sq));
+    cat.position.y = CAT_Y + lift;
+    tail.rotation.y = Math.sin(tm * 1.6) * .12; tailTip.rotation.y = tail.rotation.y;
+    // blink
+    let bl = 1;
+    if (t > nextBlink) { const b = (t - nextBlink) / .14; if (b < 1) bl = Math.max(.1, Math.abs(1 - 2 * b)); else nextBlink = t + 2.5 + Math.random() * 3; }
+    for (const e of eyes) e.scale.y = bl;
+    for (const s of sparks) s.visible = bl > .5;
+    // turntable
+    turn.rotation.y = tm * .18;
+    char.position.set(0, worldYAt(.42) - CHAR_CENTER + Math.sin(tm * .9) * .03, 0);
+    // hearts
+    for (const h of pool) {
+      if (!h.m.visible) continue;
+      h.age += dt;
+      const a = h.age / h.life;
+      if (a >= 1) { h.m.visible = false; continue; }
+      h.v.multiplyScalar(Math.pow(.25, dt)); h.v.y += .9 * dt;
+      h.m.position.addScaledVector(h.v, dt);
+      h.m.rotation.y += h.vr * dt;
+      h.m.scale.setScalar(h.s * Math.min(1, h.age * 7) * (1 - Math.max(0, (a - .7) / .3) * .5));
+      h.m.material.opacity = 1 - Math.max(0, (a - .6) / .4);
+    }
+    camera.position.set(0, 0, camZ); camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+    // keep the speech bubble just above her ears
+    headTop.set(0, .5, 0); kit.localToWorld(headTop); headTop.project(camera);
+    const hy = Math.round((1 - (headTop.y + 1) / 2) * H);
+    headY = hy;
+    if (Math.abs(hy - lastHy) > 1) { stage.style.setProperty('--hy', Math.max(124, hy) + 'px'); lastHy = hy; }
+    if (first) { first = false; root.classList.add('gl'); }
+  }
+  frame();
+}
+</script>
+</body>
+</html>

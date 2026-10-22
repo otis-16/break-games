@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ff5fa2">
+<title>每日挑戰｜KEWEI遊戲室</title>
+<meta name="description" content="KEWEI遊戲室每日挑戰：每天一款遊戲、一題同樣的關卡，跟朋友比同一題。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+TC:wght@400;500;700;900&family=Manrope:wght@600;800&display=swap">
+<style>
+:root {
+  --fur: #ff5fa2;
+  --pink: #ff6f9c;
+  --pink-deep: #e2367a;
+  --blush: #ffe3ee;
+  --cream: #fff7fa;
+  --ink: #4a2132;
+  --muted: #a3718a;
+  --white: #ffffff;
+  --mint: #2f9e7a;
+  --f-display: "Anton", "Noto Sans TC", Impact, sans-serif;
+  --f-body: "Noto Sans TC", "PingFang TC", system-ui, sans-serif;
+  --f-latin: "Manrope", "Noto Sans TC", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { overflow-x: hidden; }
+body {
+  margin: 0; min-height: 100svh; color: var(--ink); font-family: var(--f-body); line-height: 1.6; -webkit-tap-highlight-color: transparent;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M16 26s-7-4.3-9-8.6C5.6 14.2 7.6 10.6 11 10.6c2 0 3.4 1.2 5 3.1 1.6-1.9 3-3.1 5-3.1 3.4 0 5.4 3.6 4 6.8C23 21.7 16 26 16 26z' fill='%23ffffff' fill-opacity='.22'/%3E%3Cpath d='M48 58s-5-3-6.4-6.1c-1-2.3.4-4.8 2.8-4.8 1.4 0 2.4.8 3.6 2.2 1.2-1.4 2.2-2.2 3.6-2.2 2.4 0 3.8 2.5 2.8 4.8C53 55 48 58 48 58z' fill='%23ffffff' fill-opacity='.16'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, #ff5fa2 0%, #ff6fab 28%, #ff94c2 55%, #ffb9d6 80%, #ffd3e5 100%);
+  background-color: var(--fur);
+}
+a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 14px; }
+button { font: inherit; border: 0; cursor: pointer; }
+
+.wrap {
+  position: relative; z-index: 1;
+  max-width: 520px; margin: 0 auto;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 14px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 36px);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 14px;
+}
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.back { font-size: 13px; font-weight: 700; color: var(--white); padding: 7px 14px; border-radius: 999px; background: rgba(255, 255, 255, .22); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.mark { font-family: var(--f-display); font-size: 20px; line-height: 1; color: var(--ink); letter-spacing: .02em; }
+
+.head { position: relative; color: var(--white); padding: 10px 0 2px; min-height: 150px; }
+.kicker { margin: 0; font-family: var(--f-display); font-size: clamp(44px, 15vw, 72px); line-height: .9; letter-spacing: .01em; text-shadow: 0 4px 0 var(--pink-deep), 0 10px 30px rgba(140, 20, 70, .3); }
+.head h1 { margin: 6px 0 0; font-size: clamp(26px, 7.6vw, 36px); font-weight: 900; letter-spacing: .12em; text-shadow: 0 2px 12px rgba(140, 20, 70, .35); }
+.date { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; padding: 5px 12px; border-radius: 999px; background: var(--white); color: var(--pink-deep); font-family: var(--f-latin); font-weight: 800; font-size: 13px; letter-spacing: .06em; font-variant-numeric: tabular-nums; box-shadow: 0 6px 18px rgba(140, 20, 70, .2); }
+.kit { position: absolute; right: -4px; top: 0; width: 92px; pointer-events: none; animation: bob 3.2s ease-in-out infinite; }
+.kit svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 8px 14px rgba(140, 20, 70, .25)); }
+@keyframes bob { 50% { transform: translateY(-8px) rotate(2deg); } }
+.say { position: absolute; right: 70px; top: 112px; max-width: 210px; padding: 7px 12px; border-radius: 16px 16px 4px 16px; background: var(--white); color: var(--ink); font-weight: 700; font-size: 12px; line-height: 1.4; box-shadow: 0 6px 18px rgba(140, 20, 70, .2); }
+
+.card { background: var(--white); border-radius: 26px; border: 2px solid var(--blush); box-shadow: 0 10px 28px rgba(226, 54, 122, .14); padding: 14px; min-width: 0; }
+.game { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 14px; align-items: center; }
+.cover { aspect-ratio: 1 / 1; border-radius: 18px; overflow: hidden; background: var(--blush); rotate: -2deg; box-shadow: 0 6px 16px rgba(226, 54, 122, .18); }
+.cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.no { font-family: var(--f-latin); font-size: 11px; font-weight: 800; letter-spacing: .14em; color: var(--pink); }
+.game h2 { margin: 0; font-size: 22px; font-weight: 900; line-height: 1.25; }
+.how { margin: 4px 0 0; font-size: 13px; color: var(--muted); line-height: 1.55; }
+.goal { margin-top: 14px; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 16px; background: var(--blush); }
+.goal svg { flex: none; width: 26px; height: 26px; }
+.goal small { display: block; font-family: var(--f-latin); font-size: 10px; font-weight: 800; letter-spacing: .16em; color: var(--pink-deep); }
+.goal b { font-size: 15px; font-weight: 900; }
+.start {
+  margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+  padding: 16px 20px; border-radius: 999px; background: var(--pink); color: var(--white);
+  font-size: 19px; font-weight: 900; letter-spacing: .14em;
+  box-shadow: 0 6px 0 var(--pink-deep), 0 14px 28px rgba(226, 54, 122, .35);
+  transition: transform .12s ease, box-shadow .12s ease;
+  animation: breathe 2.4s ease-in-out infinite;
+}
+.start:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--pink-deep), 0 8px 18px rgba(226, 54, 122, .3); }
+@keyframes breathe { 50% { transform: scale(1.025); } }
+
+.sec-h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin: 0 0 10px; }
+.sec-h h3 { margin: 0; font-size: 16px; font-weight: 900; }
+.sec-h span { font-family: var(--f-display); font-size: 15px; color: var(--pink); letter-spacing: .03em; }
+.res { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.res .num { font-family: var(--f-display); font-size: 44px; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.res .num small { font-family: var(--f-body); font-size: 15px; font-weight: 700; margin-left: 4px; color: var(--muted); }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; border-radius: 999px; font-size: 13px; font-weight: 900; }
+.badge.ok { background: #e3f6ee; color: var(--mint); }
+.badge.no { background: var(--blush); color: var(--pink-deep); }
+.empty { margin: 0; font-size: 14px; color: var(--muted); }
+
+.week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; text-align: center; }
+.day { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: var(--muted); font-weight: 700; }
+.dot { width: 30px; height: 30px; max-width: 100%; aspect-ratio: 1; border-radius: 50%; border: 2px dashed #ffb6cf; display: grid; place-items: center; }
+.dot svg { width: 16px; height: 16px; }
+.day.on .dot { border: 0; background: var(--pink); box-shadow: 0 4px 10px rgba(226, 54, 122, .3); }
+.day.today { color: var(--pink-deep); }
+.day.today .dot { outline: 2px solid var(--pink-deep); outline-offset: 2px; }
+
+.row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.share { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px 18px; border-radius: 999px; background: var(--white); color: var(--pink-deep); font-size: 16px; font-weight: 900; letter-spacing: .06em; border: 2px solid var(--pink); transition: transform .12s ease; }
+.share:active { transform: scale(.97); }
+.share svg { width: 20px; height: 20px; }
+.count { text-align: center; color: var(--white); text-shadow: 0 1px 8px rgba(140, 20, 70, .3); }
+.count small { display: block; font-size: 12px; font-weight: 700; letter-spacing: .2em; }
+.count b { font-family: var(--f-display); font-weight: 400; font-size: 40px; line-height: 1.1; letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+footer { text-align: center; font-size: 12px; color: var(--white); text-shadow: 0 1px 6px rgba(140, 20, 70, .3); }
+footer b { font-family: var(--f-display); font-weight: 400; font-size: 15px; letter-spacing: .04em; }
+
+.floaty { position: fixed; bottom: -40px; width: 20px; height: 20px; z-index: 0; pointer-events: none; animation: rise linear infinite; }
+.floaty svg { width: 100%; height: 100%; display: block; }
+@keyframes rise { to { transform: translateY(-120vh) rotate(25deg); opacity: 0; } }
+
+@media (max-width: 440px) {
+  .say { position: relative; right: auto; top: auto; display: table; margin-top: 10px; border-radius: 4px 16px 16px 16px; }
+}
+@media (max-width: 370px) {
+  .game { grid-template-columns: 88px minmax(0, 1fr); gap: 12px; }
+  .game h2 { font-size: 19px; }
+  .kit { width: 78px; }
+  .dot { width: 26px; height: 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kit, .start { animation: none; }
+  .floaty { display: none; }
+  .start, .share { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="back" href="../">← 回首頁</a>
+    <span class="mark">KEWEI</span>
+  </div>
+
+  <header class="head">
+    <p class="kicker">DAILY DROP</p>
+    <h1>每日挑戰</h1>
+    <div class="date" id="date">----/--/--</div>
+    <div class="kit" aria-hidden="true"><svg viewBox="40 128 60 82"><path d="M58 152 L52 176 M82 152 L88 176" stroke="#d98aa6" stroke-width="2"/><rect x="44" y="172" width="52" height="34" rx="8" fill="#f5c9a8"/><rect x="42" y="170" width="56" height="8" rx="4" fill="#ff8fb8"/><circle cx="70" cy="166" r="16" fill="#fff1e6"/><path d="M57 156 l3 -12 l8 9z M83 156 l-3 -12 l-8 9z" fill="#fff1e6"/><circle cx="64" cy="165" r="2.4" fill="#2a1520"/><circle cx="76" cy="165" r="2.4" fill="#2a1520"/><circle cx="59" cy="170" r="3" fill="#ff9cbc" opacity=".7"/><circle cx="81" cy="170" r="3" fill="#ff9cbc" opacity=".7"/><path d="M79 150 l8 -4 v8z M95 150 l-8 -4 v8z" fill="#ff4f93" transform="translate(-6 0)"/><path d="M66 171 q2 2 4 0 q2 2 4 0" stroke="#6a2a40" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg></div>
+    <div class="say" id="say">今天大家都玩同一題喵！</div>
+  </header>
+
+  <section class="card" aria-labelledby="gName">
+    <div class="game">
+      <div class="cover"><img id="gCover" src="../covers/tea.jpg" alt="" width="640" height="640"></div>
+      <div>
+        <span class="no" id="gNo">TODAY · NO.01</span>
+        <h2 id="gName">倒剛好</h2>
+        <p class="how" id="gHow"></p>
+      </div>
+    </div>
+    <div class="goal">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#ff6f9c"/><circle cx="12" cy="12" r="6.5" fill="#fff"/><circle cx="12" cy="12" r="3" fill="#ff6f9c"/></svg>
+      <div><small>TODAY'S GOAL</small><b id="gGoal"></b></div>
+    </div>
+    <a class="start" id="start" href="../tea/">開始今日挑戰 →</a>
+  </section>
+
+  <section class="card" aria-labelledby="resH">
+    <div class="sec-h"><h3 id="resH">你今天的成績</h3><span>MY SCORE</span></div>
+    <div id="res"><p class="empty">還沒挑戰。玩完回到這頁就會看到成績。</p></div>
+  </section>
+
+  <section class="card" aria-labelledby="wkH">
+    <div class="sec-h"><h3 id="wkH">最近 7 天</h3><span id="streak">STREAK 0</span></div>
+    <div class="week" id="week"></div>
+  </section>
+
+  <div class="row">
+    <button class="share" id="share" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg><span id="shareTx">邀請朋友比同一題</span></button>
+    <div class="count" aria-live="off"><small>下一題倒數</small><b id="cd">--:--:--</b></div>
+  </div>
+
+  <footer><b>KEWEI</b> 遊戲室　·　成績只存在你自己的手機裡</footer>
+</div>
+
+<script>
+(() => {
+  const GAMES = {
+    tea:      { no: '01', name: '倒剛好',     how: '按住出茶、放開就停，把珍珠奶茶倒到剛好那條線。', goal: '拿到 S 級（97 分以上）', unit: '分', ok: s => s >= 97 },
+    circle:   { no: '02', name: '一筆畫正圓', how: '手指按住一筆畫個圓，回到起點再放開。',             goal: '畫出 90% 以上的正圓',     unit: '%',  ok: s => s >= 90 },
+    cake:     { no: '03', name: '蛋糕切一半', how: '劃一刀，把歪七扭八的草莓蛋糕切成一樣大的兩塊。', goal: '切到 90 分以上',          unit: '分', ok: s => s >= 90 },
+    stack:    { no: '04', name: '雞排疊疊樂', how: '點一下放下雞排，超出去的會被切掉。',             goal: '疊到 15 片',              unit: '片', ok: s => s >= 15 },
+    claw:     { no: '05', name: '夾娃娃機',   how: '爪子左右移動，點一下下爪。五枚十元，看準再夾。', goal: '夾到 2 隻',               unit: '隻', ok: s => s >= 2 },
+    goldfish: { no: '06', name: '撈金魚',     how: '按住把紙網放進水裡，等金魚游過來再放開撈起。',   goal: '撈到 6 分以上',           unit: '分', ok: s => s >= 6 },
+    bubble:   { no: '07', name: '吹泡泡糖',   how: '按住吹氣、放開收下，吹越大越好，吹破就黏滿臉。', goal: '三顆合計 54 cm 以上',     unit: 'cm', ok: s => s >= 54 },
+    scooter:  { no: '08', name: '載阿嬤回家', how: '一根手指騎機車，閃過車陣，平安把阿嬤載回家。',   goal: '平安到家並拿到 2550 分',  unit: '分', ok: s => s >= 2550 }
+  };
+  const KEYS = Object.keys(GAMES);
+  const WD = ['日', '一', '二', '三', '四', '五', '六'];
+  const $ = id => document.getElementById(id);
+  const DAY = 864e5, TZ = 8 * 3600e3; // Asia/Taipei is UTC+8 all year
+
+  // Taipei calendar day number (days since 1970-01-01 in Taipei)
+  const tpDay = (t = Date.now()) => Math.floor((t + TZ) / DAY);
+  const ymdOf = n => { const d = new Date(n * DAY); return { y: d.getUTCFullYear(), m: d.getUTCMonth() + 1, d: d.getUTCDate(), w: d.getUTCDay() }; };
+  const p2 = v => String(v).padStart(2, '0');
+  const ymdStr = n => { const o = ymdOf(n); return o.y + p2(o.m) + p2(o.d); };
+
+  // deterministic shuffle per 8-day cycle; the first pick of a cycle never repeats the last of the previous one
+  function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function perm(cycle) {
+    let a = hash('kewei-daily-' + cycle);
+    const rnd = () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+    const k = KEYS.slice();
+    for (let i = k.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [k[i], k[j]] = [k[j], k[i]]; }
+    return k;
+  }
+  function cyclePerm(c) {
+    const k = perm(c);
+    const prevLast = perm(c - 1);
+    if (k[0] === prevLast[prevLast.length - 1]) [k[0], k[1]] = [k[1], k[0]];
+    return k;
+  }
+  const gameFor = n => cyclePerm(Math.floor(n / KEYS.length))[n % KEYS.length];
+
+  const read = ymd => { try { return JSON.parse(localStorage.getItem('dgh-daily-' + ymd) || 'null'); } catch (e) { return null; } };
+  const fmt = v => Number.isInteger(v) ? String(v) : (Math.round(v * 10) / 10).toFixed(1);
+
+  let today = -1, url = '', key = '';
+  function render() {
+    today = tpDay();
+    const o = ymdOf(today), ymd = ymdStr(today);
+    key = gameFor(today);
+    const g = GAMES[key];
+    $('date').textContent = `${o.y}/${p2(o.m)}/${p2(o.d)}（${WD[o.w]}）`;
+    $('gCover').src = `../covers/${key}.jpg`;
+    $('gNo').textContent = `TODAY · NO.${g.no}`;
+    $('gName').textContent = g.name;
+    $('gHow').textContent = g.how;
+    $('gGoal').textContent = g.goal;
+    const href = `../${key}/?seed=${ymd}`;
+    $('start').href = href;
+    url = new URL(href, location.href).href;
+
+    const rec = read(ymd);
+    const res = $('res');
+    if (rec && GAMES[rec.key] && typeof rec.score === 'number') {
+      const rg = GAMES[rec.key], hit = rg.ok(rec.score);
+      res.innerHTML = '';
+      const box = document.createElement('div'); box.className = 'res';
+      const num = document.createElement('div'); num.className = 'num'; num.textContent = fmt(rec.score);
+      const u = document.createElement('small'); u.textContent = rg.unit; num.appendChild(u);
+      const b = document.createElement('span'); b.className = 'badge ' + (hit ? 'ok' : 'no');
+      b.textContent = hit ? '✓ 達成今日目標' : '還差一點，再挑戰一次';
+      box.append(num, b); res.appendChild(box);
+      $('say').textContent = hit ? '好厲害！快去邀朋友喵！' : '再一次一定可以喵！';
+      $('start').textContent = '再挑戰一次 →';
+    } else {
+      res.innerHTML = '<p class="empty">還沒挑戰。玩完回到這頁就會看到成績。</p>';
+    }
+
+    const week = $('week'); week.innerHTML = '';
+    for (let i = 6; i >= 0; i--) {
+      const n = today - i, d = ymdOf(n), has = !!read(ymdStr(n));
+      const el = document.createElement('div');
+      el.className = 'day' + (has ? ' on' : '') + (i === 0 ? ' today' : '');
+      el.setAttribute('aria-label', `${d.m}/${d.d} ${has ? '已挑戰' : '未挑戰'}`);
+      el.innerHTML = `<span class="dot">${has ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.3 5.3 3.3 1.7-2 3.1-3.3 5.3-3.3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="#fff"/></svg>' : ''}</span><span>${i === 0 ? '今天' : WD[d.w]}</span>`;
+      week.appendChild(el);
+    }
+    let s = 0, n = read(ymdStr(today)) ? today : today - 1;
+    while (s < 3650 && read(ymdStr(n))) { s++; n--; }
+    $('streak').textContent = 'STREAK ' + s;
+  }
+
+  function tick() {
+    if (tpDay() !== today) render();
+    const left = Math.max(0, (today + 1) * DAY - TZ - Date.now());
+    const h = Math.floor(left / 3600e3), m = Math.floor(left / 60e3) % 60, sec = Math.floor(left / 1e3) % 60;
+    $('cd').textContent = `${p2(h)}:${p2(m)}:${p2(sec)}`;
+  }
+
+  $('share').addEventListener('click', async () => {
+    const o = ymdOf(today), g = GAMES[key];
+    const text = `【每日挑戰 ${p2(o.m)}/${p2(o.d)}】今天是《${g.name}》，目標：${g.goal}。大家都是同一題，來比比看！`;
+    try {
+      if (navigator.share) { await navigator.share({ title: 'KEWEI 每日挑戰', text, url }); return; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    const tx = $('shareTx');
+    try { await navigator.clipboard.writeText(text + ' ' + url); tx.textContent = '已複製，去貼給朋友'; }
+    catch (e) { tx.textContent = '複製失敗，請手動複製網址'; }
+    setTimeout(() => { tx.textContent = '邀請朋友比同一題'; }, 2200);
+  });
+
+  addEventListener('pageshow', render);
+  addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
+  render(); tick(); setInterval(tick, 1000);
+
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const heart = '<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.3 5.3 3.3 1.7-2 3.1-3.3 5.3-3.3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z" fill="#fff"/></svg>';
+    for (let i = 0; i < 10; i++) {
+      const f = document.createElement('span'); f.className = 'floaty'; f.setAttribute('aria-hidden', 'true'); f.innerHTML = heart;
+      const sz = 10 + Math.random() * 18;
+      f.style.cssText = `left:${Math.random() * 96}%;width:${sz}px;height:${sz}px;animation-duration:${14 + Math.random() * 14}s;animation-delay:${-Math.random() * 28}s;opacity:${.3 + Math.random() * .45}`;
+      document.body.appendChild(f);
+    }
+  }
+})();
+</script>
+</body>
+</html>
