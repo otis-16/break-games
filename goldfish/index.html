@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded',function(){var t=document.getElemen
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <meta name="theme-color" content="#f4ebdf">
-<script>/* app freshness: if a newer build is published, reload once (home-screen apps cache hard) */(function(){var B='20261023035008';try{fetch('../version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==B){var k='dgh-reloaded-'+j.v;if(!sessionStorage.getItem(k)){sessionStorage.setItem(k,'1');location.replace(location.pathname+'?v='+j.v+location.hash)}}}).catch(function(){})}catch(e){}})();</script>
+<script>/* app freshness: if a newer build is published, reload once (home-screen apps cache hard) */(function(){var B='20261023035244';try{fetch('../version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==B){var k='dgh-reloaded-'+j.v;if(!sessionStorage.getItem(k)){sessionStorage.setItem(k,'1');location.replace(location.pathname+'?v='+j.v+location.hash)}}}).catch(function(){})}catch(e){}})();</script>
 <title>撈金魚｜一張紙網</title>
 <meta name="description" content="按住把紙網放進水裡，等金魚游過來，放開撈起。動太快，紙就破了。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1118,5 +1118,39 @@ button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
   requestAnimationFrame(frame);
 })();
 </script>
+
+<!-- dgh-howto -->
+<style>
+.dgh-howbtn { position: fixed; z-index: 60; top: calc(env(safe-area-inset-top, 0px) + 12px); right: calc(max(14px, env(safe-area-inset-right, 0px)) + 100px); width: 40px; height: 40px; border-radius: 50%; border: 0; display: grid; place-items: center; background: rgba(255, 250, 246, .88); color: #4a2132; font: 900 18px/1 "Noto Sans TC", system-ui, sans-serif; box-shadow: 0 2px 10px rgba(58, 42, 32, .15); cursor: pointer; }
+.dgh-how { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 20px max(18px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 20px) max(18px, env(safe-area-inset-left, 0px)); background: rgba(43, 23, 32, .55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+@keyframes dghFade { from { opacity: 0; } }
+.dgh-how .dgh-hc { position: relative; isolation: isolate; opacity: 1; width: min(380px, 100%); background: #fffaf2; color: #3a2a20; border-radius: 24px; padding: 22px 20px 18px; box-shadow: 0 20px 50px rgba(43, 23, 32, .35); display: flex; flex-direction: column; gap: 12px; font-family: "Noto Sans TC", system-ui, sans-serif; animation: dghPop .35s cubic-bezier(.3, 1.4, .5, 1) both; }
+@keyframes dghPop { from { transform: translateY(20px) scale(.94); } }
+.dgh-how .dgh-hk { margin: 0; font: 800 11px/1 "Manrope", system-ui, sans-serif; letter-spacing: .3em; color: #c2402a; }
+.dgh-how .dgh-hh { margin: 0; font-size: 24px; font-weight: 900; }
+.dgh-how .dgh-hd { height: 110px; border-radius: 18px; background: linear-gradient(135deg, #ffe3ee, #fff3e6); display: grid; place-items: center; }
+.dgh-how .dgh-hd svg { width: 96px; height: 96px; overflow: visible; }
+.dgh-how .hand { fill: #fff; stroke: #4a2132; stroke-width: 2.4; stroke-linejoin: round; transform-box: fill-box; }
+.dgh-how .ring { fill: none; stroke: #ff6f9c; stroke-width: 3; transform-origin: 40px 30px; animation: dghPulse 1.2s ease-out infinite; }
+.dgh-how .trail { fill: none; stroke: #ff6f9c; stroke-width: 3; stroke-dasharray: 6 6; opacity: .7; }
+.dgh-how .tap { animation: dghTap 1s ease-in-out infinite; }
+.dgh-how .drag { animation: dghDrag 1.8s ease-in-out infinite; }
+.dgh-how .swipe { animation: dghSwipe 1.4s ease-in-out infinite; }
+.dgh-how .flick { animation: dghFlick 1.3s cubic-bezier(.6, 0, .3, 1) infinite; }
+.dgh-how .draw { animation: dghDraw 2s linear infinite; }
+@keyframes dghPulse { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+@keyframes dghTap { 0%, 100% { transform: translateY(0); } 45% { transform: translateY(6px) scale(.95); } }
+@keyframes dghDrag { 0%, 100% { transform: translateX(-22px); } 50% { transform: translateX(22px); } }
+@keyframes dghSwipe { 0% { transform: translate(-18px, 10px); opacity: 0; } 20% { opacity: 1; } 80% { transform: translate(20px, -14px); opacity: 1; } 100% { opacity: 0; } }
+@keyframes dghFlick { 0% { transform: translateY(14px); opacity: 0; } 20% { opacity: 1; } 70% { transform: translateY(-26px); opacity: 1; } 100% { transform: translateY(-30px); opacity: 0; } }
+@keyframes dghDraw { 0% { transform: translate(20px, -8px); } 25% { transform: translate(0, 12px); } 50% { transform: translate(-20px, -8px); } 75% { transform: translate(0, -28px); } 100% { transform: translate(20px, -8px); } }
+.dgh-how .dgh-hol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; counter-reset: s; }
+.dgh-how .dgh-hol li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; font-size: 15px; line-height: 1.5; counter-increment: s; }
+.dgh-how .dgh-hol li::before { content: counter(s); width: 26px; height: 26px; border-radius: 50%; background: #ff6f9c; color: #fff; font: 800 13px/26px "Manrope", system-ui, sans-serif; text-align: center; }
+.dgh-how .dgh-hgo { margin-top: 4px; padding: 14px; border: 0; border-radius: 14px; background: #3a2a20; color: #fffaf2; font: 900 16px/1 "Noto Sans TC", system-ui, sans-serif; letter-spacing: .1em; cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { .dgh-how .hand, .dgh-how .ring { animation: none; } }
+</style>
+<script>(function(){var D={"key": "goldfish", "title": "撈金魚", "steps": ["按住螢幕，紙網會放進水裡", "慢慢移動到金魚下面", "放開手指就把網子撈起來", "動太快或泡太久紙會破，金色魚最值錢"], "icon": "<svg viewBox=\"0 0 80 80\"><path class=\"trail\" d=\"M14 40h52\"/><path class=\"hand drag\" d=\"M34 64V34a6 6 0 0 1 12 0v12l8 2a6 6 0 0 1 5 7l-3 13H38z\"/></svg>"};function show(){if(document.querySelector('.dgh-how'))return;var w=document.createElement('div');w.className='dgh-how';w.setAttribute('role','dialog');w.setAttribute('aria-label','怎麼玩');w.innerHTML='<div class="dgh-hc"><p class="dgh-hk">HOW TO PLAY</p><h2 class="dgh-hh">'+D.title+' 怎麼玩</h2><div class="dgh-hd">'+D.icon+'</div><ol class="dgh-hol">'+D.steps.map(function(t){return '<li>'+t+'</li>'}).join('')+'</ol><button class="dgh-hgo" type="button">知道了，開始！</button></div>';function close(){w.remove();try{localStorage.setItem('dgh-howto-'+D.key,'1')}catch(e){}}w.querySelector('.dgh-hgo').addEventListener('click',close);w.addEventListener('click',function(e){if(e.target===w)close()});w.addEventListener('pointerdown',function(e){e.stopPropagation()});document.body.appendChild(w);w.querySelector('.dgh-hgo').focus()}var b=document.createElement('button');b.className='dgh-howbtn';b.type='button';b.textContent='?';b.setAttribute('aria-label','怎麼玩');b.addEventListener('click',function(e){e.stopPropagation();show()});b.addEventListener('pointerdown',function(e){e.stopPropagation()});document.body.appendChild(b);var seen=false;try{seen=localStorage.getItem('dgh-howto-'+D.key)==='1'}catch(e){}if(!seen)show()})();</script>
+<!-- /dgh-howto -->
 </body>
 </html>
