@@ -3,26 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>夜市遊戲街</title>
+<title>下課十分鐘</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=Bungee&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Noto+Sans+TC:wght@400;500;700&family=Bungee&display=swap">
 <style>
 /* Layout: a single night-market street — stall signs stacked down the page; each game opens full-screen like stepping up to the stall. Single dark look by choice. */
 :root {
-  --night: #1b1633;
-  --night-2: #272048;
-  --night-3: #362c63;
-  --lantern: #ff5b3a;
-  --gold: #ffc94a;
-  --paper: #f7ecd8;
-  --muted: #b9acd6;
-  --mint: #63d6b8;
-  --f-display: "LXGW WenKai TC", "Kaiti TC", "STKaiti", serif;
+  --night: #f4ebdf;
+  --night-2: #fffaf2;
+  --night-3: #eadbc8;
+  --lantern: #c2402a;
+  --gold: #a8721a;
+  --paper: #3a2a20;
+  --muted: #7a6555;
+  --mint: #4f8a6a;
+  --f-display: "Noto Serif TC", "Songti TC", serif;
   --f-body: "Noto Sans TC", "PingFang TC", "Heiti TC", system-ui, sans-serif;
   --f-num: "Bungee", "Noto Sans TC", system-ui, sans-serif;
-  color-scheme: dark;
+  color-scheme: light;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -30,8 +30,6 @@ body { margin: 0; }
 html, body { height: 100%; }
 body {
   background: var(--night);
-  background-image: radial-gradient(120% 60% at 50% -10%, var(--night-3), transparent 70%);
-  background-attachment: fixed;
   color: var(--paper);
   font-family: var(--f-body);
   font-size: 15px;
@@ -93,7 +91,7 @@ h1 {
   display: grid; place-items: center;
   border-radius: 50%;
   background: var(--lantern);
-  color: var(--paper);
+  color: #fffaf2;
   font-family: var(--f-display);
   font-weight: 700;
   font-size: 30px;
@@ -158,8 +156,8 @@ h1 {
   margin: 0;
   padding: 6px 14px;
   border-radius: 999px;
-  background: rgba(27, 22, 51, .78);
-  color: var(--paper);
+  background: rgba(58, 42, 32, .85);
+  color: #fffaf2;
   font-size: 13px;
   white-space: nowrap;
   pointer-events: none;
@@ -167,7 +165,7 @@ h1 {
 #result {
   position: absolute; inset: 0;
   display: grid; place-items: center;
-  background: rgba(27, 22, 51, .72);
+  background: rgba(244, 235, 223, .78);
   padding-inline: 16px;
 }
 .card {
@@ -189,7 +187,7 @@ h1 {
 #rbest { font-size: 12px; color: var(--mint); min-height: 1.2em; }
 .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
 .btns button { padding: 10px; border-radius: 10px; border: 1px solid var(--night-3); background: var(--night); font-size: 14px; }
-.btns #again { grid-column: 1 / -1; background: var(--lantern); border-color: var(--lantern); font-weight: 700; font-size: 16px; }
+.btns #again { grid-column: 1 / -1; background: var(--lantern); border-color: var(--lantern); color: #fffaf2; font-weight: 700; font-size: 16px; }
 
 @media (prefers-reduced-motion: reduce) {
   .stamp { animation: none; }
@@ -202,8 +200,8 @@ h1 {
 <main id="hub">
   <a href="../" style="color:var(--muted);font-size:13px;text-decoration:none">← 回到下課十分鐘</a>
   <header class="sign">
-    <p class="eyebrow"><b>OPEN</b>　營業到下課鐘響</p>
-    <h1>夜市遊戲街</h1>
+    <p class="eyebrow"><b>OPEN</b>　</p>
+    <h1>下課十分鐘</h1>
     <p class="lede">上課無聊就來逛一圈。五個攤位，每攤只要一個動作，看你能拿幾分。</p>
   </header>
   <ul class="stalls">
@@ -218,7 +216,7 @@ h1 {
 
 <section id="play" hidden>
   <div class="bar">
-    <button id="back" type="button">← 回攤位</button>
+    <button id="back" type="button">← 回首頁</button>
     <strong id="gname"></strong>
     <span id="gbest"></span>
   </div>
@@ -227,7 +225,7 @@ h1 {
     <p id="hint"></p>
     <div id="result" hidden>
       <div class="card" role="dialog" aria-labelledby="rbig">
-        <p class="rk">本攤成績</p>
+        <p class="rk">成績</p>
         <p class="big"><span id="rbig"></span><small id="runit"></small></p>
         <p id="rdetail"></p>
         <p id="rcomment"></p>
@@ -235,7 +233,7 @@ h1 {
         <div class="btns">
           <button id="again" type="button">再玩一次</button>
           <button id="share" type="button">複製成績</button>
-          <button id="home" type="button">回攤位</button>
+          <button id="home" type="button">回首頁</button>
         </div>
       </div>
     </div>
@@ -249,7 +247,7 @@ h1 {
   let W = 0, H = 0, cur = null, curId = null, last = 0, lastRes = null;
   const rand = (a, b) => a + Math.random() * (b - a);
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const C = { night: '#1b1633', night2: '#272048', night3: '#362c63', lantern: '#ff5b3a', gold: '#ffc94a', paper: '#f7ecd8', muted: '#b9acd6', mint: '#63d6b8' };
+  const C = { night: '#f4ebdf', night2: '#fffaf2', night3: '#eadbc8', lantern: '#c2402a', gold: '#a8721a', paper: '#3a2a20', muted: '#7a6555', mint: '#4f8a6a' };
 
   // ---------- storage ----------
   const getBest = id => { try { const v = localStorage.getItem('nm-best-' + id); return v == null ? null : Number(v); } catch (e) { return null; } };
@@ -263,7 +261,7 @@ h1 {
     W = r.width; H = r.height;
   }
   function text(s, x, y, size, color, align = 'center', font = 'body') {
-    const f = font === 'num' ? '"Bungee", sans-serif' : font === 'disp' ? '"LXGW WenKai TC", serif' : '"Noto Sans TC", sans-serif';
+    const f = font === 'num' ? '"Bungee", sans-serif' : font === 'disp' ? '"Noto Serif TC", serif' : '"Noto Sans TC", sans-serif';
     g.font = `${font === 'body' ? 500 : 700} ${size}px ${f}`;
     g.fillStyle = color; g.textAlign = align; g.textBaseline = 'middle';
     g.fillText(s, x, y);
@@ -409,7 +407,7 @@ h1 {
         }
         if (S.drawing && S.live) text(`${S.live.score.toFixed(1)}%`, S.live.cx, S.live.cy, 30, C.paper, 'center', 'num');
         if (S.res) { g.fillStyle = C.mint; g.beginPath(); g.arc(S.res.cx, S.res.cy, 4, 0, 7); g.fill(); }
-        if (!pts.length) text('在這裡畫', W / 2, H / 2, 22, 'rgba(247,236,216,.35)', 'center', 'disp');
+        if (!pts.length) text('在這裡畫', W / 2, H / 2, 22, 'rgba(58,42,32,.3)', 'center', 'disp');
         if (S.msg) text(S.msg, W / 2, 34, 18, C.lantern, 'center', 'disp');
       }
     };
@@ -494,13 +492,13 @@ h1 {
           }
           const lp = S.cut.pct, ls = S.cut.lc, rs = S.cut.rc;
           for (const [c, v] of [[ls, lp], [rs, 100 - lp]]) {
-            g.fillStyle = 'rgba(27,22,51,.82)'; rrect(c.x - 36, c.y - 16, 72, 32, 16); g.fill();
-            text(`${v.toFixed(1)}%`, c.x, c.y + 1, 15, C.gold, 'center', 'num');
+            g.fillStyle = 'rgba(58,42,32,.85)'; rrect(c.x - 36, c.y - 16, 72, 32, 16); g.fill();
+            text(`${v.toFixed(1)}%`, c.x, c.y + 1, 15, '#ffd98a', 'center', 'num');
           }
         }
         if (S.drag && S.p0) {
           const dx = S.p1.x - S.p0.x, dy = S.p1.y - S.p0.y, len = Math.hypot(dx, dy) || 1;
-          g.setLineDash([6, 6]); g.strokeStyle = 'rgba(247,236,216,.35)'; g.lineWidth = 2;
+          g.setLineDash([6, 6]); g.strokeStyle = 'rgba(58,42,32,.35)'; g.lineWidth = 2;
           g.beginPath(); g.moveTo(S.p0.x - dx / len * 2000, S.p0.y - dy / len * 2000); g.lineTo(S.p0.x + dx / len * 2000, S.p0.y + dy / len * 2000); g.stroke();
           g.setLineDash([]); g.strokeStyle = C.paper; g.lineWidth = 3;
           g.beginPath(); g.moveTo(S.p0.x, S.p0.y); g.lineTo(S.p1.x, S.p1.y); g.stroke();
@@ -728,6 +726,7 @@ h1 {
     $('#hint').textContent = cur.hint; $('#hint').hidden = false;
   }
   function home() {
+    location.href = '../'; return;
     cur = null; curId = null;
     $('#play').hidden = true; $('#hub').hidden = false; document.body.classList.remove('playing');
     refreshBests();
@@ -762,7 +761,7 @@ h1 {
   $('#again').addEventListener('click', () => start(curId));
   $('#share').addEventListener('click', () => {
     if (!lastRes) return;
-    const msg = `我在「夜市遊戲街」${GAMES[curId].name}${lastRes.share}，換你來挑戰！`;
+    const msg = `我在「下課十分鐘」${GAMES[curId].name}${lastRes.share}，換你來挑戰！`;
     const btn = $('#share');
     const ok = () => { btn.textContent = '已複製'; };
     const fail = () => { btn.textContent = '無法複製'; };
@@ -778,7 +777,7 @@ h1 {
   }
   refreshBests();
   requestAnimationFrame(frame);
-  const h = location.hash.slice(1); if (GAMES[h]) start(h);
+  const h = location.hash.slice(1); if (GAMES[h]) start(h); else location.replace('../');
 })();
 </script>
 </body>
