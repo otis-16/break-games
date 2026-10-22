@@ -1,0 +1,927 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#f3ece1">
+<title>蛋糕切一半｜草莓蛋糕篇</title>
+<meta name="description" content="手指劃一刀，把形狀歪七扭八的草莓蛋糕切成剛好一樣大的兩塊。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Noto+Sans+TC:wght@400;500;700&family=DM+Serif+Display&display=swap">
+<style>
+/* Product-shot look: one shortcake on a ceramic plate, linen cloth, soft window light. Single light look by choice. */
+:root {
+  --cream: #f4ebdf;
+  --cream-2: #eadbc8;
+  --ink: #3a2a20;
+  --ink-soft: #7a6555;
+  --stamp: #c2402a;
+  --sage: #6f8f78;
+  --paper: #fffaf2;
+  --berry: #d9374f;
+  --pink: #f2b8bd;
+  --f-disp: "Noto Serif TC", "Songti TC", serif;
+  --f-body: "Noto Sans TC", "PingFang TC", system-ui, sans-serif;
+  --f-latin: "DM Serif Display", "Noto Serif TC", serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--f-body);
+  overflow: hidden;
+  -webkit-user-select: none; user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
+#cv { position: fixed; inset: 0; width: 100%; height: 100%; touch-action: none; display: block; }
+
+.mute {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  right: max(14px, env(safe-area-inset-right, 0px));
+  z-index: 20;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 250, 242, .8);
+  box-shadow: 0 2px 10px rgba(58, 42, 32, .12);
+  display: grid; place-items: center;
+}
+.mute svg { width: 20px; height: 20px; }
+
+/* order card */
+.slip {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  left: max(14px, env(safe-area-inset-left, 0px));
+  z-index: 10;
+  width: 172px;
+  padding: 10px 12px 12px;
+  background: var(--paper);
+  box-shadow: 0 6px 18px rgba(58, 42, 32, .14);
+  font-size: 12px;
+  line-height: 1.5;
+  transform: rotate(-2.5deg);
+  transform-origin: 20% 0;
+  animation: print .5s cubic-bezier(.2, .9, .3, 1.2) both;
+}
+.slip::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: -6px; height: 6px;
+  background: linear-gradient(-45deg, transparent 4px, var(--paper) 0) 0 0 / 8px 6px repeat-x,
+              linear-gradient(45deg, transparent 4px, var(--paper) 0) 0 0 / 8px 6px repeat-x;
+}
+@keyframes print { from { transform: rotate(-2.5deg) translateY(-130%); } }
+.slip .no { display: flex; justify-content: space-between; color: var(--ink-soft); letter-spacing: .08em; border-bottom: 1px dashed var(--cream-2); padding-bottom: 4px; margin-bottom: 4px; }
+.slip .item { font-weight: 700; font-size: 14px; }
+.slip .opt { color: var(--ink-soft); }
+.slip .tgt { margin-top: 6px; display: flex; align-items: baseline; gap: 4px; color: var(--stamp); }
+.slip .tgt b { font-family: var(--f-latin); font-size: 30px; font-weight: 400; line-height: 1; }
+
+/* title */
+.title {
+  position: fixed; inset: 0 0 auto 0;
+  z-index: 15;
+  padding: calc(env(safe-area-inset-top, 0px) + 9vh) max(24px, env(safe-area-inset-right, 0px)) 48px max(24px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(rgba(243, 236, 225, .97) 62%, rgba(243, 236, 225, 0));
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px;
+}
+.kicker { margin: 0; font-family: var(--f-latin); letter-spacing: .32em; font-size: 12px; color: var(--ink-soft); padding-left: .32em; }
+.title h1 {
+  margin: 0;
+  font-family: var(--f-disp); font-weight: 900;
+  font-size: clamp(64px, 22vw, 120px);
+  line-height: 1;
+  letter-spacing: .06em;
+  color: var(--ink);
+}
+.title h1 span { color: var(--stamp); }
+.sub { margin: 2px 0 0; font-family: var(--f-disp); font-size: 18px; letter-spacing: .4em; color: var(--ink-soft); padding-left: .4em; }
+.how { margin: 18px 0 4px; font-size: 14px; line-height: 1.8; color: var(--ink-soft); }
+.go {
+  margin-top: 10px;
+  padding: 14px 44px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 700; font-size: 17px; letter-spacing: .2em;
+  box-shadow: 0 8px 22px rgba(58, 42, 32, .25);
+  transition: transform .12s ease;
+}
+.go:active { transform: scale(.96); }
+.home {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 18px);
+  left: max(16px, env(safe-area-inset-left, 0px));
+  font-size: 13px; color: var(--ink-soft); text-decoration: none;
+  padding: 6px 12px; border-radius: 999px; background: rgba(255, 250, 242, .8);
+}
+.best { margin: 8px 0 0; font-size: 12px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+
+.hint, .toast {
+  position: fixed; left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  margin: 0;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.hint {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
+  background: rgba(58, 42, 32, .82);
+  color: var(--paper);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse { 50% { transform: translateX(-50%) scale(1.05); } }
+.toast {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 70px);
+  background: var(--stamp);
+  color: var(--paper);
+  font-weight: 700;
+  box-shadow: 0 6px 18px rgba(194, 64, 42, .3);
+  animation: nudge .45s cubic-bezier(.3, 1.5, .5, 1) both;
+}
+@keyframes nudge {
+  0% { transform: translateX(-50%) translateY(14px) scale(.9); opacity: 0; }
+  60% { transform: translateX(calc(-50% - 4px)); opacity: 1; }
+  80% { transform: translateX(calc(-50% + 3px)); }
+}
+
+/* result */
+.sheet {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  z-index: 15;
+  padding: 22px max(20px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 18px) max(20px, env(safe-area-inset-left, 0px));
+  background: var(--paper);
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -10px 40px rgba(58, 42, 32, .16);
+  animation: up .45s cubic-bezier(.2, .9, .3, 1.1) both;
+}
+@keyframes up { from { transform: translateY(100%); } }
+.sheet-in { max-width: 420px; margin: 0 auto; display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; align-items: center; }
+.rank {
+  grid-row: span 2;
+  width: 76px; height: 76px; border-radius: 50%;
+  border: 3px solid var(--stamp); color: var(--stamp);
+  display: grid; place-items: center;
+  font-family: var(--f-latin); font-size: 44px; line-height: 1;
+  transform: rotate(-12deg);
+  animation: stamp .35s .25s cubic-bezier(.3, 1.6, .5, 1) both;
+}
+@keyframes stamp { from { transform: rotate(-12deg) scale(2.4); opacity: 0; } }
+.role { margin: 0; font-family: var(--f-disp); font-size: 22px; font-weight: 900; align-self: end; }
+.score { margin: 0; align-self: start; color: var(--ink-soft); font-size: 13px; font-variant-numeric: tabular-nums; }
+.score b { font-family: var(--f-latin); font-weight: 400; font-size: 28px; color: var(--ink); margin-right: 2px; }
+.detail { grid-column: 1 / -1; margin: 12px 0 0; padding: 10px 12px; background: var(--cream); border-radius: 10px; font-size: 13px; line-height: 1.6; font-variant-numeric: tabular-nums; }
+.newbest { color: var(--sage); font-weight: 700; }
+.btns { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.btns button { padding: 13px; border-radius: 12px; font-weight: 700; font-size: 15px; transition: transform .12s ease; }
+.btns button:active { transform: scale(.97); }
+#again { background: var(--ink); color: var(--paper); }
+#share { background: var(--cream); }
+
+@media (prefers-reduced-motion: reduce) {
+  .slip, .sheet, .rank, .hint, .toast { animation: none; }
+}
+</style>
+</head>
+<body>
+<canvas id="cv" aria-label="遊戲畫面"></canvas>
+
+<button class="mute" id="mute" type="button" aria-label="靜音切換">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#3a2a20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path id="wave" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/><path id="cross" d="m16 9 6 6m0-6-6 6" hidden/></svg>
+</button>
+
+<div class="slip" id="slip" hidden>
+  <div class="no"><span id="ordNo">No.0000</span><span>今日現做</span></div>
+  <div class="item">草莓鮮奶油蛋糕</div>
+  <div class="opt" id="ordOpt">兄妹兩人分・不准吵</div>
+  <div class="tgt">一人<b>50</b>%</div>
+</div>
+
+<section class="title" id="title">
+  <a class="home" href="../">← 全部遊戲</a>
+  <p class="kicker">STRAWBERRY SHORTCAKE</p>
+  <h1>切一<span>半</span></h1>
+  <p class="sub">草莓蛋糕篇</p>
+  <p class="how">蛋糕長得歪七扭八，只能切一刀。<br>手指劃過去，切成一樣大的兩塊。</p>
+  <button class="go" id="go" type="button">拿刀子</button>
+  <p class="best" id="bestTitle"></p>
+</section>
+
+<p class="hint" id="hint" hidden>手指劃過蛋糕，切一刀</p>
+<p class="toast" id="toast" role="status" hidden></p>
+
+<section class="sheet" id="sheet" hidden>
+  <div class="sheet-in">
+    <div class="rank" id="rank">S</div>
+    <p class="role" id="role">甜點主廚</p>
+    <p class="score"><b id="score">100</b>分</p>
+    <p class="detail" id="detail"></p>
+    <div class="btns">
+      <button id="again" type="button">再切一個</button>
+      <button id="share" type="button">傳給朋友</button>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const $ = s => document.getElementById(s);
+  const cv = $('cv'), g = cv.getContext('2d');
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const easeOut = t => 1 - Math.pow(1 - t, 3);
+  const easeInOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const easeBack = t => 1 + 2.70158 * Math.pow(t - 1, 3) + 1.70158 * Math.pow(t - 1, 2);
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const SY = .56;           // vertical squash of the 3/4 view
+  const SPLIT = .22;        // how far each half slides apart (cake radius units)
+  const O0 = { x: 0, y: 0 };
+
+  let W, H, DPR, R, ZH, cx, cyPlay, cyTitle, cyResult, camY = null;
+  let state = 'title', T = 0;
+  let cake = null, cut = null, drag = null;
+  let knifeT = 0, splitT = 0, labelT = 0, resWait = 0, countT = 1, dropT = 1;
+  let shake = 0, lastRes = null, cloth = null, pores = null, toastTimer = 0;
+
+  // ---------- storage ----------
+  const getBest = () => { try { const v = localStorage.getItem('dgh-cake-best'); return v == null ? null : Number(v); } catch (e) { return null; } };
+  const setBest = v => { try { localStorage.setItem('dgh-cake-best', String(v)); } catch (e) {} };
+  let muted = false; try { muted = localStorage.getItem('dgh-muted') === '1'; } catch (e) {}
+
+  // ---------- audio ----------
+  let AC = null, noiseBuf = null;
+  function initAudio() {
+    if (AC) { if (AC.state === 'suspended') AC.resume(); return; }
+    try {
+      AC = new (window.AudioContext || window.webkitAudioContext)();
+      noiseBuf = AC.createBuffer(1, AC.sampleRate, AC.sampleRate);
+      const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    } catch (e) { AC = null; }
+  }
+  function tone(freq, dur, type = 'sine', vol = .2, slide = 0, delay = 0) {
+    if (!AC || muted) return;
+    const t = AC.currentTime + delay;
+    const o = AC.createOscillator(), gn = AC.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, freq + slide), t + dur);
+    gn.gain.setValueAtTime(0, t); gn.gain.linearRampToValueAtTime(vol, t + .01); gn.gain.exponentialRampToValueAtTime(.001, t + dur);
+    o.connect(gn).connect(AC.destination); o.start(t); o.stop(t + dur + .02);
+  }
+  function hiss(dur, f0, f1, vol, delay = 0) {
+    if (!AC || muted || !noiseBuf) return;
+    const t = AC.currentTime + delay;
+    const src = AC.createBufferSource(); src.buffer = noiseBuf;
+    const f = AC.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 2.2;
+    f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    const gn = AC.createGain();
+    gn.gain.setValueAtTime(0, t); gn.gain.linearRampToValueAtTime(vol, t + dur * .25); gn.gain.exponentialRampToValueAtTime(.001, t + dur);
+    src.connect(f).connect(gn).connect(AC.destination); src.start(t); src.stop(t + dur + .02);
+  }
+  const sfx = {
+    tick: () => tone(1500, .04, 'square', .025),
+    slice: () => { hiss(.55, 3200, 1100, .22); hiss(.3, 900, 500, .12, .25); },
+    split: () => { tone(150, .22, 'triangle', .3, -60); tone(520, .1, 'sine', .08, -200, .04); },
+    nope: () => { tone(330, .14, 'triangle', .12, -120); tone(250, .18, 'triangle', .1, -80, .1); },
+    win: () => { [660, 880, 1320].forEach((f, i) => tone(f, .35, 'sine', .14, 0, i * .09)); },
+    ok: () => { [523, 659].forEach((f, i) => tone(f, .3, 'sine', .13, 0, i * .1)); },
+    bad: () => { tone(220, .4, 'sawtooth', .07, -80); }
+  };
+  function renderMute() { $('wave').hidden = muted; $('cross').hidden = !muted; }
+  $('mute').addEventListener('click', e => {
+    e.stopPropagation(); muted = !muted; renderMute(); initAudio();
+    try { localStorage.setItem('dgh-muted', muted ? '1' : '0'); } catch (err) {}
+  });
+  renderMute();
+
+  // ---------- cake model (unit radius, plan view; rules ported from classic) ----------
+  function makeCake() {
+    const a = rand(0, 6.28), b = rand(0, 6.28), k1 = rand(.1, .2), k2 = rand(.05, .13);
+    const rf = th => 1 + k1 * Math.sin(2 * th + a) + k2 * Math.sin(3 * th + b);
+    const inside = (x, y) => Math.hypot(x, y) < rf(Math.atan2(y, x));
+    const outline = [];
+    for (let i = 0; i < 160; i++) { const th = i / 160 * Math.PI * 2, r = rf(th); outline.push({ x: Math.cos(th) * r, y: Math.sin(th) * r }); }
+    const samples = [];
+    while (samples.length < 6000) { const x = rand(-1.4, 1.4), y = rand(-1.4, 1.4); if (inside(x, y)) samples.push({ x, y }); }
+    // piped rosettes around the rim, a strawberry on every other one
+    const decos = [], ph = rand(0, 6.28), nR = 12;
+    for (let k = 0; k < nR; k++) {
+      const th = ph + k / nR * Math.PI * 2, r = rf(th) * .8;
+      decos.push({ t: 'ros', x: Math.cos(th) * r, y: Math.sin(th) * r, s: rand(.94, 1.06), rot: rand(0, 6.28), berry: k % 2 === 0, bs: rand(.92, 1.06), tilt: rand(-.12, .12) });
+    }
+    let tries = 0; const inner = [];
+    while (inner.length < 3 && tries++ < 300) {
+      const th = rand(0, 6.28), r = rf(th) * rand(0, .42);
+      const p = { t: 'berry', x: Math.cos(th) * r, y: Math.sin(th) * r, bs: rand(1.05, 1.2), tilt: rand(-.25, .25) };
+      if (inner.every(q => Math.hypot(q.x - p.x, q.y - p.y) > .3)) inner.push(p);
+    }
+    decos.push(...inner);
+    decos.sort((p, q) => p.y - q.y);
+    // strawberry slices peeking out of the cream layer on the side wall
+    const slices = [];
+    for (let i = 3; i < 160; i += 9) {
+      const p = outline[i], q = outline[(i + 1) % 160], o = outline[(i + 159) % 160];
+      let nx = q.y - o.y, ny = -(q.x - o.x); const l = Math.hypot(nx, ny) || 1; nx /= l; ny /= l;
+      if (nx * p.x + ny * p.y < 0) { nx = -nx; ny = -ny; }
+      slices.push({ x: p.x, y: p.y, ny, w: rand(.85, 1.15) });
+    }
+    return { outline, samples, decos, slices };
+  }
+
+  // ---------- layout ----------
+  function fit() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+    R = Math.min(W * .29, H * .22, 190);
+    ZH = R * .42;
+    cx = W / 2;
+    const below = R * 1.55 * SY;                       // plate extent under centre
+    const above = ZH + R * 1.33 * SY + R * .3;         // cake top incl. strawberries
+    cyPlay = clamp(H * .5 + ZH * .5, above + 120, H - below - 70);
+    cyTitle = Math.max(cyPlay, H - below - 26);
+    cyResult = cyPlay;
+    if (state === 'result') measureResult();
+    if (camY == null) camY = cyTitle;
+    buildCloth(); buildPores();
+  }
+  function measureResult() {
+    const sh = $('sheet').offsetHeight || 280;
+    const above = ZH + R * 1.33 * SY + R * .3;
+    cyResult = Math.max(Math.min(cyPlay, H - sh - R * 1.55 * SY - 8), above + 16);
+  }
+  // project plan point (unit radius) + height in px to screen
+  const P = (x, y, z) => [cx + x * R, camY + y * R * SY - z];
+  const toPlan = s => ({ x: (s.x - cx) / R, y: (s.y + ZH - camY) / (R * SY) });
+
+  function buildCloth() {
+    cloth = document.createElement('canvas'); cloth.width = cv.width; cloth.height = cv.height;
+    const c = cloth.getContext('2d'); c.setTransform(DPR, 0, 0, DPR, 0, 0);
+    const bg = c.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#f4ede2'); bg.addColorStop(1, '#e7dccb');
+    c.fillStyle = bg; c.fillRect(0, 0, W, H);
+    for (let y = 0; y < H; y += 1.7) { c.fillStyle = Math.random() < .55 ? `rgba(125,98,72,${rand(.015, .05)})` : `rgba(255,255,255,${rand(.04, .1)})`; c.fillRect(0, y, W, .8); }
+    for (let x = 0; x < W; x += 1.7) { c.fillStyle = Math.random() < .55 ? `rgba(125,98,72,${rand(.012, .04)})` : `rgba(255,255,255,${rand(.03, .08)})`; c.fillRect(x, 0, .8, H); }
+    for (let i = 0; i < W * H / 700; i++) {
+      c.fillStyle = Math.random() < .6 ? `rgba(130,104,78,${rand(.05, .12)})` : `rgba(255,255,255,${rand(.12, .25)})`;
+      if (Math.random() < .5) c.fillRect(rand(0, W), rand(0, H), rand(4, 18), .8); else c.fillRect(rand(0, W), rand(0, H), .8, rand(4, 18));
+    }
+    // a soft fold crease
+    const fy = H * .3;
+    const cg = c.createLinearGradient(0, fy - 10, 0, fy + 10);
+    cg.addColorStop(0, 'rgba(255,255,255,0)'); cg.addColorStop(.45, 'rgba(255,255,255,.35)'); cg.addColorStop(.55, 'rgba(120,95,70,.07)'); cg.addColorStop(1, 'rgba(120,95,70,0)');
+    c.fillStyle = cg; c.fillRect(0, fy - 10, W, 20);
+    // window light from upper left, vignette
+    const lg = c.createRadialGradient(W * .25, H * .2, 10, W * .25, H * .2, Math.max(W, H) * .9);
+    lg.addColorStop(0, 'rgba(255,252,245,.6)'); lg.addColorStop(1, 'rgba(255,252,245,0)');
+    c.fillStyle = lg; c.fillRect(0, 0, W, H);
+    const vg = c.createRadialGradient(W / 2, H * .55, Math.min(W, H) * .3, W / 2, H * .55, Math.max(W, H) * .8);
+    vg.addColorStop(0, 'rgba(90,64,42,0)'); vg.addColorStop(1, 'rgba(90,64,42,.2)');
+    c.fillStyle = vg; c.fillRect(0, 0, W, H);
+  }
+  function buildPores() {
+    const s = 44, c = document.createElement('canvas'); c.width = c.height = Math.round(s * DPR);
+    const x = c.getContext('2d'); x.scale(DPR, DPR);
+    for (let i = 0; i < 60; i++) { x.fillStyle = `rgba(168,104,42,${rand(.18, .42)})`; x.beginPath(); x.ellipse(rand(2, s - 2), rand(2, s - 2), rand(.5, 1.5), rand(.4, 1), rand(0, 3), 0, 7); x.fill(); }
+    for (let i = 0; i < 26; i++) { x.fillStyle = 'rgba(255,245,215,.55)'; x.beginPath(); x.arc(rand(2, s - 2), rand(2, s - 2), rand(.4, .9), 0, 7); x.fill(); }
+    pores = g.createPattern(c, 'repeat');
+    try { pores.setTransform(new DOMMatrix().scale(1 / DPR)); } catch (e) {}
+  }
+
+  // ---------- drawing helpers ----------
+  function rrect(x, y, w, h, r) {
+    g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
+    g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+  }
+  function polyPath(poly, o, z) {
+    g.beginPath();
+    poly.forEach((p, i) => { const q = P(p.x + o.x, p.y + o.y, z); i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); });
+    g.closePath();
+  }
+  // the camera-facing part of a plan polygon's boundary, leftmost to rightmost point
+  function frontChain(poly) {
+    let iMin = 0, iMax = 0;
+    poly.forEach((p, i) => { if (p.x < poly[iMin].x) iMin = i; if (p.x > poly[iMax].x) iMax = i; });
+    const n = poly.length, c1 = [], c2 = [];
+    for (let i = iMin; ; i = (i + 1) % n) { c1.push(poly[i]); if (i === iMax) break; }
+    for (let i = iMin; ; i = (i - 1 + n) % n) { c2.push(poly[i]); if (i === iMax) break; }
+    const sag = c => { const a = c[0], b = c[c.length - 1]; let s = 0; for (const p of c) s += p.y - (a.y + (b.y - a.y) * ((p.x - a.x) / ((b.x - a.x) || 1))); return s / c.length; };
+    return sag(c1) >= sag(c2) ? c1 : c2;
+  }
+  function bandPath(chain, o, z0, z1) {
+    g.beginPath();
+    for (let i = 0; i < chain.length; i++) { const q = P(chain[i].x + o.x, chain[i].y + o.y, z1); i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); }
+    for (let i = chain.length - 1; i >= 0; i--) { const q = P(chain[i].x + o.x, chain[i].y + o.y, z0); g.lineTo(q[0], q[1]); }
+    g.closePath();
+  }
+
+  function drawPlate() {
+    const rp = 1.55, rx = rp * R, ry = rp * R * SY, th = R * .07;
+    // contact shadow on the cloth
+    g.save();
+    g.shadowColor = 'rgba(80,55,35,.3)'; g.shadowBlur = R * .22 * DPR; g.shadowOffsetX = (R * .05 + 10000) * DPR; g.shadowOffsetY = R * .07 * DPR;
+    g.fillStyle = '#000'; g.beginPath(); g.ellipse(cx - 10000, camY + th, rx, ry, 0, 0, 7); g.fill();
+    g.restore();
+    // foot / thickness
+    const sg = g.createLinearGradient(cx - rx, 0, cx + rx, 0);
+    sg.addColorStop(0, '#d9d3c9'); sg.addColorStop(.35, '#eeeae3'); sg.addColorStop(1, '#cfc8bc');
+    g.fillStyle = sg; g.beginPath(); g.ellipse(cx, camY + th, rx * .995, ry, 0, 0, 7); g.fill();
+    // top surface
+    const pg = g.createRadialGradient(cx - rx * .3, camY - ry * .45, R * .1, cx, camY, rx * 1.05);
+    pg.addColorStop(0, '#ffffff'); pg.addColorStop(.6, '#f7f4ef'); pg.addColorStop(1, '#e6e0d6');
+    g.fillStyle = pg; g.beginPath(); g.ellipse(cx, camY, rx, ry, 0, 0, 7); g.fill();
+    // shallow well
+    const wg = g.createLinearGradient(0, camY - ry * .74, 0, camY + ry * .74);
+    wg.addColorStop(0, 'rgba(150,132,110,.16)'); wg.addColorStop(.5, 'rgba(150,132,110,.03)'); wg.addColorStop(1, 'rgba(255,255,255,.25)');
+    g.fillStyle = wg; g.beginPath(); g.ellipse(cx, camY, rx * .74, ry * .74, 0, 0, 7); g.fill();
+    g.strokeStyle = 'rgba(160,145,125,.18)'; g.lineWidth = 1.2; g.stroke();
+    // sage rim line
+    g.strokeStyle = 'rgba(111,143,120,.8)'; g.lineWidth = 2.2;
+    g.beginPath(); g.ellipse(cx, camY, rx * .92, ry * .92, 0, 0, 7); g.stroke();
+    g.strokeStyle = 'rgba(111,143,120,.45)'; g.lineWidth = .8;
+    g.beginPath(); g.ellipse(cx, camY, rx * .885, ry * .885, 0, 0, 7); g.stroke();
+    // rim glint
+    g.strokeStyle = 'rgba(255,255,255,.95)'; g.lineWidth = 2; g.lineCap = 'round';
+    g.beginPath(); g.ellipse(cx, camY, rx * .975, ry * .965, 0, Math.PI * 1.08, Math.PI * 1.42); g.stroke();
+    g.strokeStyle = 'rgba(140,125,105,.35)'; g.lineWidth = 1;
+    g.beginPath(); g.ellipse(cx, camY, rx, ry, 0, 0, 7); g.stroke();
+  }
+
+  // side wall (also used for the fresh cut face): sponge, cream + strawberries, sponge, frosting
+  function drawWall(chain, o, lift, face) {
+    const z = f => f * ZH + lift;
+    bandPath(chain, o, z(0), z(1)); g.fillStyle = face ? '#f6d796' : '#efc382'; g.fill();
+    g.save(); bandPath(chain, o, z(0), z(1)); g.clip();
+    g.globalAlpha = face ? .95 : .6; g.fillStyle = pores; g.fillRect(0, 0, W, H); g.globalAlpha = 1;
+    bandPath(chain, o, z(0), z(.055)); g.fillStyle = face ? '#cf9a5a' : '#c38a4a'; g.fill();
+    bandPath(chain, o, z(.36), z(.54)); g.fillStyle = '#fff8ee'; g.fill();
+    bandPath(chain, o, z(.835), z(1.01)); g.fillStyle = '#fffaf3'; g.fill();
+    // soft seams where cream meets sponge
+    g.lineWidth = 1;
+    for (const f of [.36, .835]) { bandPath(chain, o, z(f) - 1.5, z(f)); g.fillStyle = 'rgba(150,100,50,.18)'; g.fill(); }
+    if (face) drawFaceBerries(chain, o, lift); else drawWallSlices(o, lift);
+    // round-body shading (outer wall) / flat light (cut face)
+    const xs = chain.map(p => cx + (p.x + o.x) * R), x0 = Math.min(...xs), x1 = Math.max(...xs);
+    if (!face && x1 - x0 > 4) {
+      const sh = g.createLinearGradient(x0, 0, x1, 0);
+      sh.addColorStop(0, 'rgba(110,65,30,.26)'); sh.addColorStop(.22, 'rgba(255,250,240,.1)'); sh.addColorStop(.45, 'rgba(110,65,30,0)'); sh.addColorStop(.78, 'rgba(110,65,30,.08)'); sh.addColorStop(1, 'rgba(110,65,30,.38)');
+      g.fillStyle = sh; g.fillRect(x0 - 2, 0, x1 - x0 + 4, H);
+    } else if (face) {
+      g.fillStyle = 'rgba(255,250,235,.08)'; g.fillRect(0, 0, W, H);
+    }
+    g.restore();
+  }
+  function drawWallSlices(o, lift) {
+    const zm = ZH * .45 + lift, hh = ZH * .1;
+    for (const s of cake.slices) {
+      if (s.ny < .18) continue;
+      if (cut && state !== 'knife' && Math.abs(cutSide(s)) < .08) continue;
+      if (cut && state !== 'knife' && o.side !== undefined && Math.sign(cutSide(s)) !== o.side) continue;
+      const [X, Y] = P(s.x + o.x, s.y + o.y, zm);
+      const w = R * .065 * s.w * (.35 + .65 * s.ny);
+      g.fillStyle = '#d42d48'; g.beginPath(); g.ellipse(X, Y, w, hh, 0, 0, 7); g.fill();
+      g.fillStyle = 'rgba(255,190,195,.85)'; g.beginPath(); g.ellipse(X, Y + hh * .1, w * .55, hh * .5, 0, 0, 7); g.fill();
+      g.fillStyle = 'rgba(255,255,255,.7)'; g.beginPath(); g.ellipse(X - w * .2, Y - hh * .2, w * .18, hh * .18, 0, 0, 7); g.fill();
+    }
+  }
+  function drawFaceBerries(chain, o, lift) {
+    const a = chain[0], b = chain[chain.length - 1];
+    const len = Math.hypot(b.x - a.x, b.y - a.y);
+    const n = Math.max(1, Math.floor(len / .3));
+    const hh = ZH * .2, zm = ZH * .45 + lift;
+    for (let i = 0; i < n; i++) {
+      const t = (i + .5 + Math.sin(i * 12.9 + cut.seed) * .18) / n;
+      const [X, Y] = P(a.x + (b.x - a.x) * t + o.x, a.y + (b.y - a.y) * t + o.y, zm);
+      const w = R * .07 * (.9 + .2 * Math.sin(i * 7.3 + cut.seed));
+      // halved strawberry cross-section: heart-ish, pale core with streaks
+      g.fillStyle = '#d62c47';
+      g.beginPath(); g.moveTo(X, Y + hh * .95);
+      g.bezierCurveTo(X - w * 1.1, Y + hh * .3, X - w * 1.05, Y - hh * .95, X, Y - hh * .8);
+      g.bezierCurveTo(X + w * 1.05, Y - hh * .95, X + w * 1.1, Y + hh * .3, X, Y + hh * .95); g.fill();
+      g.fillStyle = '#f7a7ae';
+      g.beginPath(); g.ellipse(X, Y - hh * .05, w * .5, hh * .55, 0, 0, 7); g.fill();
+      g.strokeStyle = 'rgba(255,245,245,.85)'; g.lineWidth = .8;
+      for (let k = -1; k <= 1; k++) { g.beginPath(); g.moveTo(X, Y - hh * .45); g.quadraticCurveTo(X + k * w * .5, Y, X + k * w * .3, Y + hh * .5); g.stroke(); }
+    }
+  }
+
+  function drawTop(poly, o, lift) {
+    const [tx, ty] = P(-.45 + o.x, -.55 + o.y, ZH + lift);
+    const tg = g.createRadialGradient(tx, ty, R * .05, tx, ty, R * 1.9);
+    tg.addColorStop(0, '#fffefb'); tg.addColorStop(.6, '#fbf6ee'); tg.addColorStop(1, '#efe4d4');
+    polyPath(poly, o, ZH + lift); g.fillStyle = tg; g.fill();
+    g.strokeStyle = 'rgba(220,200,175,.75)'; g.lineWidth = 1.1; g.stroke();
+    // soft swirl of spatula marks
+    g.save(); polyPath(poly, o, ZH + lift); g.clip();
+    g.strokeStyle = 'rgba(225,208,185,.35)'; g.lineWidth = 1.2;
+    const [mx, my] = P(o.x, o.y, ZH + lift);
+    for (const r of [.25, .48]) { g.beginPath(); g.ellipse(mx + R * .05, my, R * r, R * r * SY, 0, .4, 2.6); g.stroke(); }
+    g.restore();
+  }
+
+  function rosette(X, Y, s, rot) {
+    const r = R * .1 * s;
+    g.fillStyle = 'rgba(150,115,80,.16)';
+    g.beginPath(); g.ellipse(X + r * .15, Y + r * .22, r * 1.15, r * 1.15 * SY, 0, 0, 7); g.fill();
+    const lobes = [];
+    for (let k = 0; k < 8; k++) { const a = rot + k / 8 * Math.PI * 2; lobes.push({ a, x: X + Math.cos(a) * r * .56, y: Y + Math.sin(a) * r * .56 * SY - r * .16 }); }
+    lobes.sort((p, q) => p.y - q.y);
+    for (const l of lobes) {
+      const gr = g.createRadialGradient(l.x - r * .2, l.y - r * .24, r * .04, l.x, l.y, r * .6);
+      gr.addColorStop(0, '#ffffff'); gr.addColorStop(.55, '#fbf4ea'); gr.addColorStop(1, '#e4d4bf');
+      g.fillStyle = gr; g.beginPath(); g.ellipse(l.x, l.y, r * .48, r * .38, l.a, 0, 7); g.fill();
+      g.strokeStyle = 'rgba(200,178,150,.4)'; g.lineWidth = .7;
+      g.beginPath(); g.ellipse(l.x, l.y, r * .3, r * .22, l.a, Math.PI * .1, Math.PI * .9); g.stroke();
+    }
+    for (let k = 0; k < 5; k++) {
+      const a = rot * 1.3 + k / 5 * Math.PI * 2, x = X + Math.cos(a) * r * .24, y = Y + Math.sin(a) * r * .24 * SY - r * .55;
+      const gr = g.createRadialGradient(x - r * .14, y - r * .18, r * .03, x, y, r * .42);
+      gr.addColorStop(0, '#ffffff'); gr.addColorStop(.6, '#faf2e6'); gr.addColorStop(1, '#e6d7c3');
+      g.fillStyle = gr; g.beginPath(); g.ellipse(x, y, r * .36, r * .29, a, 0, 7); g.fill();
+    }
+    const gr = g.createRadialGradient(X - r * .08, Y - r * .92, r * .02, X, Y - r * .82, r * .26);
+    gr.addColorStop(0, '#ffffff'); gr.addColorStop(1, '#ece0cf');
+    g.fillStyle = gr; g.beginPath(); g.ellipse(X + r * .04, Y - r * .84, r * .2, r * .22, .3, 0, 7); g.fill();
+  }
+
+  function berry(X, Y, s, tilt) {
+    const w = R * .078 * s, h = R * .13 * s;
+    g.save(); g.translate(X, Y); g.rotate(tilt);
+    // contact shadow
+    g.fillStyle = 'rgba(120,60,50,.2)'; g.beginPath(); g.ellipse(w * .15, h * .14, w * 1.05, w * .42, 0, 0, 7); g.fill();
+    // calyx leaves peeking out at the base
+    g.fillStyle = '#4f8a45';
+    for (const k of [-1, 1]) {
+      g.beginPath(); g.moveTo(k * w * .2, h * .02); g.quadraticCurveTo(k * w * 1.1, -h * .05, k * w * 1.35, h * .12); g.quadraticCurveTo(k * w * .8, h * .2, k * w * .1, h * .12); g.fill();
+    }
+    // body, tip up
+    g.beginPath(); g.moveTo(0, -h);
+    g.bezierCurveTo(w * .5, -h, w * 1.05, -h * .5, w * .98, -h * .1);
+    g.bezierCurveTo(w * .92, h * .1, w * .4, h * .16, 0, h * .16);
+    g.bezierCurveTo(-w * .4, h * .16, -w * .92, h * .1, -w * .98, -h * .1);
+    g.bezierCurveTo(-w * 1.05, -h * .5, -w * .5, -h, 0, -h);
+    const bg = g.createRadialGradient(-w * .35, -h * .55, w * .08, 0, -h * .3, h * 1.05);
+    bg.addColorStop(0, '#ff7a86'); bg.addColorStop(.4, '#e5304a'); bg.addColorStop(1, '#9c1027');
+    g.fillStyle = bg; g.fill();
+    // seeds
+    for (let j = 1; j <= 5; j++) {
+      const t = j / 6, yy = -h + t * h * 1.08;
+      const hw = w * Math.sin(Math.min(1, t * 1.5) * Math.PI / 2) * .78;
+      const cnt = j < 2 ? 2 : 3;
+      for (let i = 0; i < cnt; i++) {
+        const xx = (cnt === 1 ? 0 : -hw + (i + (j % 2 ? .25 : .75)) * (hw * 2 / cnt));
+        g.fillStyle = 'rgba(110,0,20,.35)'; g.beginPath(); g.ellipse(xx, yy + .5, 1.3, 1.6, 0, 0, 7); g.fill();
+        g.fillStyle = '#ffe08a'; g.beginPath(); g.ellipse(xx, yy, .8, 1.15, xx / w * .5, 0, 7); g.fill();
+      }
+    }
+    // gloss
+    g.fillStyle = 'rgba(255,255,255,.7)'; g.beginPath(); g.ellipse(-w * .45, -h * .45, w * .14, h * .22, .35, 0, 7); g.fill();
+    g.fillStyle = 'rgba(255,255,255,.9)'; g.beginPath(); g.arc(-w * .28, -h * .74, w * .07, 0, 7); g.fill();
+    g.restore();
+  }
+
+  function drawDecos(o, lift, side) {
+    for (const d of cake.decos) {
+      let x = d.x, y = d.y;
+      if (side !== undefined) {
+        const c = cutSide(d);
+        if ((c > 0 ? 1 : -1) !== side) continue;
+        const push = Math.max(0, .1 - Math.abs(c)) * splitE();   // nudge items off the cut edge
+        x += cut.n.x * side * push; y += cut.n.y * side * push;
+      }
+      const [X, Y] = P(x + o.x, y + o.y, ZH + lift);
+      if (d.t === 'ros') { rosette(X, Y, d.s, d.rot); if (d.berry) berry(X, Y - R * .07 * d.s, d.bs, d.tilt); }
+      else berry(X, Y, d.bs, d.tilt);
+    }
+  }
+
+  function drawPiece(poly, o, side, showFace) {
+    const lift = dropLift();
+    // soft shadow on the plate (shape drawn off-screen, shadow offset back in)
+    g.save();
+    g.globalAlpha = 1 - clamp(lift / (H * .3), 0, .7);
+    g.shadowColor = 'rgba(95,62,35,.38)'; g.shadowBlur = R * .12 * DPR; g.shadowOffsetX = (10000 + R * .04) * DPR; g.shadowOffsetY = R * .05 * DPR;
+    polyPath(poly, { x: o.x - 10000 / R, y: o.y }, 0); g.fillStyle = '#000'; g.fill();
+    g.restore();
+    const chain = frontChain(poly);
+    const oo = { x: o.x, y: o.y, side };
+    drawWall(chain, oo, lift, false);
+    if (showFace) drawWall([cut.A, cut.B], oo, lift, true);
+    drawTop(poly, o, lift);
+    drawDecos(o, lift, side);
+  }
+
+  // ---------- cut geometry ----------
+  const cutSide = p => cut.d.x * (p.y - cut.p0.y) - cut.d.y * (p.x - cut.p0.x);   // > 0 : side +1 (n-direction)
+  const splitE = () => state === 'knife' ? 0 : easeOut(clamp(splitT, 0, 1));
+  const offOf = side => { const k = SPLIT * splitE() * side; return { x: cut.n.x * k, y: cut.n.y * k }; };
+  const dropLift = () => reduced ? 0 : (1 - easeOut(clamp(dropT, 0, 1))) * H * .35;
+  function clipPoly(poly, side) {
+    const out = [];
+    for (let i = 0; i < poly.length; i++) {
+      const a = poly[i], b = poly[(i + 1) % poly.length];
+      const ca = cutSide(a) * side, cb = cutSide(b) * side;
+      if (ca >= 0) out.push(a);
+      if ((ca >= 0) !== (cb >= 0)) { const t = ca / (ca - cb); out.push({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t }); }
+    }
+    return out;
+  }
+
+  // ---------- knife + guide ----------
+  function knifeAt(t, z) {
+    const { p0, d } = cut;
+    return P(p0.x + d.x * t, p0.y + d.y * t, z);
+  }
+  function drawGroove() {
+    if (!cut || state !== 'knife') return;
+    const t = cut.tA - .3 + (cut.tB - cut.tA + .6) * easeInOut(clamp(knifeT, 0, 1));
+    if (t <= cut.tA) return;
+    g.save(); polyPath(cake.outline, O0, ZH + dropLift()); g.clip();
+    const a = knifeAt(cut.tA - .05, ZH), b = knifeAt(Math.min(t, cut.tB + .05), ZH);
+    g.strokeStyle = 'rgba(150,105,65,.55)'; g.lineWidth = 2; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); g.stroke();
+    g.strokeStyle = 'rgba(255,255,255,.9)'; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(a[0], a[1] + 1.6); g.lineTo(b[0], b[1] + 1.6); g.stroke();
+    g.restore();
+  }
+  function drawKnife() {
+    if (!cut || !(state === 'knife' || (state === 'split' && splitT < .45))) return;
+    const k = state === 'knife' ? easeInOut(clamp(knifeT, 0, 1)) : 1;
+    const t = cut.tA - .3 + (cut.tB - cut.tA + .6) * k;
+    const lift = state === 'split' ? easeOut(splitT / .45) * R * .7 : 0;
+    const alpha = state === 'split' ? 1 - splitT / .45 : clamp(knifeT * 8, 0, 1);
+    const bl = .7, bh = R * .22, z0 = ZH - 2 + lift;
+    g.save(); g.globalAlpha = clamp(alpha, 0, 1);
+    // shadow of the knife on the cake
+    const s0 = knifeAt(t - bl - .45, ZH - 4), s1 = knifeAt(t, ZH - 4);
+    g.strokeStyle = 'rgba(80,50,30,.14)'; g.lineWidth = 6; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(s0[0] + 6, s0[1] + 5); g.lineTo(s1[0] + 6, s1[1] + 5); g.stroke();
+    // blade
+    const tip = knifeAt(t, z0), heel = knifeAt(t - bl, z0), heelTop = knifeAt(t - bl, z0 + bh), spine = knifeAt(t - .14, z0 + bh * .9), ctl = knifeAt(t - .02, z0 + bh * .55);
+    const bg = g.createLinearGradient(0, heelTop[1], 0, heel[1]);
+    bg.addColorStop(0, '#f6f8f9'); bg.addColorStop(.35, '#c9d0d4'); bg.addColorStop(.7, '#e9eef0'); bg.addColorStop(1, '#8f989d');
+    g.fillStyle = bg;
+    g.beginPath(); g.moveTo(heel[0], heel[1]); g.lineTo(tip[0], tip[1]); g.quadraticCurveTo(ctl[0], ctl[1], spine[0], spine[1]); g.lineTo(heelTop[0], heelTop[1]); g.closePath(); g.fill();
+    g.strokeStyle = 'rgba(70,78,84,.55)'; g.lineWidth = 1; g.stroke();
+    g.strokeStyle = 'rgba(255,255,255,.95)'; g.lineWidth = 1.2;
+    g.beginPath(); g.moveTo(heel[0], heel[1] - 1.5); g.lineTo(tip[0], tip[1] - 1.5); g.stroke();
+    // bolster + handle
+    const hA = knifeAt(t - bl, z0 + bh * .18), hB = knifeAt(t - bl - .48, z0 + bh * .28), hC = knifeAt(t - bl - .48, z0 + bh * .92), hD = knifeAt(t - bl, z0 + bh * .95);
+    const hm = knifeAt(t - bl - .56, z0 + bh * .6);
+    const hg = g.createLinearGradient(0, hD[1], 0, hA[1]);
+    hg.addColorStop(0, '#6b4a36'); hg.addColorStop(.4, '#4a3224'); hg.addColorStop(1, '#2e1f16');
+    g.fillStyle = hg;
+    g.beginPath(); g.moveTo(hA[0], hA[1]); g.lineTo(hB[0], hB[1]); g.quadraticCurveTo(hm[0], hm[1], hC[0], hC[1]); g.lineTo(hD[0], hD[1]); g.closePath(); g.fill();
+    g.fillStyle = '#b9c0c4';
+    for (const u of [.12, .3]) { const r = knifeAt(t - bl - u, z0 + bh * .58); g.beginPath(); g.arc(r[0], r[1], Math.max(1.5, R * .012), 0, 7); g.fill(); }
+    g.restore();
+  }
+  function drawGuide() {
+    if (state !== 'drag' || !drag) return;
+    const { s0, s1 } = drag;
+    const dx = s1.x - s0.x, dy = s1.y - s0.y, len = Math.hypot(dx, dy);
+    if (len < 4) { g.fillStyle = 'rgba(58,42,32,.5)'; g.beginPath(); g.arc(s0.x, s0.y, 4, 0, 7); g.fill(); return; }
+    const ux = dx / len, uy = dy / len;
+    g.save(); g.lineCap = 'round';
+    g.setLineDash([2, 8]); g.strokeStyle = 'rgba(58,42,32,.4)'; g.lineWidth = 2;
+    g.beginPath(); g.moveTo(s0.x - ux * 2000, s0.y - uy * 2000); g.lineTo(s0.x + ux * 2000, s0.y + uy * 2000); g.stroke();
+    g.setLineDash([]);
+    g.strokeStyle = 'rgba(58,42,32,.22)'; g.lineWidth = 5;
+    g.beginPath(); g.moveTo(s0.x + 2, s0.y + 4); g.lineTo(s1.x + 2, s1.y + 4); g.stroke();
+    const lg = g.createLinearGradient(s0.x, s0.y, s1.x, s1.y);
+    lg.addColorStop(0, '#9aa3a8'); lg.addColorStop(.5, '#ffffff'); lg.addColorStop(1, '#b6bec2');
+    g.strokeStyle = lg; g.lineWidth = 3.5;
+    g.beginPath(); g.moveTo(s0.x, s0.y); g.lineTo(s1.x, s1.y); g.stroke();
+    g.strokeStyle = 'rgba(194,64,42,.9)'; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(s0.x - uy * 1.6, s0.y + ux * 1.6); g.lineTo(s1.x - uy * 1.6, s1.y + ux * 1.6); g.stroke();
+    g.fillStyle = '#fffaf2'; g.strokeStyle = '#3a2a20'; g.lineWidth = 2;
+    for (const p of [s0, s1]) { g.beginPath(); g.arc(p.x, p.y, p === s1 ? 7 : 5, 0, 7); g.fill(); g.stroke(); }
+    g.restore();
+  }
+  function drawLabels() {
+    if (!cut || labelT <= 0) return;
+    const k = reduced ? 1 : easeBack(clamp(labelT, 0, 1));
+    const cnt = reduced ? 1 : easeOut(clamp(labelT * 1.3, 0, 1));
+    const big = cut.pct > 50.05 ? 1 : cut.pct < 49.95 ? -1 : 0;
+    for (const side of [1, -1]) {
+      const c = side === 1 ? cut.lc : cut.rc, v = side === 1 ? cut.pct : 100 - cut.pct, o = offOf(side);
+      const [x, y] = P(c.x + o.x, c.y + o.y, ZH + R * .34);
+      g.save(); g.translate(x, y); g.scale(k, k);
+      const w = 84, h = 36;
+      g.shadowColor = 'rgba(58,42,32,.3)'; g.shadowBlur = 10 * DPR; g.shadowOffsetY = 3 * DPR;
+      g.fillStyle = big === side ? '#c2402a' : 'rgba(58,42,32,.92)';
+      rrect(-w / 2, -h / 2, w, h, h / 2); g.fill();
+      g.beginPath(); g.moveTo(-6, h / 2 - 1); g.lineTo(0, h / 2 + 7); g.lineTo(6, h / 2 - 1); g.fill();
+      g.shadowColor = 'transparent';
+      g.fillStyle = '#fffaf2'; g.textAlign = 'left'; g.textBaseline = 'middle';
+      const num = (v * cnt).toFixed(1);
+      g.font = '400 20px "DM Serif Display", serif';
+      const nw = g.measureText(num).width;
+      g.font = '700 11px "Noto Sans TC", sans-serif';
+      const pw = g.measureText('%').width, x0 = -(nw + 2 + pw) / 2;
+      g.fillText('%', x0 + nw + 2, 4);
+      g.font = '400 20px "DM Serif Display", serif';
+      g.fillText(num, x0, 1);
+      g.restore();
+    }
+  }
+
+  // ---------- game flow ----------
+  const OPTS = ['兄妹兩人分・不准吵', '室友兩人分・要公平', '情侶兩人分・別小氣', '同事兩人分・看著辦', '雙胞胎分・會比較'];
+  function newRound(fresh) {
+    if (fresh) { cake = makeCake(); dropT = 0; }
+    cut = null; drag = null; knifeT = 0; splitT = 0; labelT = 0; resWait = 0; countT = 1;
+    $('ordNo').textContent = 'No.' + String(Math.floor(rand(1, 9999))).padStart(4, '0');
+    $('ordOpt').textContent = OPTS[Math.floor(rand(0, OPTS.length))];
+    const slip = $('slip'); slip.hidden = true; void slip.offsetWidth; slip.hidden = false;
+    $('sheet').hidden = true; $('title').hidden = true; $('toast').hidden = true;
+    $('hint').hidden = false;
+    state = 'ready';
+  }
+  function toast(msg) {
+    const el = $('toast'); el.textContent = msg; el.hidden = true; void el.offsetWidth; el.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; if (state === 'ready') $('hint').hidden = false; }, 1700);
+    sfx.nope();
+    if (navigator.vibrate) try { navigator.vibrate(10); } catch (e) {}
+  }
+
+  function tryCut(s0, s1) {
+    // identical rules to the classic version, measured on the cake's top face
+    const len = Math.hypot(s1.x - s0.x, s1.y - s0.y);
+    if (len < 30) { toast('劃太短了，再劃長一點'); return; }
+    const p0 = toPlan(s0), p1 = toPlan(s1);
+    const dx = p1.x - p0.x, dy = p1.y - p0.y, l = Math.hypot(dx, dy);
+    const d = { x: dx / l, y: dy / l }, n = { x: -d.y, y: d.x };
+    let left = 0, lx = 0, ly = 0, rx = 0, ry = 0;
+    for (const s of cake.samples) {
+      if (d.x * (s.y - p0.y) - d.y * (s.x - p0.x) > 0) { left++; lx += s.x; ly += s.y; } else { rx += s.x; ry += s.y; }
+    }
+    const N = cake.samples.length;
+    if (left < N * .01 || left > N * .99) { toast('沒切到蛋糕喔，要整刀劃過去'); return; }
+    const pct = left / N * 100;
+    cut = { p0, d, n, pct, lc: { x: lx / left, y: ly / left }, rc: { x: rx / (N - left), y: ry / (N - left) }, seed: rand(0, 100) };
+    // where the knife enters / leaves the outline
+    let tA = Infinity, tB = -Infinity;
+    const o = cake.outline;
+    for (let i = 0; i < o.length; i++) {
+      const a = o[i], b = o[(i + 1) % o.length], ca = cutSide(a), cb = cutSide(b);
+      if ((ca > 0) !== (cb > 0)) {
+        const t = ca / (ca - cb), x = a.x + (b.x - a.x) * t, y = a.y + (b.y - a.y) * t;
+        const u = (x - p0.x) * d.x + (y - p0.y) * d.y;
+        tA = Math.min(tA, u); tB = Math.max(tB, u);
+      }
+    }
+    cut.tA = tA; cut.tB = tB;
+    cut.A = { x: p0.x + d.x * tA, y: p0.y + d.y * tA }; cut.B = { x: p0.x + d.x * tB, y: p0.y + d.y * tB };
+    if (cut.A.x > cut.B.x) { const tmp = cut.A; cut.A = cut.B; cut.B = tmp; }
+    cut.halves = { 1: clipPoly(o, 1), '-1': clipPoly(o, -1) };
+    cut.back = n.y < 0 ? 1 : -1;   // the half sliding away from the camera shows its cut face
+    const score = Math.max(0, Math.round((100 - Math.abs(50 - pct) * 4) * 10) / 10);
+    const a = Math.max(pct, 100 - pct).toFixed(1), b = Math.min(pct, 100 - pct).toFixed(1);
+    const c = score >= 96 ? '兄弟姊妹都沒話說。' : score >= 88 ? '小的那塊會被搶，但不會吵架。' : score >= 70 ? '有人要哭了。' : '這不叫平分，這叫獨佔。';
+    cut.res = { score, a, b, c };
+    $('hint').hidden = true; $('toast').hidden = true;
+    if (reduced) { state = 'split'; splitT = 1; knifeT = 1; sfx.split(); }
+    else { state = 'knife'; knifeT = 0; sfx.slice(); }
+  }
+
+  function finish() {
+    state = 'result';
+    const { score, a, b, c } = cut.res;
+    let rk, role;
+    if (score >= 96) { rk = 'S'; role = '甜點主廚'; }
+    else if (score >= 88) { rk = 'A'; role = '公平的大哥'; }
+    else if (score >= 70) { rk = 'B'; role = '會被抱怨的人'; }
+    else { rk = 'C'; role = '自己吃大塊'; }
+    const prev = getBest(); const isNew = prev == null || score > prev;
+    if (isNew) setBest(score);
+    $('rank').textContent = rk; $('role').textContent = role;
+    $('score').textContent = reduced ? score.toFixed(1) : '0.0';
+    countT = reduced ? 1 : 0;
+    const bestLine = isNew ? `<br><span class="newbest">刷新個人最高紀錄</span>` : `<br>個人最高：${prev.toFixed(1)} 分`;
+    $('detail').innerHTML = `兩塊比例 <b>${a} : ${b}</b>。${c}` + bestLine;
+    lastRes = { score, rk, role, a, b };
+    $('slip').hidden = true;
+    $('sheet').hidden = false;
+    measureResult();
+    if (rk === 'S') sfx.win(); else if (rk === 'C') sfx.bad(); else sfx.ok();
+    if (navigator.vibrate) try { navigator.vibrate(rk === 'S' ? [20, 40, 20] : 15); } catch (e) {}
+    if (rk === 'S' && !reduced) burst();
+  }
+
+  let confetti = [];
+  function burst() {
+    const cols = ['#c2402a', '#6f8f78', '#e7b75f', '#3a2a20', '#f2a7a0'];
+    for (let i = 0; i < 90; i++) confetti.push({ x: W / 2 + rand(-40, 40), y: camY - ZH - R * .5, vx: rand(-260, 260), vy: rand(-520, -180), r: rand(3, 6), c: cols[i % cols.length], rot: rand(0, 6), vr: rand(-8, 8), life: rand(1.6, 2.6) });
+  }
+
+  // ---------- input ----------
+  const pos = e => ({ x: e.clientX, y: e.clientY });
+  function press(e) {
+    if (e.target.closest('button, a, .sheet, .title')) return;
+    initAudio();
+    if (state !== 'ready') return;
+    e.preventDefault();
+    drag = { s0: pos(e), s1: pos(e), id: e.pointerId };
+    state = 'drag'; $('hint').hidden = true; $('toast').hidden = true;
+    sfx.tick();
+  }
+  function move(e) { if (state === 'drag' && drag && e.pointerId === drag.id) drag.s1 = pos(e); }
+  function release(e) {
+    if (state !== 'drag' || !drag || (e && e.pointerId !== drag.id)) return;
+    if (e && e.type === 'pointerup') drag.s1 = pos(e);
+    const { s0, s1 } = drag; drag = null; state = 'ready';
+    tryCut(s0, s1);
+  }
+  addEventListener('pointerdown', press, { passive: false });
+  addEventListener('pointermove', move);
+  addEventListener('pointerup', release); addEventListener('pointercancel', release);
+  addEventListener('contextmenu', e => e.preventDefault());
+
+  $('go').addEventListener('click', () => { initAudio(); newRound(false); });
+  $('again').addEventListener('click', () => { initAudio(); newRound(true); });
+  $('share').addEventListener('click', async () => {
+    if (!lastRes) return;
+    const msg = `我在《蛋糕切一半》把草莓蛋糕切成 ${lastRes.a} : ${lastRes.b}，拿到 ${lastRes.score.toFixed(1)} 分（${lastRes.rk} 級・${lastRes.role}）！換你切切看：`;
+    const url = location.protocol.startsWith('http') ? location.href : '';
+    const btn = $('share');
+    try {
+      if (navigator.share) { await navigator.share({ title: '蛋糕切一半', text: msg, url: url || undefined }); return; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    try { await navigator.clipboard.writeText(url ? msg + ' ' + url : msg); btn.textContent = '已複製，去貼給朋友'; }
+    catch (e) { btn.textContent = '複製失敗'; }
+    setTimeout(() => { btn.textContent = '傳給朋友'; }, 2200);
+  });
+
+  // ---------- loop ----------
+  let last = 0;
+  function step(dt) {
+    T += dt;
+    const tgt = state === 'title' ? cyTitle : state === 'result' ? cyResult : cyPlay;
+    camY += (tgt - camY) * (reduced ? 1 : 1 - Math.pow(.003, dt));
+    if (dropT < 1) dropT = Math.min(1, dropT + dt * 2.4);
+    if (state === 'knife') {
+      knifeT += dt / .62;
+      if (knifeT >= 1) { knifeT = 1; state = 'split'; splitT = 0; sfx.split(); shake = .12; if (navigator.vibrate) try { navigator.vibrate(12); } catch (e) {} }
+    } else if (state === 'split') {
+      splitT = Math.min(1, splitT + dt / .6);
+      if (splitT >= 1) { resWait += dt; if (resWait > (reduced ? .2 : .55)) finish(); }
+    }
+    if (cut && (state === 'split' || state === 'result') && splitT > .5) labelT = Math.min(1, labelT + dt * 2.6);
+    if (state === 'result' && countT < 1 && lastRes) {
+      countT = Math.min(1, countT + dt / .9);
+      $('score').textContent = (lastRes.score * easeOut(countT)).toFixed(1);
+    }
+    for (const c of confetti) { c.vy += 700 * dt; c.x += c.vx * dt; c.y += c.vy * dt; c.vx *= .99; c.rot += c.vr * dt; c.life -= dt; }
+    confetti = confetti.filter(c => c.life > 0 && c.y < H + 20);
+    shake = Math.max(0, shake - dt);
+  }
+  function draw() {
+    g.setTransform(DPR, 0, 0, DPR, 0, 0);
+    g.clearRect(0, 0, W, H);
+    g.drawImage(cloth, 0, 0, W, H);
+    if (shake > 0 && !reduced) g.translate(rand(-2, 2) * shake * 6, rand(-1, 1) * shake * 6);
+    drawPlate();
+    if (cake) {
+      if (!cut || state === 'knife') drawPiece(cake.outline, O0, undefined, false);
+      else {
+        const front = -cut.back, faceOk = Math.abs(cut.n.y) > .04;
+        drawPiece(cut.halves[cut.back], offOf(cut.back), cut.back, faceOk);
+        drawPiece(cut.halves[front], offOf(front), front, false);
+      }
+    }
+    drawGroove();
+    drawKnife();
+    drawGuide();
+    drawLabels();
+    for (const c of confetti) {
+      g.save(); g.translate(c.x, c.y); g.rotate(c.rot); g.globalAlpha = clamp(c.life, 0, 1);
+      g.fillStyle = c.c; g.fillRect(-c.r, -c.r * .5, c.r * 2, c.r); g.restore();
+    }
+  }
+  function frame(t) {
+    const dt = Math.min(.05, (t - last) / 1000 || 0); last = t;
+    step(dt); draw();
+    requestAnimationFrame(frame);
+  }
+
+  addEventListener('resize', fit);
+  cake = makeCake();
+  fit();
+  const b = getBest();
+  $('bestTitle').textContent = b == null ? '今天還沒切過蛋糕' : `個人最高紀錄 ${b.toFixed(1)} 分`;
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

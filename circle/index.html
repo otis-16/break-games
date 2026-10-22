@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#f4ebdf">
+<title>一筆畫正圓</title>
+<meta name="description" content="手指按住，一筆畫一個圓。回到起點再放開，看看你離圓規還有多遠。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Noto+Sans+TC:wght@400;500;700&family=DM+Serif+Display&display=swap">
+<style>
+/* A sheet of good paper on a sage cutting mat, seen from above. Single light look by choice. */
+:root {
+  --cream: #f4ebdf;
+  --cream-2: #eadbc8;
+  --ink: #3a2a20;
+  --ink-soft: #7a6555;
+  --pen: #1f2b47;
+  --stamp: #c2402a;
+  --sage: #6f8f78;
+  --paper: #fffaf2;
+  --f-disp: "Noto Serif TC", "Songti TC", serif;
+  --f-body: "Noto Sans TC", "PingFang TC", system-ui, sans-serif;
+  --f-latin: "DM Serif Display", "Noto Serif TC", serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--f-body);
+  overflow: hidden;
+  -webkit-user-select: none; user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
+#cv { position: fixed; inset: 0; width: 100%; height: 100%; touch-action: none; display: block; }
+#sa {
+  position: fixed; top: 0; left: 0; visibility: hidden; pointer-events: none;
+  height: env(safe-area-inset-top, 0px); width: env(safe-area-inset-bottom, 0px);
+}
+
+.mute {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  right: max(14px, env(safe-area-inset-right, 0px));
+  z-index: 20;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 250, 242, .85);
+  box-shadow: 0 2px 10px rgba(40, 52, 44, .18);
+  display: grid; place-items: center;
+}
+.mute svg { width: 20px; height: 20px; }
+
+.play-home {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 14px);
+  left: max(14px, env(safe-area-inset-left, 0px));
+  z-index: 20;
+  font-size: 13px; color: var(--ink-soft); text-decoration: none;
+  padding: 8px 14px; border-radius: 999px; background: rgba(255, 250, 242, .85);
+  box-shadow: 0 2px 10px rgba(40, 52, 44, .18);
+}
+
+/* title */
+.title {
+  position: fixed; inset: 0 0 auto 0;
+  z-index: 15;
+  padding: calc(env(safe-area-inset-top, 0px) + 9vh) max(24px, env(safe-area-inset-right, 0px)) 64px max(24px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(var(--cream) 66%, rgba(244, 235, 223, 0));
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px;
+}
+.kicker { margin: 0; font-family: var(--f-latin); letter-spacing: .32em; font-size: 12px; color: var(--ink-soft); padding-left: .32em; }
+.title h1 {
+  margin: 0;
+  font-family: var(--f-disp); font-weight: 900;
+  font-size: clamp(48px, 15vw, 88px);
+  line-height: 1.05;
+  letter-spacing: .04em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.title h1 span { color: var(--stamp); position: relative; display: inline-block; }
+.title h1 span::after {
+  content: ""; position: absolute; left: 50%; top: 52%;
+  width: 1.22em; height: 1.22em;
+  border: 2px solid rgba(194, 64, 42, .55);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(-8deg);
+  border-right-color: transparent;
+}
+.sub { margin: 4px 0 0; font-family: var(--f-disp); font-size: 17px; letter-spacing: .4em; color: var(--ink-soft); padding-left: .4em; }
+.how { margin: 16px 0 4px; font-size: 14px; line-height: 1.8; color: var(--ink-soft); }
+.go {
+  margin-top: 10px;
+  padding: 14px 44px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 700; font-size: 17px; letter-spacing: .2em;
+  box-shadow: 0 8px 22px rgba(58, 42, 32, .25);
+  transition: transform .12s ease;
+}
+.go:active { transform: scale(.96); }
+.home {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 18px);
+  left: max(16px, env(safe-area-inset-left, 0px));
+  font-size: 13px; color: var(--ink-soft); text-decoration: none;
+  padding: 6px 12px; border-radius: 999px; background: rgba(255, 250, 242, .8);
+}
+.best { margin: 8px 0 0; font-size: 12px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+
+.hint {
+  position: fixed; left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
+  transform: translateX(-50%);
+  z-index: 10;
+  margin: 0;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(31, 43, 71, .86);
+  color: var(--paper);
+  font-size: 14px;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse { 50% { transform: translateX(-50%) scale(1.05); } }
+
+/* result */
+.sheet {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  z-index: 15;
+  padding: 22px max(20px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 18px) max(20px, env(safe-area-inset-left, 0px));
+  background: var(--paper);
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -10px 40px rgba(40, 52, 44, .22);
+  animation: up .45s cubic-bezier(.2, .9, .3, 1.1) both;
+}
+@keyframes up { from { transform: translateY(100%); } }
+.sheet-in { max-width: 420px; margin: 0 auto; display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; align-items: center; }
+.rank {
+  grid-row: span 2;
+  width: 76px; height: 76px; border-radius: 50%;
+  border: 3px solid var(--stamp); color: var(--stamp);
+  display: grid; place-items: center;
+  font-family: var(--f-latin); font-size: 44px; line-height: 1;
+  transform: rotate(-12deg);
+  animation: stamp .35s .25s cubic-bezier(.3, 1.6, .5, 1) both;
+}
+@keyframes stamp { from { transform: rotate(-12deg) scale(2.4); opacity: 0; } }
+.role { margin: 0; font-family: var(--f-disp); font-size: 22px; font-weight: 900; align-self: end; }
+.score { margin: 0; align-self: start; color: var(--ink-soft); font-size: 13px; font-variant-numeric: tabular-nums; }
+.score b { font-family: var(--f-latin); font-weight: 400; font-size: 28px; color: var(--ink); margin-right: 2px; }
+.detail { grid-column: 1 / -1; margin: 12px 0 0; padding: 10px 12px; background: var(--cream); border-radius: 10px; font-size: 13px; line-height: 1.6; font-variant-numeric: tabular-nums; }
+.newbest { color: var(--sage); font-weight: 700; }
+.btns { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.btns button { padding: 13px; border-radius: 12px; font-weight: 700; font-size: 15px; transition: transform .12s ease; }
+.btns button:active { transform: scale(.97); }
+#again { background: var(--ink); color: var(--paper); }
+#share { background: var(--cream); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet, .rank, .hint { animation: none; }
+}
+</style>
+</head>
+<body>
+<canvas id="cv" aria-label="遊戲畫面：在紙上一筆畫一個圓"></canvas>
+<div id="sa"></div>
+
+<button class="mute" id="mute" type="button" aria-label="靜音切換">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#3a2a20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path id="wave" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/><path id="cross" d="m16 9 6 6m0-6-6 6" hidden/></svg>
+</button>
+
+<a class="play-home" id="playHome" href="../" hidden>← 全部遊戲</a>
+
+<section class="title" id="title">
+  <a class="home" href="../">← 全部遊戲</a>
+  <p class="kicker">ONE STROKE CIRCLE</p>
+  <h1>一筆畫正<span>圓</span></h1>
+  <p class="sub">徒手圓規挑戰</p>
+  <p class="how">手指按住，一筆畫一個圓。<br>繞完一圈、回到起點再放開。</p>
+  <button class="go" id="go" type="button">拿起鋼筆</button>
+  <p class="best" id="bestTitle"></p>
+</section>
+
+<p class="hint" id="hint" hidden>按住畫一個圓，回到起點再放開</p>
+
+<section class="sheet" id="sheet" hidden>
+  <div class="sheet-in">
+    <div class="rank" id="rank">S</div>
+    <p class="role" id="role">圓規本人</p>
+    <p class="score"><b id="score">100</b>% 正圓</p>
+    <p class="detail" id="detail"></p>
+    <div class="btns">
+      <button id="again" type="button">再畫一次</button>
+      <button id="share" type="button">傳給朋友</button>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const $ = s => document.getElementById(s);
+  const cv = $('cv'), g = cv.getContext('2d');
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const ease = t => 1 - Math.pow(1 - clamp(t, 0, 1), 3);
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const PEN = '#1f2b47', RED = '#c2402a', INKSOFT = '#7a6555';
+  const BEST_KEY = 'dgh-circle-best';
+
+  let W, H, DPR, P = {}, SAT = 0, SAB = 0;
+  let state = 'title', T = 0, stT = 0;
+  let pts = [], drawing = false, live = null, liveShown = 0, res = null, msg = null;
+  let inkA = 1, lastPt = null, attempt = 0, shownScore = 0, lastTick = -1;
+  let lastRes = null, confetti = [], noiseTab = [];
+  const bg = document.createElement('canvas'), bgx = bg.getContext('2d');
+  const ink = document.createElement('canvas'), ix = ink.getContext('2d');
+
+  // ---------- storage ----------
+  const getBest = () => { try { const v = localStorage.getItem(BEST_KEY); return v == null ? null : Number(v); } catch (e) { return null; } };
+  const setBest = v => { try { localStorage.setItem(BEST_KEY, String(v)); } catch (e) {} };
+  let muted = false; try { muted = localStorage.getItem('dgh-muted') === '1'; } catch (e) {}
+
+  // ---------- audio ----------
+  let AC = null, scratchGain = null, scratchFilter = null;
+  function initAudio() {
+    if (AC) { if (AC.state === 'suspended') AC.resume(); return; }
+    try {
+      AC = new (window.AudioContext || window.webkitAudioContext)();
+      const buf = AC.createBuffer(1, AC.sampleRate * 2, AC.sampleRate);
+      const d = buf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      const src = AC.createBufferSource(); src.buffer = buf; src.loop = true;
+      scratchFilter = AC.createBiquadFilter(); scratchFilter.type = 'bandpass'; scratchFilter.Q.value = 2.2; scratchFilter.frequency.value = 3200;
+      scratchGain = AC.createGain(); scratchGain.gain.value = 0;
+      src.connect(scratchFilter).connect(scratchGain).connect(AC.destination); src.start();
+    } catch (e) { AC = null; }
+  }
+  function setScratch(v, freq = 3200) {
+    if (!AC || !scratchGain) return;
+    const t = AC.currentTime;
+    scratchGain.gain.setTargetAtTime(muted ? 0 : v * .09, t, .03);
+    scratchFilter.frequency.setTargetAtTime(freq + v * 900, t, .05);
+  }
+  function tone(freq, dur, type = 'sine', vol = .2, slide = 0, delay = 0) {
+    if (!AC || muted) return;
+    const t = AC.currentTime + delay;
+    const o = AC.createOscillator(), gn = AC.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, freq + slide), t + dur);
+    gn.gain.setValueAtTime(0, t); gn.gain.linearRampToValueAtTime(vol, t + .01); gn.gain.exponentialRampToValueAtTime(.001, t + dur);
+    o.connect(gn).connect(AC.destination); o.start(t); o.stop(t + dur + .02);
+  }
+  const sfx = {
+    tap: () => tone(1500, .04, 'triangle', .06, -600),
+    tick: () => tone(2200, .025, 'square', .025),
+    dot: () => tone(880, .08, 'sine', .12, -200),
+    oops: () => { tone(330, .16, 'triangle', .12, -60); tone(247, .22, 'triangle', .1, -40, .12); },
+    win: () => { [660, 880, 1320].forEach((f, i) => tone(f, .35, 'sine', .14, 0, i * .09)); },
+    ok: () => { [523, 659].forEach((f, i) => tone(f, .3, 'sine', .13, 0, i * .1)); },
+    bad: () => { tone(220, .4, 'sawtooth', .06, -80); }
+  };
+  function renderMute() { $('wave').hidden = muted; $('cross').hidden = !muted; }
+  $('mute').addEventListener('click', e => {
+    e.stopPropagation(); muted = !muted; renderMute(); initAudio(); setScratch(0);
+    try { localStorage.setItem('dgh-muted', muted ? '1' : '0'); } catch (err) {}
+  });
+  renderMute();
+
+  // ---------- scoring (ported 1:1 from classic makeCircle) ----------
+  function stats(pts) {
+    const n = pts.length; let cx = 0, cy = 0;
+    for (const p of pts) { cx += p.x; cy += p.y; } cx /= n; cy /= n;
+    const ds = pts.map(p => Math.hypot(p.x - cx, p.y - cy));
+    const r = ds.reduce((a, b) => a + b, 0) / n;
+    const sd = Math.sqrt(ds.reduce((a, d) => a + (d - r) ** 2, 0) / n);
+    return { cx, cy, r, score: clamp(100 - sd / r * 250, 0, 100) };
+  }
+  function judge(pts) {
+    if (pts.length < 15) return { err: 'small' };
+    const st = stats(pts);
+    if (st.r < 50) return { err: 'small' };
+    let turn = 0;
+    for (let i = 1; i < pts.length; i++) {
+      let d = Math.atan2(pts[i].y - st.cy, pts[i].x - st.cx) - Math.atan2(pts[i - 1].y - st.cy, pts[i - 1].x - st.cx);
+      if (d > Math.PI) d -= 2 * Math.PI; if (d < -Math.PI) d += 2 * Math.PI; turn += d;
+    }
+    if (Math.abs(turn) < Math.PI * 2 * .85) return { err: 'turn' };
+    const a = pts[0], b = pts[pts.length - 1];
+    if (Math.hypot(a.x - b.x, a.y - b.y) > st.r * .6) return { err: 'gap' };
+    return { st, dir: turn > 0 ? 1 : -1 };
+  }
+  const MSGS = {
+    small: ['畫太小了', '大膽一點，把圓畫大一些'],
+    turn: ['沒畫滿一圈', '繞完整整一圈再放開'],
+    gap: ['頭尾沒接上', '回到起點附近再放開手指']
+  };
+
+  // ---------- layout ----------
+  function fit() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    const sa = $('sa'); SAT = sa.offsetHeight || 0; SAB = sa.offsetWidth || 0;
+    for (const c of [cv, bg, ink]) { c.width = Math.round(W * DPR); c.height = Math.round(H * DPR); }
+    const top = SAT + 64, bottom = SAB + 18;
+    const pw = Math.min(W - 28, 560);
+    const ph = Math.min(H - top - bottom, pw * 1.5);
+    P = { x: (W - pw) / 2, y: top + (H - top - bottom - ph) / 2, w: pw, h: ph, rot: -.012 };
+    P.cx = P.x + pw / 2; P.cy = P.y + ph / 2;
+    noiseTab = Array.from({ length: 181 }, () => rand(-1, 1));
+    buildBg();
+    redrawInk();
+  }
+
+  function paperPath(c) { c.beginPath(); c.rect(P.x, P.y, P.w, P.h); }
+
+  function buildBg() {
+    const c = bgx;
+    c.setTransform(DPR, 0, 0, DPR, 0, 0);
+    // cutting mat
+    const mg = c.createLinearGradient(0, 0, W, H);
+    mg.addColorStop(0, '#83a08b'); mg.addColorStop(1, '#5f7c68');
+    c.fillStyle = mg; c.fillRect(0, 0, W, H);
+    c.strokeStyle = 'rgba(240,248,236,.10)'; c.lineWidth = 1;
+    for (let x = 12; x < W; x += 24) { c.beginPath(); c.moveTo(x + .5, 0); c.lineTo(x + .5, H); c.stroke(); }
+    for (let y = 12; y < H; y += 24) { c.beginPath(); c.moveTo(0, y + .5); c.lineTo(W, y + .5); c.stroke(); }
+    c.strokeStyle = 'rgba(240,248,236,.2)';
+    for (let x = 12; x < W; x += 120) { c.beginPath(); c.moveTo(x + .5, 0); c.lineTo(x + .5, H); c.stroke(); }
+    for (let y = 12; y < H; y += 120) { c.beginPath(); c.moveTo(0, y + .5); c.lineTo(W, y + .5); c.stroke(); }
+    // soft window light from top-left
+    const lg = c.createRadialGradient(W * .2, H * .05, 10, W * .2, H * .05, Math.max(W, H) * 1.1);
+    lg.addColorStop(0, 'rgba(255,250,235,.32)'); lg.addColorStop(1, 'rgba(20,30,24,.18)');
+    c.fillStyle = lg; c.fillRect(0, 0, W, H);
+
+    c.save();
+    c.translate(P.cx, P.cy); c.rotate(P.rot); c.translate(-P.cx, -P.cy);
+    // shadows: wide soft + tight contact
+    c.save();
+    c.shadowColor = 'rgba(20,32,24,.32)'; c.shadowBlur = 34 * DPR; c.shadowOffsetY = 14 * DPR; c.shadowOffsetX = 4 * DPR;
+    c.fillStyle = '#fffaf2'; paperPath(c); c.fill();
+    c.shadowColor = 'rgba(20,32,24,.28)'; c.shadowBlur = 3 * DPR; c.shadowOffsetY = 1.5 * DPR; c.shadowOffsetX = 0;
+    c.fill();
+    c.restore();
+    c.save(); paperPath(c); c.clip();
+    // paper light falloff
+    const pg = c.createLinearGradient(P.x, P.y, P.x + P.w, P.y + P.h);
+    pg.addColorStop(0, '#fffdf8'); pg.addColorStop(.6, '#fbf5ea'); pg.addColorStop(1, '#f3eadb');
+    c.fillStyle = pg; c.fillRect(P.x, P.y, P.w, P.h);
+    // grid (5mm-ish)
+    const gs = 18, gx0 = P.x + 30, gy0 = P.y + 70;
+    c.lineWidth = .8;
+    for (let i = 0, x = gx0; x < P.x + P.w - 6; x += gs, i++) {
+      c.strokeStyle = i % 5 === 0 ? 'rgba(111,143,120,.26)' : 'rgba(111,143,120,.13)';
+      c.beginPath(); c.moveTo(x, gy0); c.lineTo(x, P.y + P.h - 22); c.stroke();
+    }
+    for (let i = 0, y = gy0; y < P.y + P.h - 20; y += gs, i++) {
+      c.strokeStyle = i % 5 === 0 ? 'rgba(111,143,120,.26)' : 'rgba(111,143,120,.13)';
+      c.beginPath(); c.moveTo(gx0, y); c.lineTo(P.x + P.w - 12, y); c.stroke();
+    }
+    // header rule
+    c.strokeStyle = 'rgba(58,42,32,.28)'; c.lineWidth = 1;
+    c.beginPath(); c.moveTo(P.x + 22, P.y + 50); c.lineTo(P.x + P.w - 22, P.y + 50); c.stroke();
+    c.beginPath(); c.moveTo(P.x + 22, P.y + 53); c.lineTo(P.x + P.w - 22, P.y + 53); c.stroke();
+    // grain
+    const tile = document.createElement('canvas'); tile.width = tile.height = 96;
+    const tx = tile.getContext('2d'), id = tx.createImageData(96, 96);
+    for (let i = 0; i < id.data.length; i += 4) {
+      const v = Math.random();
+      id.data[i] = id.data[i + 1] = id.data[i + 2] = v > .5 ? 255 : 90;
+      id.data[i + 3] = Math.random() * 22;
+    }
+    tx.putImageData(id, 0, 0);
+    c.fillStyle = c.createPattern(tile, 'repeat'); c.fillRect(P.x, P.y, P.w, P.h);
+    // fibres
+    c.lineWidth = .6;
+    for (let i = 0; i < 70; i++) {
+      const x = P.x + rand(0, P.w), y = P.y + rand(0, P.h), a = rand(0, 6.28), l = rand(4, 12);
+      c.strokeStyle = `rgba(120,100,80,${rand(.04, .1)})`;
+      c.beginPath(); c.moveTo(x, y); c.quadraticCurveTo(x + Math.cos(a) * l * .5 + rand(-2, 2), y + Math.sin(a) * l * .5 + rand(-2, 2), x + Math.cos(a) * l, y + Math.sin(a) * l); c.stroke();
+    }
+    // edge vignette
+    const ev = c.createRadialGradient(P.cx, P.cy, Math.min(P.w, P.h) * .4, P.cx, P.cy, Math.max(P.w, P.h) * .75);
+    ev.addColorStop(0, 'rgba(120,95,60,0)'); ev.addColorStop(1, 'rgba(120,95,60,.08)');
+    c.fillStyle = ev; c.fillRect(P.x, P.y, P.w, P.h);
+    c.restore();
+    // washi tape
+    c.save();
+    c.translate(P.cx, P.y + 2); c.rotate(.035);
+    const tw = Math.min(110, P.w * .3), th = 26;
+    c.beginPath();
+    c.moveTo(-tw / 2, -th / 2);
+    for (let i = 0; i <= 6; i++) c.lineTo(-tw / 2 + (i % 2 ? 2.5 : 0), -th / 2 + i * th / 6);
+    c.lineTo(tw / 2, th / 2);
+    for (let i = 6; i >= 0; i--) c.lineTo(tw / 2 - (i % 2 ? 2.5 : 0), -th / 2 + i * th / 6);
+    c.closePath();
+    c.fillStyle = 'rgba(214,150,132,.62)'; c.fill();
+    c.clip();
+    c.strokeStyle = 'rgba(255,250,242,.35)'; c.lineWidth = 3;
+    for (let x = -tw; x < tw; x += 10) { c.beginPath(); c.moveTo(x, -th); c.lineTo(x + th, th); c.stroke(); }
+    c.restore();
+    c.restore();
+  }
+
+  // ---------- fountain-pen ink ----------
+  function inkStyle() {
+    ix.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ix.lineCap = 'round'; ix.lineJoin = 'round';
+    ix.strokeStyle = PEN; ix.fillStyle = PEN;
+    ix.shadowColor = 'rgba(31,43,71,.5)'; ix.shadowBlur = 2.2 * DPR;
+  }
+  const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+  function inkBlob(p, r) { inkStyle(); ix.beginPath(); ix.arc(p.x, p.y, r, 0, 7); ix.fill(); }
+  function inkSegment(i, list) {
+    inkStyle();
+    const a = list[i - 2], b = list[i - 1], c = list[i];
+    ix.lineWidth = b.w;
+    ix.beginPath();
+    const m0 = a ? mid(a, b) : b, m1 = mid(b, c);
+    ix.moveTo(m0.x, m0.y); ix.quadraticCurveTo(b.x, b.y, m1.x, m1.y); ix.stroke();
+  }
+  function inkTail(list) {
+    if (list.length < 2) return;
+    inkStyle();
+    const b = list[list.length - 2], c = list[list.length - 1], m = mid(b, c);
+    ix.lineWidth = c.w; ix.beginPath(); ix.moveTo(m.x, m.y); ix.lineTo(c.x, c.y); ix.stroke();
+    inkBlob(c, c.w * .62);
+  }
+  function inkAll(list) {
+    if (!list.length) return;
+    inkBlob(list[0], (list[0].w || 4) * .7);
+    for (let i = 1; i < list.length; i++) inkSegment(i, list);
+    inkTail(list);
+  }
+  function clearInk() { ix.setTransform(1, 0, 0, 1, 0, 0); ix.clearRect(0, 0, ink.width, ink.height); }
+  let demo = [];
+  function buildDemo() {
+    const cx = W / 2, cy = Math.min(H * .78, P.y + P.h - 120), r = Math.min(P.w * .26, 92);
+    demo = [];
+    const a0 = -2.2;
+    for (let i = 0; i <= 96; i++) {
+      const a = a0 + i / 96 * Math.PI * 2.03;
+      const rr = r * (1 + .025 * Math.sin(a * 2 + 1) + .012 * Math.sin(a * 3));
+      demo.push({ x: cx + Math.cos(a) * rr, y: cy + Math.sin(a) * rr * .985, w: 3.2 + 1.6 * (.5 + .5 * Math.sin(a * 2 + .4)) });
+    }
+    demo.c = { cx, cy, r };
+  }
+  function redrawInk() {
+    clearInk();
+    if (state === 'title') { buildDemo(); inkAll(demo); }
+    else inkAll(pts);
+  }
+
+  // ---------- red pencil ----------
+  function pencilArc(cx, cy, r, a0, dir, k) {
+    const N = Math.max(2, Math.round(160 * k));
+    g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
+    for (const pass of [0, 1]) {
+      g.strokeStyle = pass ? 'rgba(194,64,42,.7)' : 'rgba(194,64,42,.35)';
+      g.lineWidth = pass ? 1.3 : 2.6;
+      g.setLineDash(pass ? [6, 1.5, 2, 1.5] : []);
+      g.beginPath();
+      for (let i = 0; i <= N; i++) {
+        const a = a0 + dir * (i / 160) * Math.PI * 2;
+        const j = noiseTab[i % noiseTab.length] * (pass ? .5 : .9);
+        const x = cx + Math.cos(a) * (r + j), y = cy + Math.sin(a) * (r + j);
+        i ? g.lineTo(x, y) : g.moveTo(x, y);
+      }
+      g.stroke();
+    }
+    g.restore();
+  }
+  function pencilLine(x1, y1, x2, y2) {
+    g.save(); g.lineCap = 'round';
+    g.strokeStyle = 'rgba(194,64,42,.4)'; g.lineWidth = 2.2;
+    g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke();
+    g.strokeStyle = 'rgba(194,64,42,.75)'; g.lineWidth = 1.1; g.setLineDash([5, 2, 1.5, 2]);
+    g.beginPath(); g.moveTo(x1 + .4, y1 + .3); g.lineTo(x2 + .4, y2 + .3); g.stroke();
+    g.restore();
+  }
+  function txt(s, x, y, size, color, font = 'latin', align = 'center', base = 'middle') {
+    g.font = font === 'latin' ? `400 ${size}px "DM Serif Display", serif`
+      : font === 'disp' ? `900 ${size}px "Noto Serif TC", serif` : `500 ${size}px "Noto Sans TC", sans-serif`;
+    g.fillStyle = color; g.textAlign = align; g.textBaseline = base; g.fillText(s, x, y);
+  }
+
+  // ---------- game flow ----------
+  function today() { const d = new Date(); return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`; }
+  function newRound() {
+    pts = []; drawing = false; live = null; liveShown = 0; res = null; msg = null; inkA = 1; shownScore = 0; lastTick = -1;
+    attempt++;
+    clearInk();
+    $('sheet').hidden = true; $('title').hidden = true; $('playHome').hidden = false;
+    $('hint').hidden = false;
+    state = 'ready'; stT = 0;
+  }
+
+  function judgeAndGo() {
+    const j = judge(pts);
+    if (j.err) {
+      msg = { k: j.err, t: 0 }; state = 'oops'; stT = 0;
+      sfx.oops();
+      if (navigator.vibrate) try { navigator.vibrate(30); } catch (e) {}
+      return;
+    }
+    const st = j.st;
+    res = { ...st, dir: j.dir, a0: Math.atan2(pts[0].y - st.cy, pts[0].x - st.cx) };
+    state = 'reveal'; stT = reduced ? 3 : 0; lastTick = -1;
+  }
+
+  function finish() {
+    state = 'result';
+    const s = Math.round(res.score * 10) / 10;
+    let rk, role, c;
+    if (s >= 95) { rk = 'S'; role = '圓規本人'; c = '圓規都要拜你為師。'; }
+    else if (s >= 90) { rk = 'A'; role = '數學老師'; c = '數學老師會偷偷拍照。'; }
+    else if (s >= 80) { rk = 'B'; role = '美術課代表'; c = '是圓的，大致上。'; }
+    else { rk = 'C'; role = '雞蛋畫家'; c = '這比較像……雞蛋？'; }
+    const prev = getBest(); const isNew = prev == null || s > prev;
+    if (isNew) setBest(s);
+    $('rank').textContent = rk; $('role').textContent = role; $('score').textContent = s.toFixed(1);
+    const bestLine = isNew ? `<br><span class="newbest">${prev == null ? '第一張作品，紀錄已保存' : '刷新個人最高紀錄'}</span>` : `<br>個人最高：${prev.toFixed(1)}%`;
+    $('detail').innerHTML = `${c}半徑約 ${Math.round(res.r)}px，圓度 <b>${s.toFixed(1)}%</b>。` + bestLine;
+    lastRes = { s, rk, role };
+    $('sheet').hidden = false;
+    if (rk === 'S') sfx.win(); else if (rk === 'C') sfx.bad(); else sfx.ok();
+    if (navigator.vibrate) try { navigator.vibrate(rk === 'S' ? [20, 40, 20] : 15); } catch (e) {}
+    if (rk === 'S' && !reduced) burst();
+    setTimeout(() => { try { $('again').focus({ preventScroll: true }); } catch (e) {} }, 50);
+  }
+
+  function burst() {
+    const cols = ['#c2402a', '#6f8f78', '#e7b75f', '#1f2b47', '#f2a7a0'];
+    for (let i = 0; i < 90; i++) confetti.push({ x: res.cx + rand(-30, 30), y: res.cy, vx: rand(-280, 280), vy: rand(-560, -200), r: rand(3, 6), c: cols[i % cols.length], rot: rand(0, 6), vr: rand(-8, 8), life: rand(1.6, 2.6) });
+  }
+
+  // ---------- input ----------
+  function down(e) {
+    if (e.target !== cv) return;
+    initAudio();
+    if (state !== 'ready' && state !== 'oops') return;
+    e.preventDefault();
+    try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+    if (state === 'oops') { clearInk(); msg = null; inkA = 1; }
+    const p = { x: e.clientX, y: e.clientY, w: 4.2 };
+    pts = [p]; lastPt = { x: p.x, y: p.y, t: performance.now() }; drawing = true; live = null; liveShown = 0;
+    inkBlob(p, 3.1);
+    $('hint').hidden = true;
+    state = 'draw'; stT = 0; sfx.tap();
+  }
+  function move(e) {
+    if (!drawing) return;
+    const p = { x: e.clientX, y: e.clientY };
+    const l = pts[pts.length - 1];
+    if (Math.hypot(p.x - l.x, p.y - l.y) > 2) {
+      const now = performance.now();
+      const v = Math.hypot(p.x - lastPt.x, p.y - lastPt.y) / Math.max(4, now - lastPt.t);
+      lastPt = { x: p.x, y: p.y, t: now };
+      const target = clamp(6 - v * 2.2, 2, 6);
+      p.w = l.w * .72 + target * .28;
+      pts.push(p);
+      inkSegment(pts.length - 1, pts);
+      if (pts.length > 12) live = stats(pts);
+      setScratch(clamp(v / 1.6, .15, 1));
+    }
+  }
+  function up() {
+    if (!drawing) return;
+    drawing = false; setScratch(0);
+    inkTail(pts);
+    judgeAndGo();
+  }
+  cv.addEventListener('pointerdown', down, { passive: false });
+  cv.addEventListener('pointermove', move);
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  addEventListener('contextmenu', e => e.preventDefault());
+
+  $('go').addEventListener('click', () => { initAudio(); newRound(); });
+  $('again').addEventListener('click', () => { initAudio(); newRound(); });
+  $('share').addEventListener('click', async () => {
+    if (!lastRes) return;
+    const msgTxt = `我在《一筆畫正圓》徒手畫出 ${lastRes.s.toFixed(1)}% 的正圓（${lastRes.rk} 級・${lastRes.role}），換你畫畫看：`;
+    const url = location.protocol.startsWith('http') ? location.href : '';
+    const btn = $('share');
+    try {
+      if (navigator.share) { await navigator.share({ title: '一筆畫正圓', text: msgTxt, url: url || undefined }); return; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    try { await navigator.clipboard.writeText(url ? msgTxt + ' ' + url : msgTxt); btn.textContent = '已複製，去貼給朋友'; }
+    catch (e) { btn.textContent = '複製失敗'; }
+    setTimeout(() => { btn.textContent = '傳給朋友'; }, 2200);
+  });
+
+  // ---------- loop ----------
+  const R_CIRCLE = 1.0, R_MARK = 1.25, R_SHEET = 2.1;
+  function step(dt) {
+    T += dt; stT += dt;
+    if (state === 'draw' && live) liveShown += (live.score - liveShown) * Math.min(1, dt * 14);
+    if (state === 'oops') inkA = Math.max(.22, inkA - dt * 2);
+    if (state === 'reveal') {
+      const k = clamp((stT - .25) / (R_SHEET - .6), 0, 1);
+      shownScore = res.score * ease(k);
+      const tick = Math.floor(shownScore);
+      if (tick !== lastTick && k < 1 && stT > .25) { lastTick = tick; if (tick % 3 === 0) sfx.tick(); }
+      if (stT < R_CIRCLE) setScratch(.35, 5200); else setScratch(0);
+      if (stT - dt < R_MARK && stT >= R_MARK) sfx.dot();
+      if (stT >= R_SHEET) { setScratch(0); shownScore = res.score; finish(); }
+    }
+    for (const c of confetti) { c.vy += 700 * dt; c.x += c.vx * dt; c.y += c.vy * dt; c.vx *= .99; c.rot += c.vr * dt; c.life -= dt; }
+    confetti = confetti.filter(c => c.life > 0 && c.y < H + 20);
+  }
+
+  function drawHeader() {
+    const y = P.y + 34;
+    g.save();
+    g.translate(P.cx, P.cy); g.rotate(P.rot); g.translate(-P.cx, -P.cy);
+    txt('NO.', P.x + 24, y, 12, 'rgba(122,101,85,.8)', 'latin', 'left');
+    txt(String(Math.max(1, attempt)).padStart(3, '0'), P.x + 50, y - 1, 17, PEN, 'latin', 'left');
+    txt(today(), P.x + P.w - 24, y - 1, 15, PEN, 'latin', 'right');
+    txt('DATE', P.x + P.w - 24 - g.measureText(today()).width - 10, y, 12, 'rgba(122,101,85,.8)', 'latin', 'right');
+    g.restore();
+  }
+
+  function drawLive() {
+    const y = P.y + 104;
+    if (state === 'draw') {
+      const has = !!live;
+      txt('目前圓度', P.cx, y - 26, 11, 'rgba(122,101,85,.85)', 'body');
+      g.save(); g.globalAlpha = has ? 1 : .35;
+      const v = has ? liveShown.toFixed(1) : '--.-';
+      g.font = '400 46px "DM Serif Display", serif';
+      const w = g.measureText(v).width;
+      txt(v, P.cx - 8, y + 14, 46, PEN, 'latin', 'center');
+      txt('%', P.cx - 8 + w / 2 + 3, y + 20, 20, 'rgba(31,43,71,.7)', 'latin', 'left');
+      g.restore();
+    }
+  }
+
+  function drawOops() {
+    if (state !== 'oops' || !msg) return;
+    const [a, b] = MSGS[msg.k];
+    const k = reduced ? 1 : ease(stT / .35);
+    const y = P.y + 108;
+    g.save();
+    g.globalAlpha = k;
+    g.translate(P.cx, y + (1 - k) * 10); g.rotate(-.03);
+    g.font = '900 30px "Noto Serif TC", serif';
+    const w = g.measureText(a).width;
+    txt(a, 0, 0, 30, RED, 'disp');
+    // hand underline
+    g.strokeStyle = 'rgba(194,64,42,.65)'; g.lineWidth = 2; g.lineCap = 'round';
+    g.beginPath();
+    const n = 20, uw = w * .92 * (reduced ? 1 : ease((stT - .15) / .4));
+    for (let i = 0; i <= n; i++) { const x = -w * .46 + uw * i / n, yy = 24 + Math.sin(i * .9) * 1.6; i ? g.lineTo(x, yy) : g.moveTo(x, yy); }
+    g.stroke();
+    txt(b, 0, 48, 14, INKSOFT, 'body');
+    g.restore();
+  }
+
+  function drawReady() {
+    if (state !== 'ready') return;
+    const r = Math.min(P.w * .3, 120);
+    g.save();
+    g.strokeStyle = 'rgba(58,42,32,.13)'; g.lineWidth = 1.5; g.setLineDash([3, 7]);
+    g.beginPath(); g.arc(P.cx, P.cy + 10, r, 0, 7); g.stroke();
+    g.restore();
+    txt('在這裡畫', P.cx, P.cy + 10, 22, 'rgba(58,42,32,.28)', 'disp');
+  }
+
+  function drawReveal() {
+    if (!res || (state !== 'reveal' && state !== 'result')) return;
+    const t = stT, R = res;
+    const kc = state === 'result' ? 1 : ease(t / R_CIRCLE);
+    pencilArc(R.cx, R.cy, R.r, R.a0, R.dir, kc);
+    const km = state === 'result' ? 1 : ease((t - R_MARK) / .35);
+    if (km > 0) {
+      g.save(); g.globalAlpha = km;
+      // radius toward upper-right
+      const ang = -Math.PI / 4;
+      const ex = R.cx + Math.cos(ang) * R.r * km, ey = R.cy + Math.sin(ang) * R.r * km;
+      pencilLine(R.cx, R.cy, ex, ey);
+      // centre cross + dot
+      g.strokeStyle = 'rgba(194,64,42,.75)'; g.lineWidth = 1.2;
+      g.beginPath(); g.moveTo(R.cx - 7, R.cy); g.lineTo(R.cx + 7, R.cy); g.moveTo(R.cx, R.cy - 7); g.lineTo(R.cx, R.cy + 7); g.stroke();
+      g.fillStyle = RED; g.beginPath(); g.arc(R.cx, R.cy, 3.2, 0, 7); g.fill();
+      // radius label
+      const mx = R.cx + Math.cos(ang) * R.r * .55, my = R.cy + Math.sin(ang) * R.r * .55;
+      g.save(); g.translate(mx, my); g.rotate(ang);
+      txt(`r = ${Math.round(R.r)}`, 0, -9, 14, RED, 'latin', 'center', 'alphabetic');
+      g.restore();
+      g.restore();
+    }
+    // score count-up under the centre
+    const ks = state === 'result' ? 1 : ease((t - .2) / .3);
+    if (ks > 0) {
+      const size = clamp(R.r * .42, 26, 60);
+      const v = (state === 'result' ? R.score : shownScore).toFixed(1);
+      g.save(); g.globalAlpha = ks;
+      g.font = `400 ${size}px "DM Serif Display", serif`;
+      const w = g.measureText(v).width;
+      const y = R.cy + Math.max(18, size * .38) + size * .5;
+      g.fillStyle = 'rgba(255,250,242,.6)';
+      g.beginPath(); g.ellipse(R.cx, y, w * .7 + 10, size * .52, 0, 0, 7); g.fill();
+      txt(v, R.cx - size * .16, y, size, RED, 'latin', 'center');
+      txt('%', R.cx - size * .16 + w / 2 + 2, y + size * .12, size * .42, RED, 'latin', 'left');
+      g.restore();
+    }
+  }
+
+  function drawTitleDecor() {
+    if (state !== 'title' || !demo.c) return;
+    const c = demo.c;
+    pencilArc(c.cx, c.cy, c.r * 1.0, -2.2, 1, 1);
+    g.save(); g.translate(c.cx + c.r * .92, c.cy + c.r * .95); g.rotate(-.12);
+    txt('98.6%', 0, 0, 22, RED, 'latin', 'left');
+    g.restore();
+  }
+
+  function draw() {
+    g.setTransform(DPR, 0, 0, DPR, 0, 0);
+    g.clearRect(0, 0, W, H);
+    g.drawImage(bg, 0, 0, W, H);
+    if (state !== 'title') drawHeader();
+    drawReady();
+    g.save(); g.globalAlpha = inkA; g.drawImage(ink, 0, 0, W, H); g.restore();
+    drawTitleDecor();
+    drawLive();
+    drawOops();
+    drawReveal();
+    for (const c of confetti) {
+      g.save(); g.translate(c.x, c.y); g.rotate(c.rot); g.globalAlpha = clamp(c.life, 0, 1);
+      g.fillStyle = c.c; g.fillRect(-c.r, -c.r * .5, c.r * 2, c.r); g.restore();
+    }
+  }
+  let last = 0;
+  function frame(t) {
+    const dt = Math.min(.05, (t - last) / 1000 || 0); last = t;
+    step(dt); draw();
+    requestAnimationFrame(frame);
+  }
+
+  addEventListener('resize', fit);
+  fit();
+  const b = getBest();
+  $('bestTitle').textContent = b == null ? '還沒有作品' : `個人最高紀錄 ${b.toFixed(1)}%`;
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

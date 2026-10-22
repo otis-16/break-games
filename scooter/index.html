@@ -1,0 +1,1311 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#f4ebdf">
+<title>載阿嬤回家｜機車後座篇</title>
+<meta name="description" content="一根手指騎機車，閃過公車、計程車和機車瀑布，平安把阿嬤載回家。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Noto+Sans+TC:wght@400;500;700&family=DM+Serif+Display&display=swap">
+<style>
+/* Sunny city street, seen from above. Single light look by choice, matching the tea game. */
+:root {
+  --cream: #f4ebdf;
+  --cream-2: #eadbc8;
+  --ink: #3a2a20;
+  --ink-soft: #7a6555;
+  --stamp: #c2402a;
+  --sage: #6f8f78;
+  --paper: #fffaf2;
+  --f-disp: "Noto Serif TC", "Songti TC", serif;
+  --f-body: "Noto Sans TC", "PingFang TC", system-ui, sans-serif;
+  --f-latin: "DM Serif Display", "Noto Serif TC", serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--f-body);
+  overflow: hidden;
+  -webkit-user-select: none; user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+button:focus-visible { outline: 3px solid var(--stamp); outline-offset: 3px; }
+#cv { position: fixed; inset: 0; width: 100%; height: 100%; touch-action: none; display: block; }
+
+.mute {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  right: max(14px, env(safe-area-inset-right, 0px));
+  z-index: 20;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 250, 242, .85);
+  box-shadow: 0 2px 10px rgba(58, 42, 32, .14);
+  display: grid; place-items: center;
+}
+.mute svg { width: 20px; height: 20px; }
+
+/* trip card */
+.card {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  left: max(12px, env(safe-area-inset-left, 0px));
+  z-index: 10;
+  width: 150px;
+  padding: 9px 11px 11px;
+  background: var(--paper);
+  box-shadow: 0 6px 18px rgba(58, 42, 32, .16);
+  font-size: 11px;
+  line-height: 1.4;
+  transform: rotate(-2deg);
+  transform-origin: 20% 0;
+  animation: print .5s cubic-bezier(.2, .9, .3, 1.2) both;
+}
+.card::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: -6px; height: 6px;
+  background: linear-gradient(-45deg, transparent 4px, var(--paper) 0) 0 0 / 8px 6px repeat-x,
+              linear-gradient(45deg, transparent 4px, var(--paper) 0) 0 0 / 8px 6px repeat-x;
+}
+@keyframes print { from { transform: rotate(-2deg) translateY(-130%); } }
+.card .row { display: flex; justify-content: space-between; color: var(--ink-soft); letter-spacing: .06em; border-bottom: 1px dashed var(--cream-2); padding-bottom: 3px; margin-bottom: 2px; font-variant-numeric: tabular-nums; }
+.card .left { display: flex; align-items: baseline; gap: 3px; color: var(--stamp); }
+.card .left b { font-family: var(--f-latin); font-size: 28px; font-weight: 400; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.bar { position: relative; height: 5px; border-radius: 3px; background: var(--cream-2); margin: 3px 0 7px; }
+.bar i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 3px; background: var(--stamp); }
+.hearts { display: flex; align-items: center; gap: 3px; color: var(--ink-soft); }
+.hearts span { margin-right: 3px; }
+.hearts svg { width: 15px; height: 15px; transition: transform .2s ease; }
+.hearts svg.off { transform: scale(.82); }
+.hearts svg.off path { fill: none; stroke: #c9b8a6; }
+.nag { display: flex; align-items: center; gap: 6px; margin-top: 4px; color: var(--ink-soft); }
+.nag .nb { flex: 1; height: 5px; border-radius: 3px; background: var(--cream-2); overflow: hidden; }
+.nag .nb i { display: block; height: 100%; width: 0; background: #e2a03f; border-radius: 3px; }
+.nag.hot .nb i { background: var(--stamp); }
+
+/* title */
+.title {
+  position: fixed; inset: 0 0 auto 0;
+  z-index: 15;
+  padding: calc(env(safe-area-inset-top, 0px) + 9vh) max(24px, env(safe-area-inset-right, 0px)) 56px max(24px, env(safe-area-inset-left, 0px));
+  background: linear-gradient(var(--cream) 70%, rgba(244, 235, 223, 0));
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px;
+}
+.kicker { margin: 0; font-family: var(--f-latin); letter-spacing: .32em; font-size: 12px; color: var(--ink-soft); }
+.title h1 {
+  margin: 0;
+  font-family: var(--f-disp); font-weight: 900;
+  font-size: clamp(50px, 15vw, 96px);
+  line-height: 1.05;
+  letter-spacing: .04em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.title h1 span { color: var(--stamp); }
+.sub { margin: 2px 0 0; font-family: var(--f-disp); font-size: 18px; letter-spacing: .4em; color: var(--ink-soft); padding-left: .4em; }
+.how { margin: 16px 0 4px; font-size: 14px; line-height: 1.8; color: var(--ink-soft); }
+.go {
+  margin-top: 10px;
+  padding: 14px 44px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 700; font-size: 17px; letter-spacing: .2em;
+  box-shadow: 0 8px 22px rgba(58, 42, 32, .25);
+  transition: transform .12s ease;
+}
+.go:active { transform: scale(.96); }
+.home {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 18px);
+  left: max(16px, env(safe-area-inset-left, 0px));
+  font-size: 13px; color: var(--ink-soft); text-decoration: none;
+  padding: 6px 12px; border-radius: 999px; background: rgba(255, 250, 242, .8);
+}
+.best { margin: 8px 0 0; font-size: 12px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+
+.hint {
+  position: fixed; left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
+  transform: translateX(-50%);
+  z-index: 10;
+  margin: 0;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(58, 42, 32, .82);
+  color: var(--paper);
+  font-size: 14px;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+.hint.red { background: rgba(194, 64, 42, .92); font-weight: 700; }
+@keyframes pulse { 50% { transform: translateX(-50%) scale(1.05); } }
+
+/* result */
+.sheet {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  z-index: 15;
+  padding: 22px max(20px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 18px) max(20px, env(safe-area-inset-left, 0px));
+  background: var(--paper);
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -10px 40px rgba(58, 42, 32, .16);
+  animation: up .45s cubic-bezier(.2, .9, .3, 1.1) both;
+}
+@keyframes up { from { transform: translateY(100%); } }
+.sheet-in { max-width: 420px; margin: 0 auto; display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; align-items: center; }
+.rank {
+  grid-row: span 2;
+  width: 76px; height: 76px; border-radius: 50%;
+  border: 3px solid var(--stamp); color: var(--stamp);
+  display: grid; place-items: center;
+  font-family: var(--f-latin); font-size: 44px; line-height: 1;
+  transform: rotate(-12deg);
+  animation: stamp .35s .25s cubic-bezier(.3, 1.6, .5, 1) both;
+}
+@keyframes stamp { from { transform: rotate(-12deg) scale(2.4); opacity: 0; } }
+.role { margin: 0; font-family: var(--f-disp); font-size: 22px; font-weight: 900; align-self: end; }
+.score { margin: 0; align-self: start; color: var(--ink-soft); font-size: 13px; font-variant-numeric: tabular-nums; }
+.score b { font-family: var(--f-latin); font-weight: 400; font-size: 28px; color: var(--ink); margin-right: 2px; }
+.detail { grid-column: 1 / -1; margin: 12px 0 0; padding: 10px 12px; background: var(--cream); border-radius: 10px; font-size: 13px; line-height: 1.7; font-variant-numeric: tabular-nums; }
+.newbest { color: var(--sage); font-weight: 700; }
+.btns { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.btns button { padding: 13px; border-radius: 12px; font-weight: 700; font-size: 15px; transition: transform .12s ease; }
+.btns button:active { transform: scale(.97); }
+#again { background: var(--ink); color: var(--paper); }
+#share { background: var(--cream); }
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .sheet, .rank, .hint { animation: none; }
+}
+</style>
+</head>
+<body>
+<canvas id="cv" aria-label="遊戲畫面"></canvas>
+
+<button class="mute" id="mute" type="button" aria-label="靜音切換">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#3a2a20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path id="wave" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/><path id="cross" d="m16 9 6 6m0-6-6 6" hidden/></svg>
+</button>
+
+<div class="card" id="card" hidden>
+  <div class="row"><span>離阿嬤家</span><span id="kmh">0 km/h</span></div>
+  <div class="left"><b id="left">2000</b>m</div>
+  <div class="bar"><i id="prog"></i></div>
+  <div class="hearts" id="hearts"><span>安心度</span>
+    <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.7 4.5c2.2 0 3.7 1.3 5.3 3.2 1.6-1.9 3.1-3.2 5.3-3.2 3.7 0 5.8 3.8 4.3 7.2C19.5 16.4 12 21 12 21z" fill="#c2402a" stroke-width="2"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.7 4.5c2.2 0 3.7 1.3 5.3 3.2 1.6-1.9 3.1-3.2 5.3-3.2 3.7 0 5.8 3.8 4.3 7.2C19.5 16.4 12 21 12 21z" fill="#c2402a" stroke-width="2"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.7 4.5c2.2 0 3.7 1.3 5.3 3.2 1.6-1.9 3.1-3.2 5.3-3.2 3.7 0 5.8 3.8 4.3 7.2C19.5 16.4 12 21 12 21z" fill="#c2402a" stroke-width="2"/></svg>
+  </div>
+  <div class="nag" id="nagRow"><span>碎念</span><div class="nb"><i id="nag"></i></div></div>
+</div>
+
+<section class="title" id="title">
+  <a class="home" href="../">← 全部遊戲</a>
+  <p class="kicker">RIDE GRANDMA HOME</p>
+  <h1>載阿嬤<span>回家</span></h1>
+  <p class="sub">機車後座篇</p>
+  <p class="how">手指左右滑，閃車鑽車陣；往下拉是煞車。<br>紅燈要停，路上的肉圓順便買。<br>阿嬤安心度歸零，她就自己走回家。</p>
+  <button class="go" id="go" type="button">發動機車</button>
+  <p class="best" id="bestTitle"></p>
+</section>
+
+<p class="hint" id="hint" hidden>左右滑動閃車・往下拉煞車</p>
+
+<section class="sheet" id="sheet" hidden>
+  <div class="sheet-in">
+    <div class="rank" id="rank">S</div>
+    <p class="role" id="role">阿嬤的驕傲</p>
+    <p class="score"><b id="score">0</b>分</p>
+    <p class="detail" id="detail"></p>
+    <div class="btns">
+      <button id="again" type="button">再載一次</button>
+      <button id="share" type="button">傳給朋友</button>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const $ = s => document.getElementById(s);
+  const cv = $('cv'), g = cv.getContext('2d');
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const hash = i => { const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const HOME = 2000;          // meters to grandma's house
+  const RW = 9.9;             // road width in meters (3 lanes)
+  const LANES = [1.65, 4.95, 8.25];
+  const SEG = 13;             // shopfront length in meters
+  const INTERS = [280, 620, 960, 1310, 1660];
+  const FONT = '"Noto Sans TC", "PingFang TC", sans-serif';
+
+  const SHOPS = [
+    ['豆漿', '#e2a03f', '#fffaf2'], ['便利商店', '#3f8f6b', '#fffaf2'], ['五金行', '#3b6ea5', '#fffaf2'],
+    ['自助餐', '#c2402a', '#fffaf2'], ['肉圓', '#fffaf2', '#c2402a'], ['水果行', '#e07b39', '#fffaf2'],
+    ['機車行', '#3a2a20', '#f2c230'], ['麵店', '#6f8f78', '#fffaf2'], ['文具行', '#5a7fa8', '#fffaf2'],
+    ['剪髮', '#fffaf2', '#3b6ea5'], ['雜貨店', '#9a5b3a', '#fffaf2'], ['冰店', '#7fb7c9', '#fffaf2'],
+    ['肉圓', '#fffaf2', '#c2402a'], ['豆花', '#d9b26a', '#3a2a20']
+  ];
+  const ROOFS = ['#e6d6bf', '#d6c4a8', '#cdd6cc', '#e8cdb8', '#d2d9e0', '#efe2cc', '#dcc9b0', '#c9d3c0'];
+  const CARS = ['#eeeae2', '#3a4a5c', '#b8bcc0', '#c2402a', '#6f8f78', '#2f2a26', '#5a7fa8', '#d9cbb3'];
+  const HELMETS = ['#fffaf2', '#c2402a', '#3b6ea5', '#f2c230', '#2f2a26', '#e98aa0', '#6f8f78'];
+
+  const LINES = {
+    idle: ['你阿公以前騎很穩欸', '轉角那間肉圓停一下', '安全帽有沒有扣好？', '騎慢慢就好，阿嬤不趕', '晚上要不要留下來吃飯？', '你最近是不是瘦了', '這條路以前都是田欸'],
+    fast: ['慢一點啦！', '騎那麼快要去哪裡啦', '阿嬤的心臟受不了喔', '你是在趕投胎喔'],
+    near: ['哎唷喂呀！', '慢一點啦！', '看車啦！看車！', '你要嚇死阿嬤喔！', '差一點點欸！'],
+    swerve: ['不要蛇行啦！', '阿嬤頭好暈…', '蔥要掉出去了啦'],
+    crash: ['哎唷！我的腰啊！', '撞到了啦！', '你阿公會哭喔'],
+    bump: ['哎唷我的屁股！', '坑洞啦！', '這條路都不修喔'],
+    red: ['紅燈啦！', '紅燈不能闖啦！'],
+    snack: ['這間肉圓讚啦！', '好，回家給你加菜', '多買一份給你阿姨'],
+    good: ['對嘛，乖孫。', '這樣才對嘛', '等一下沒關係'],
+    dog: ['有狗！有狗！', '狗狗過馬路啦'],
+    swarm: ['哇，機車瀑布欸', '這麼多機車喔'],
+    taxi: ['小心車門！']
+  };
+
+  let W, H, DPR, K, roadL, roadR, PY, sideW, af;
+  let state = 'title', T = 0;
+  let dist = 0, spd = 0, px = RW / 2 + 1.6, ptx = px, lean = 0, brake = 0, keyBrake = 0, keyDir = 0;
+  let hearts = 3, nag = 0, inv = 0, scare = 0, bump = 0, runT = 0;
+  let obs = [], fx = [], pops = [], confetti = [], inters = [];
+  let nextM = 0, prevFront = 0, swerveT = 0, prevPx = px, chatT = 6, shake = 0;
+  let snacks = 0, lawful = 0, nearMiss = 0, redRun = 0, crashes = 0;
+  let bubble = null, bubbleCd = 0, endT = 0, gm = null, hintT = 0, lastRes = null, saidSwarm = false;
+
+  // ---------- storage ----------
+  const getBest = () => { try { const v = localStorage.getItem('dgh-scooter-best'); return v == null ? null : Number(v); } catch (e) { return null; } };
+  const setBest = v => { try { localStorage.setItem('dgh-scooter-best', String(v)); } catch (e) {} };
+  let muted = false; try { muted = localStorage.getItem('dgh-muted') === '1'; } catch (e) {}
+
+  // ---------- audio ----------
+  let AC = null, eng = null, engGain = null, engFilter = null, noiseBuf = null;
+  function initAudio() {
+    if (AC) { if (AC.state === 'suspended') AC.resume(); return; }
+    try {
+      AC = new (window.AudioContext || window.webkitAudioContext)();
+      noiseBuf = AC.createBuffer(1, AC.sampleRate, AC.sampleRate);
+      const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      eng = AC.createOscillator(); eng.type = 'sawtooth'; eng.frequency.value = 50;
+      engFilter = AC.createBiquadFilter(); engFilter.type = 'lowpass'; engFilter.frequency.value = 300; engFilter.Q.value = 3;
+      engGain = AC.createGain(); engGain.gain.value = 0;
+      eng.connect(engFilter).connect(engGain).connect(AC.destination); eng.start();
+    } catch (e) { AC = null; }
+  }
+  function setEngine(on) {
+    if (!AC || !engGain) return;
+    const t = AC.currentTime;
+    engGain.gain.setTargetAtTime(muted || !on ? 0 : .045, t, .08);
+    eng.frequency.setTargetAtTime(42 + spd * 4.2 + Math.sin(T * 30) * 2, t, .05);
+    engFilter.frequency.setTargetAtTime(260 + spd * 32, t, .05);
+  }
+  function tone(freq, dur, type = 'sine', vol = .2, slide = 0, delay = 0) {
+    if (!AC || muted) return;
+    const t = AC.currentTime + delay;
+    const o = AC.createOscillator(), gn = AC.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, freq + slide), t + dur);
+    gn.gain.setValueAtTime(0, t); gn.gain.linearRampToValueAtTime(vol, t + .01); gn.gain.exponentialRampToValueAtTime(.001, t + dur);
+    o.connect(gn).connect(AC.destination); o.start(t); o.stop(t + dur + .02);
+  }
+  function hiss(dur, freq, vol, delay = 0) {
+    if (!AC || muted) return;
+    const t = AC.currentTime + delay;
+    const s = AC.createBufferSource(); s.buffer = noiseBuf;
+    const f = AC.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = 1.5;
+    const gn = AC.createGain(); gn.gain.setValueAtTime(vol, t); gn.gain.exponentialRampToValueAtTime(.001, t + dur);
+    s.connect(f).connect(gn).connect(AC.destination); s.start(t); s.stop(t + dur + .02);
+  }
+  const sfx = {
+    honk: () => { tone(420, .14, 'square', .06); tone(420, .2, 'square', .06, 0, .18); tone(530, .2, 'square', .04, 0, .18); },
+    crash: () => { hiss(.45, 700, .5); tone(110, .4, 'triangle', .35, -60); },
+    bump: () => { tone(90, .18, 'triangle', .4, -30); hiss(.12, 400, .25); },
+    scream: () => tone(rand(820, 980), .32, 'triangle', .1, 520),
+    snack: () => { [880, 1175].forEach((f, i) => tone(f, .22, 'sine', .13, 0, i * .07)); },
+    good: () => { [523, 659, 784].forEach((f, i) => tone(f, .25, 'sine', .11, 0, i * .08)); },
+    whistle: () => { tone(2100, .12, 'sine', .1); tone(2100, .3, 'sine', .1, 0, .16); },
+    squeal: () => hiss(.25, 2600, .08),
+    win: () => { [660, 880, 1320].forEach((f, i) => tone(f, .35, 'sine', .14, 0, i * .09)); },
+    ok: () => { [523, 659].forEach((f, i) => tone(f, .3, 'sine', .13, 0, i * .1)); },
+    bad: () => { tone(220, .4, 'sawtooth', .07, -80); }
+  };
+  function renderMute() { $('wave').hidden = muted; $('cross').hidden = !muted; }
+  $('mute').addEventListener('click', e => {
+    e.stopPropagation(); muted = !muted; renderMute(); initAudio(); setEngine(state === 'play');
+    try { localStorage.setItem('dgh-muted', muted ? '1' : '0'); } catch (err) {}
+  });
+  renderMute();
+  document.addEventListener('visibilitychange', () => { if (document.hidden) setEngine(false); });
+
+  // ---------- layout ----------
+  function fit() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+    const roadPx = clamp(W * .62, 230, 440);
+    roadL = (W - roadPx) / 2; roadR = roadL + roadPx; sideW = roadL;
+    K = roadPx / RW;
+    af = clamp(sideW * .42, 22, 64);
+    PY = H * .76;
+  }
+  const X = xm => roadL + xm * K;
+  const Y = m => PY - (m - dist) * K;
+
+  // ---------- drawing helpers ----------
+  function rrect(x, y, w, h, r) {
+    r = Math.max(0, Math.min(r, w / 2, h / 2));
+    g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
+    g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+  }
+  function shade(hex, k) {
+    const n = parseInt(hex.slice(1), 16);
+    let r = n >> 16, gg = (n >> 8) & 255, b = n & 255;
+    if (k < 0) { r *= 1 + k; gg *= 1 + k; b *= 1 + k; } else { r += (255 - r) * k; gg += (255 - gg) * k; b += (255 - b) * k; }
+    return `rgb(${r | 0},${gg | 0},${b | 0})`;
+  }
+  function circle(x, y, r) { g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill(); }
+  const visM = () => [dist - (H - PY) / K - 6, dist + PY / K + 6];
+  function inInter(m, pad = 0) { for (const I of inters) if (m > I.m - 11 - pad && m < I.m + 11 + pad) return I; return null; }
+
+  // ---------- street ----------
+  function drawRoad() {
+    g.fillStyle = '#8b8781'; g.fillRect(roadL, 0, roadR - roadL, H);
+    const [a, b] = visM();
+    // patched asphalt and manholes
+    for (let i = Math.floor(a / 3); i <= Math.ceil(b / 3); i++) {
+      const h = hash(i * 3.7), m = i * 3;
+      if (h < .16) {
+        g.fillStyle = 'rgba(60,55,50,.09)';
+        const x = X(hash(i + 9) * (RW - 2)), w = (.8 + hash(i + 3) * 1.4) * K;
+        rrect(x, Y(m + 1.4), w, (.6 + hash(i + 5) * .9) * K, 3); g.fill();
+      } else if (h > .95) {
+        const x = X(1 + hash(i + 2) * (RW - 2)), y = Y(m);
+        g.fillStyle = '#76736e'; circle(x, y, .42 * K);
+        g.strokeStyle = 'rgba(255,255,255,.18)'; g.lineWidth = 1.2; g.beginPath(); g.arc(x, y, .3 * K, 0, 7); g.stroke();
+      }
+      for (let j = 0; j < 3; j++) { g.fillStyle = 'rgba(255,255,255,.07)'; circle(X(hash(i * 7 + j) * RW), Y(m + hash(i * 5 + j) * 3), 1.4); }
+    }
+    // lane dashes
+    g.fillStyle = 'rgba(255,255,255,.88)';
+    for (const lx of [3.3, 6.6]) {
+      for (let m = Math.floor(a / 8) * 8; m < b; m += 8) {
+        if (inInter(m, 4) || inInter(m + 3, 4)) continue;
+        g.fillRect(X(lx) - 2, Y(m + 3), 4, 3 * K);
+      }
+    }
+    // edge lines: red (no stopping) / yellow
+    for (let i = Math.floor(a / SEG); i <= Math.ceil(b / SEG); i++) {
+      const m0 = i * SEG;
+      g.fillStyle = hash(i * 1.3) < .5 ? '#d2553e' : '#e9b949';
+      g.fillRect(roadL + 3, Y(m0 + SEG), 3, SEG * K);
+      g.fillStyle = hash(i * 2.9) < .5 ? '#d2553e' : '#e9b949';
+      g.fillRect(roadR - 6, Y(m0 + SEG), 3, SEG * K);
+    }
+    // scooter-priority lane paint
+    for (let m = Math.floor(a / 70) * 70 + 40; m < b; m += 70) {
+      if (inInter(m, 8)) continue;
+      paintText('機車優先', X(8.25), Y(m), K * .62);
+      paintScooterIcon(X(8.25), Y(m - 3.2), K);
+    }
+  }
+  function paintText(txt, x, y, size) {
+    g.save(); g.translate(x, y); g.scale(1, 1.7);
+    g.fillStyle = 'rgba(255,255,255,.82)'; g.font = `700 ${size}px ${FONT}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText(txt, 0, 0); g.restore();
+  }
+  function paintScooterIcon(x, y, k) {
+    g.fillStyle = 'rgba(255,255,255,.82)';
+    rrect(x - .22 * k, y - .8 * k, .44 * k, 1.6 * k, .2 * k); g.fill();
+    g.fillRect(x - .55 * k, y - .55 * k, 1.1 * k, .14 * k);
+  }
+
+  function drawSides() {
+    const [a, b] = visM();
+    for (let i = Math.floor(a / SEG); i <= Math.ceil(b / SEG); i++) { drawSide(-1, i); drawSide(1, i); }
+  }
+  function drawSide(side, i) {
+    const m0 = i * SEG, yTop = Y(m0 + SEG), hp = SEG * K;
+    const seed = i * 2 + (side > 0 ? 1 : 0);
+    const isHome = side > 0 && m0 <= HOME && m0 + SEG > HOME;
+    const shop = SHOPS[Math.floor(hash(seed * 1.7) * SHOPS.length)];
+    const curb0 = side < 0 ? roadL - 5 : roadR, curb1 = curb0 + 5;
+    const fl0 = side < 0 ? curb0 - af : curb1, fl1 = fl0 + af;
+    const facade = side < 0 ? fl0 : fl1;
+    const b0 = side < 0 ? -2 : facade, b1 = side < 0 ? facade : W + 2;
+    // curb
+    g.fillStyle = '#d9d2c7'; g.fillRect(curb0, yTop, 5, hp);
+    // arcade floor tiles
+    g.fillStyle = hash(seed * 3.1) < .5 ? '#ebe0d0' : '#e4d8c6'; g.fillRect(fl0, yTop, af, hp);
+    g.strokeStyle = 'rgba(150,125,100,.18)'; g.lineWidth = 1;
+    g.beginPath();
+    for (let k = 1; k < SEG; k++) { const y = yTop + k * K; g.moveTo(fl0, y); g.lineTo(fl1, y); }
+    g.moveTo((fl0 + fl1) / 2, yTop); g.lineTo((fl0 + fl1) / 2, yTop + hp);
+    g.stroke();
+    // overhang shadow on floor
+    const sg = g.createLinearGradient(facade, 0, facade - side * af * .7, 0);
+    sg.addColorStop(0, 'rgba(90,65,45,.26)'); sg.addColorStop(1, 'rgba(90,65,45,0)');
+    g.fillStyle = sg; g.fillRect(fl0, yTop, af, hp);
+    // parked scooters in the arcade
+    const nP = Math.floor(hash(seed * 5.3) * 4);
+    for (let k = 0; k < nP; k++) {
+      const yy = yTop + hp * (.18 + k * .2 + hash(seed + k) * .05);
+      parkedScooter((fl0 + fl1) / 2 + side * af * .08, yy, af * .78, HELMETS[(seed + k) % HELMETS.length], side);
+    }
+    if (hash(seed * 8.1) < .4) { // potted plant
+      const yy = yTop + hp * .9, xx = side < 0 ? fl1 - 7 : fl0 + 7;
+      g.fillStyle = '#b5673f'; circle(xx, yy, 5); g.fillStyle = '#6f8f78'; circle(xx - 1, yy - 1, 4.2); g.fillStyle = '#88a98f'; circle(xx + 1, yy - 2, 2.4);
+    }
+    // pillars
+    for (const k of [0, .5]) {
+      const p = Math.min(af * .3, 13), yy = yTop + hp * (1 - k) - p / 2;
+      const xx = side < 0 ? curb0 - p - 1 : curb1 + 1;
+      g.fillStyle = 'rgba(70,50,35,.18)'; g.fillRect(xx + 2, yy + 3, p, p);
+      g.fillStyle = '#f6efe4'; g.fillRect(xx, yy, p, p);
+      g.fillStyle = 'rgba(150,125,100,.25)'; g.fillRect(xx, yy + p - 2, p, 2);
+    }
+    // building roof
+    const roof = isHome ? '#b4553d' : ROOFS[Math.floor(hash(seed * 2.3) * ROOFS.length)];
+    g.fillStyle = roof; g.fillRect(b0, yTop, b1 - b0, hp);
+    if (isHome) { // tiled roof
+      g.strokeStyle = 'rgba(80,30,20,.25)'; g.lineWidth = 1.5; g.beginPath();
+      for (let y = yTop + 5; y < yTop + hp; y += 7) { g.moveTo(b0, y); g.lineTo(b1, y); }
+      g.stroke();
+    } else if (hash(seed * 4.4) < .35) { // tin rooftop extension
+      const w = (b1 - b0) * .7, x = side < 0 ? b0 + 2 : b1 - w - 2;
+      const col = hash(seed * 6.6) < .5 ? '#7aa3b8' : '#8fae8a';
+      g.fillStyle = col; g.fillRect(x, yTop + hp * .15, w, hp * .55);
+      g.strokeStyle = 'rgba(255,255,255,.35)'; g.lineWidth = 1; g.beginPath();
+      for (let y = yTop + hp * .15 + 4; y < yTop + hp * .7; y += 5) { g.moveTo(x, y); g.lineTo(x + w, y); }
+      g.stroke();
+    }
+    g.fillStyle = 'rgba(70,50,35,.14)'; g.fillRect(b0, yTop, b1 - b0, 2); // party wall
+    g.fillStyle = 'rgba(255,255,255,.35)'; g.fillRect(side < 0 ? facade - 3 : facade, yTop, 3, hp); // parapet
+    // rooftop water tank
+    if (!isHome && hash(seed * 9.2) < .55) {
+      const r = Math.min(10, (b1 - b0) * .2), x = side < 0 ? b0 + r + 6 : b1 - r - 6, y = yTop + hp * .82;
+      g.fillStyle = 'rgba(60,45,35,.2)'; circle(x + 3, y + 4, r);
+      const tg = g.createRadialGradient(x - r * .4, y - r * .4, 1, x, y, r);
+      tg.addColorStop(0, '#f7f8f8'); tg.addColorStop(1, '#a9b0b4');
+      g.fillStyle = tg; circle(x, y, r);
+      g.strokeStyle = 'rgba(80,90,95,.5)'; g.lineWidth = 1; g.beginPath(); g.arc(x, y, r * .55, 0, 7); g.stroke();
+    }
+    // vertical shop sign
+    const name = isHome ? '阿嬤家' : shop[0];
+    const bg = isHome ? '#c2402a' : shop[1], fg = isHome ? '#fffaf2' : shop[2];
+    const sw = clamp(sideW * .32, 20, 34), cs = sw * .66;
+    const sh = name.length * cs * 1.08 + sw * .5;
+    const sx = side < 0 ? facade - sw * .55 : facade - sw * .45;
+    const sy = yTop + hp * .1 + hash(seed * 7.7) * Math.max(0, hp * .8 - sh);
+    g.fillStyle = 'rgba(60,40,28,.22)'; rrect(sx + 3, sy + 4, sw, sh, 3); g.fill();
+    g.fillStyle = bg; rrect(sx, sy, sw, sh, 3); g.fill();
+    g.strokeStyle = bg === '#fffaf2' ? fg : 'rgba(255,255,255,.55)'; g.lineWidth = 1.5; rrect(sx + 2, sy + 2, sw - 4, sh - 4, 2); g.stroke();
+    g.fillStyle = fg; g.font = `700 ${cs}px ${FONT}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+    for (let k = 0; k < name.length; k++) g.fillText(name[k], sx + sw / 2, sy + sw * .25 + cs * 1.08 * (k + .5));
+    if (isHome) {
+      // red door with couplets on the arcade side
+      const dy = Y(HOME + 2), dx = facade;
+      g.fillStyle = '#7a3a22'; g.fillRect(dx - 3, dy - K * 1.2, 6, K * 2.4);
+      g.fillStyle = '#c2402a'; g.fillRect(dx - 4, dy - K * 2, 8, K * .6); g.fillRect(dx - 4, dy + K * 1.4, 8, K * .6);
+    }
+  }
+  function parkedScooter(x, y, len, col, side) {
+    g.save(); g.translate(x, y); g.rotate(side < 0 ? Math.PI / 2 : -Math.PI / 2);
+    const w = len * .26;
+    g.fillStyle = 'rgba(60,40,28,.18)'; rrect(-w / 2 + 2, -len / 2 + 2, w, len, w / 2); g.fill();
+    g.fillStyle = '#4a4440'; rrect(-w / 2, -len / 2, w, len, w / 2); g.fill();
+    g.fillStyle = col; rrect(-w / 2, -len / 2 + len * .12, w, len * .55, w / 2); g.fill();
+    g.fillStyle = '#2f2a26'; rrect(-w * .35, len * .05, w * .7, len * .32, w * .3); g.fill();
+    g.strokeStyle = '#2f2a26'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(-w * .9, -len * .32); g.lineTo(w * .9, -len * .32); g.stroke();
+    g.restore();
+  }
+
+  function drawIntersections() {
+    for (const I of inters) {
+      const yA = Y(I.m + 7), yB = Y(I.m - 7);
+      if (Y(I.m + 12) > H + 20 || Y(I.m - 16) < -40) continue;
+      // cross street
+      g.fillStyle = '#8b8781'; g.fillRect(0, yA, W, yB - yA);
+      g.fillStyle = '#d9d2c7'; g.fillRect(0, yA - 4, roadL, 4); g.fillRect(roadR, yA - 4, W - roadR, 4); g.fillRect(0, yB, roadL, 4); g.fillRect(roadR, yB, W - roadR, 4);
+      // cross-street centre line (double yellow)
+      g.fillStyle = '#e9b949';
+      g.fillRect(0, (yA + yB) / 2 - 3, roadL - 4, 2); g.fillRect(0, (yA + yB) / 2 + 1, roadL - 4, 2);
+      g.fillRect(roadR + 4, (yA + yB) / 2 - 3, W - roadR, 2); g.fillRect(roadR + 4, (yA + yB) / 2 + 1, W - roadR, 2);
+      // zebra crossings
+      g.fillStyle = 'rgba(255,255,255,.9)';
+      for (const c of [I.m - 9, I.m + 9]) for (let x = .35; x < RW - .3; x += .95) g.fillRect(X(x), Y(c + 2), .48 * K, 4 * K);
+      // stop line and scooter waiting box
+      g.fillRect(roadL, Y(I.m - 15), roadR - roadL, 4);
+      g.strokeStyle = 'rgba(255,255,255,.9)'; g.lineWidth = 2.5;
+      g.strokeRect(roadL + 4, Y(I.m - 11.2), roadR - roadL - 8, 3.6 * K);
+      paintText('機車停等區', X(4.95), Y(I.m - 13), K * .5);
+      paintScooterIcon(X(1.65), Y(I.m - 13), K * .9); paintScooterIcon(X(8.25), Y(I.m - 13), K * .9);
+      // two-stage left-turn box on the cross street, front right
+      const bx = roadR + 6, bw = Math.min(W - roadR - 10, 2.6 * K);
+      if (bw > 26) {
+        g.strokeStyle = 'rgba(255,255,255,.9)'; g.lineWidth = 2;
+        g.strokeRect(bx, Y(I.m + 5.6), bw, 4.6 * K);
+        g.fillStyle = 'rgba(255,255,255,.85)';
+        g.font = `700 ${Math.min(bw * .3, K * .55)}px ${FONT}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+        g.fillText('機車', bx + bw / 2, Y(I.m + 4)); g.fillText("待轉", bx + bw / 2, Y(I.m + 2.4));
+      }
+    }
+    // home finish line
+    const hy = Y(HOME);
+    if (hy > -20 && hy < H + 20) {
+      g.save(); g.setLineDash([12, 8]); g.strokeStyle = '#c2402a'; g.lineWidth = 4;
+      g.beginPath(); g.moveTo(roadL + 6, hy); g.lineTo(roadR - 6, hy); g.stroke(); g.restore();
+      paintText('到家了', X(RW / 2), Y(HOME - 3), K * .75);
+    }
+  }
+
+  function drawLights() {
+    for (const I of inters) {
+      const y = Y(I.m - 4.5);
+      if (y < -60 || y > H + 60) continue;
+      const poleX = roadR + 10, hx = X(RW - 3.2), hw = 66, hh = 22;
+      g.strokeStyle = 'rgba(50,35,25,.2)'; g.lineWidth = 5; g.beginPath(); g.moveTo(poleX + 4, y + 6); g.lineTo(hx + 4, y + 6); g.stroke();
+      g.strokeStyle = '#5b5550'; g.lineWidth = 4; g.beginPath(); g.moveTo(poleX, y); g.lineTo(hx, y); g.stroke();
+      g.fillStyle = '#5b5550'; circle(poleX, y, 6);
+      // head
+      g.fillStyle = 'rgba(40,28,20,.25)'; rrect(hx - hw / 2 + 4, y - hh / 2 + 6, hw + 30, hh, 6); g.fill();
+      g.fillStyle = '#2f2a26'; rrect(hx - hw / 2, y - hh / 2, hw, hh, 6); g.fill();
+      const cols = [['#e0483a', 'red'], ['#f0b43a', 'yellow'], ['#58b56b', 'green']];
+      cols.forEach(([c, s], k) => {
+        const lx = hx - hw / 2 + 11 + k * 22, on = I.st === s;
+        if (on) { g.fillStyle = c + '55'; circle(lx, y, 12); }
+        g.fillStyle = on ? c : '#4a4440'; circle(lx, y, 7.5);
+        if (on) { g.fillStyle = 'rgba(255,255,255,.55)'; circle(lx - 2, y - 2.5, 2.2); }
+      });
+      // countdown box
+      g.fillStyle = '#2f2a26'; rrect(hx + hw / 2 + 3, y - hh / 2, 27, hh, 5); g.fill();
+      if (I.st === 'red') {
+        g.fillStyle = '#ff6a50'; g.font = `400 17px "DM Serif Display", serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+        g.fillText(String(Math.max(1, Math.ceil(I.t))), hx + hw / 2 + 16.5, y + 1);
+      } else {
+        g.fillStyle = I.st === 'green' ? '#58b56b' : '#f0b43a'; circle(hx + hw / 2 + 16.5, y, 3);
+      }
+    }
+  }
+
+  // ---------- characters & vehicles ----------
+  function drawCar(o, x, y) {
+    const w = o.hw * 2 * K, l = o.hl * 2 * K, c = o.col;
+    g.save(); g.translate(x, y); if (o.rot) g.rotate(o.rot);
+    g.fillStyle = 'rgba(45,32,22,.24)'; rrect(-w / 2 + 4, -l / 2 + 6, w, l, w * .3); g.fill();
+    g.fillStyle = c; rrect(-w / 2, -l / 2, w, l, w * .3); g.fill();
+    const sg = g.createLinearGradient(-w / 2, 0, w / 2, 0);
+    sg.addColorStop(0, 'rgba(0,0,0,.16)'); sg.addColorStop(.2, 'rgba(0,0,0,0)'); sg.addColorStop(.7, 'rgba(255,255,255,.1)'); sg.addColorStop(1, 'rgba(0,0,0,.18)');
+    g.fillStyle = sg; rrect(-w / 2, -l / 2, w, l, w * .3); g.fill();
+    // windshield
+    g.fillStyle = '#34424d';
+    g.beginPath(); g.moveTo(-w * .4, -l * .17); g.lineTo(w * .4, -l * .17); g.lineTo(w * .33, -l * .3); g.lineTo(-w * .33, -l * .3); g.closePath(); g.fill();
+    g.fillStyle = 'rgba(255,255,255,.28)'; g.beginPath(); g.moveTo(-w * .25, -l * .18); g.lineTo(-w * .1, -l * .18); g.lineTo(-w * .02, -l * .29); g.lineTo(-w * .15, -l * .29); g.fill();
+    // roof
+    g.fillStyle = shade(c.startsWith('#') ? c : '#888888', .12); rrect(-w * .38, -l * .16, w * .76, l * .4, w * .16); g.fill();
+    // rear window
+    g.fillStyle = '#3c4954'; rrect(-w * .34, l * .25, w * .68, l * .1, 3); g.fill();
+    // mirrors
+    g.fillStyle = shade(c, -.2); g.beginPath(); g.ellipse(-w * .55, -l * .18, w * .1, w * .06, 0, 0, 7); g.fill(); g.beginPath(); g.ellipse(w * .55, -l * .18, w * .1, w * .06, 0, 0, 7); g.fill();
+    // lights
+    g.fillStyle = '#fff3c8'; rrect(-w * .42, -l / 2 + 2, w * .2, 4, 2); g.fill(); rrect(w * .22, -l / 2 + 2, w * .2, 4, 2); g.fill();
+    g.fillStyle = o.v < o.v0 - .5 || o.v0 === 0 ? '#ff4a32' : '#b8382a';
+    rrect(-w * .44, l / 2 - 6, w * .22, 4, 2); g.fill(); rrect(w * .22, l / 2 - 6, w * .22, 4, 2); g.fill();
+    if (o.type === 'taxi') {
+      g.fillStyle = '#fffaf2'; rrect(-w * .22, -l * .02, w * .44, l * .1, 3); g.fill();
+      g.fillStyle = '#3a2a20'; g.font = `700 ${Math.max(7, w * .17)}px ${FONT}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText('TAXI', 0, l * .03);
+      if (Math.floor(T * 3) % 2 === 0) { g.fillStyle = '#ffb02e'; circle(-w * .45, l / 2 - 3, 3.5); circle(w * .45, l / 2 - 3, 3.5); circle(-w * .45, -l / 2 + 3, 3.5); circle(w * .45, -l / 2 + 3, 3.5); }
+      if (o.door > 0) { // driver door swings into traffic
+        g.save(); g.translate(-w / 2 + 1, -l * .12); g.rotate(-o.door * 1.05);
+        g.fillStyle = 'rgba(45,32,22,.2)'; g.fillRect(-3, 3, 5, l * .26);
+        g.fillStyle = shade(c, -.08); g.fillRect(-4, 0, 5, l * .26);
+        g.fillStyle = '#34424d'; g.fillRect(-3.5, 3, 3, l * .1);
+        g.restore();
+      }
+    }
+    g.restore();
+  }
+  function drawBus(o, x, y) {
+    const w = o.hw * 2 * K, l = o.hl * 2 * K;
+    g.save(); g.translate(x, y);
+    g.fillStyle = 'rgba(45,32,22,.24)'; rrect(-w / 2 + 5, -l / 2 + 8, w, l, 8); g.fill();
+    g.fillStyle = '#f4f1ea'; rrect(-w / 2, -l / 2, w, l, 8); g.fill();
+    g.fillStyle = '#3f8f6b'; g.fillRect(-w / 2, -l / 2 + 8, 5, l - 16); g.fillRect(w / 2 - 5, -l / 2 + 8, 5, l - 16);
+    g.fillStyle = '#34424d'; rrect(-w * .42, -l / 2 + 3, w * .84, 8, 3); g.fill();
+    // roof AC units
+    g.fillStyle = '#d6d9d6'; rrect(-w * .3, -l * .22, w * .6, l * .16, 5); g.fill(); rrect(-w * .3, l * .12, w * .6, l * .12, 5); g.fill();
+    g.strokeStyle = 'rgba(80,90,95,.35)'; g.lineWidth = 1;
+    for (let k = 0; k < 4; k++) { g.beginPath(); g.moveTo(-w * .25, -l * .2 + k * l * .035); g.lineTo(w * .25, -l * .2 + k * l * .035); g.stroke(); }
+    g.fillStyle = '#3f8f6b'; g.font = `700 ${w * .3}px "DM Serif Display", serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText(o.no, 0, l * .02);
+    g.fillStyle = o.v < o.v0 - .5 ? '#ff4a32' : '#b8382a'; rrect(-w * .44, l / 2 - 6, w * .2, 4, 2); g.fill(); rrect(w * .24, l / 2 - 6, w * .2, 4, 2); g.fill();
+    g.restore();
+  }
+  function drawRider(x, y, s, body, helmet, shirt, wob) {
+    g.save(); g.translate(x, y); g.rotate(wob);
+    g.fillStyle = 'rgba(45,32,22,.22)'; g.beginPath(); g.ellipse(3 * s, 6 * s, 9 * s, 24 * s, 0, 0, 7); g.fill();
+    g.fillStyle = '#2f2a26'; rrect(-3 * s, -25 * s, 6 * s, 8 * s, 2 * s); g.fill(); rrect(-3 * s, 17 * s, 6 * s, 8 * s, 2 * s); g.fill();
+    g.fillStyle = body; rrect(-8 * s, -21 * s, 16 * s, 40 * s, 8 * s); g.fill();
+    g.fillStyle = 'rgba(255,255,255,.25)'; rrect(-5 * s, -19 * s, 4 * s, 12 * s, 2 * s); g.fill();
+    g.strokeStyle = '#2f2a26'; g.lineWidth = 2.4 * s; g.beginPath(); g.moveTo(-11 * s, -14 * s); g.lineTo(11 * s, -14 * s); g.stroke();
+    g.fillStyle = '#b8382a'; rrect(-5 * s, 17 * s, 10 * s, 3 * s, 1.5 * s); g.fill();
+    g.fillStyle = shirt; g.beginPath(); g.ellipse(0, 2 * s, 10 * s, 6 * s, 0, 0, 7); g.fill();
+    g.strokeStyle = '#e2b08c'; g.lineWidth = 3 * s; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(-7 * s, 0); g.lineTo(-10 * s, -13 * s); g.moveTo(7 * s, 0); g.lineTo(10 * s, -13 * s); g.stroke();
+    g.fillStyle = helmet; circle(0, -2 * s, 6.5 * s);
+    g.fillStyle = 'rgba(255,255,255,.45)'; g.beginPath(); g.ellipse(-2 * s, -4.5 * s, 2.6 * s, 1.6 * s, -.5, 0, 7); g.fill();
+    g.restore();
+  }
+
+  function drawGrandma(s, armsUp, walk) {
+    // origin = shoulders centre. Back view from above.
+    if (walk != null) { // legs when walking
+      g.fillStyle = '#5b4a3e';
+      const st = Math.sin(walk * 9) * 4 * s;
+      g.beginPath(); g.ellipse(-4 * s, 7 * s + st, 3 * s, 4.5 * s, 0, 0, 7); g.fill();
+      g.beginPath(); g.ellipse(4 * s, 7 * s - st, 3 * s, 4.5 * s, 0, 0, 7); g.fill();
+    }
+    // red plastic bag with green onion, held on the right
+    const sw = Math.sin(T * 5) * .12 - lean * 1.2;
+    g.save(); g.translate(13 * s, 3 * s); g.rotate(sw);
+    g.strokeStyle = '#4f8a3f'; g.lineWidth = 2.2 * s; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(1 * s, 6 * s); g.lineTo(5 * s, -4 * s); g.stroke();
+    g.strokeStyle = '#7fb36a'; g.beginPath(); g.moveTo(-1 * s, 6 * s); g.lineTo(1 * s, -3 * s); g.stroke();
+    g.fillStyle = 'rgba(216,51,42,.94)';
+    g.beginPath(); g.moveTo(-5 * s, 4 * s); g.lineTo(6 * s, 4 * s); g.quadraticCurveTo(9 * s, 15 * s, 4 * s, 17 * s); g.lineTo(-3 * s, 17 * s); g.quadraticCurveTo(-8 * s, 15 * s, -5 * s, 4 * s); g.fill();
+    g.strokeStyle = 'rgba(216,51,42,.94)'; g.lineWidth = 1.6 * s;
+    g.beginPath(); g.moveTo(-3 * s, 4.5 * s); g.quadraticCurveTo(-1 * s, -1 * s, 1 * s, 4.5 * s); g.stroke();
+    g.fillStyle = 'rgba(255,255,255,.35)'; g.fillRect(-3 * s, 7 * s, 1.4 * s, 7 * s);
+    g.restore();
+    // arms
+    g.strokeStyle = '#e2b08c'; g.lineWidth = 3.2 * s; g.lineCap = 'round';
+    g.beginPath();
+    if (armsUp) {
+      const f = Math.sin(T * 30) * 2 * s;
+      g.moveTo(-9 * s, -1 * s); g.lineTo(-17 * s, -12 * s + f);
+      g.moveTo(9 * s, -1 * s); g.lineTo(13 * s, 3 * s);
+    } else {
+      g.moveTo(-9 * s, -1 * s); g.lineTo(-8 * s, -10 * s);
+      g.moveTo(9 * s, -1 * s); g.lineTo(13 * s, 3 * s);
+    }
+    g.stroke();
+    if (armsUp) { g.fillStyle = '#e2b08c'; circle(-17 * s, -12 * s + Math.sin(T * 30) * 2 * s, 2.4 * s); }
+    // flower shirt
+    g.save();
+    g.beginPath(); g.ellipse(0, 0, 12 * s, 7.5 * s, 0, 0, 7); g.closePath();
+    g.fillStyle = '#e98aa0'; g.fill(); g.clip();
+    const fl = [[-7, -2], [-2, 3], [4, -3], [8, 2], [-9, 4], [1, -5], [6, 5]];
+    for (const [fx2, fy] of fl) {
+      g.fillStyle = '#fffaf2';
+      for (let k = 0; k < 5; k++) { const a = k / 5 * 6.283; circle((fx2 + Math.cos(a) * 1.5) * s, (fy + Math.sin(a) * 1.5) * s, 1.1 * s); }
+      g.fillStyle = '#f2c230'; circle(fx2 * s, fy * s, .9 * s);
+    }
+    g.restore();
+    // permed hair: a cloud of curls
+    const hy = -3 * s + (armsUp ? Math.sin(T * 25) * .8 * s : 0);
+    g.fillStyle = '#8f839f'; circle(0, hy, 8.4 * s);
+    for (let k = 0; k < 9; k++) {
+      const a = k / 9 * 6.283 + .3;
+      g.fillStyle = '#a99fbb'; circle(Math.cos(a) * 6.2 * s, hy + Math.sin(a) * 6 * s, 3.3 * s);
+      g.fillStyle = 'rgba(255,255,255,.28)'; circle(Math.cos(a) * 6.2 * s - .9 * s, hy + Math.sin(a) * 6 * s - .9 * s, 1.1 * s);
+    }
+    g.fillStyle = '#b8aec8'; circle(0, hy, 3.8 * s); circle(-2.5 * s, hy - 2.5 * s, 2.4 * s); circle(2.6 * s, hy + 1.5 * s, 2.4 * s);
+    // pink flower hair clip
+    g.fillStyle = '#f2a7a0'; for (let k = 0; k < 5; k++) { const a = k / 5 * 6.283; circle(6 * s + Math.cos(a) * 1.4 * s, hy - 4 * s + Math.sin(a) * 1.4 * s, 1.1 * s); }
+    g.fillStyle = '#f2c230'; circle(6 * s, hy - 4 * s, .8 * s);
+  }
+
+  function drawPlayer() {
+    const s = K / 24 * 1.12, x = X(px), y = PY + bump * -3;
+    const blink = inv > 0 && Math.floor(inv * 10) % 2 === 0 && state === 'play';
+    g.save(); g.translate(x, y);
+    g.fillStyle = 'rgba(45,32,22,.24)'; g.beginPath(); g.ellipse(5 * s, 8 * s, 15 * s, 36 * s, lean * .35, 0, 7); g.fill();
+    g.rotate(lean * .35);
+    if (blink) g.globalAlpha = .45;
+    // wheels
+    g.fillStyle = '#2f2a26'; rrect(-4 * s, -38 * s, 8 * s, 11 * s, 3 * s); g.fill(); rrect(-4.5 * s, 24 * s, 9 * s, 12 * s, 3 * s); g.fill();
+    // body
+    g.fillStyle = '#86b8a8'; rrect(-12.5 * s, -20 * s, 25 * s, 50 * s, 11 * s); g.fill();
+    const bg = g.createLinearGradient(-12 * s, 0, 12 * s, 0);
+    bg.addColorStop(0, 'rgba(40,70,60,.25)'); bg.addColorStop(.35, 'rgba(255,255,255,.18)'); bg.addColorStop(1, 'rgba(40,70,60,.3)');
+    g.fillStyle = bg; rrect(-12.5 * s, -20 * s, 25 * s, 50 * s, 11 * s); g.fill();
+    g.fillStyle = '#6f9f90'; rrect(-10 * s, -34 * s, 20 * s, 17 * s, 8 * s); g.fill();
+    g.fillStyle = '#fff6d8'; g.beginPath(); g.ellipse(0, -32 * s, 5 * s, 2.2 * s, 0, 0, 7); g.fill();
+    // handlebar and mirrors
+    g.strokeStyle = '#3a2a20'; g.lineWidth = 3 * s; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(-14 * s, -21 * s); g.lineTo(14 * s, -21 * s); g.stroke();
+    g.lineWidth = 1.6 * s; g.beginPath(); g.moveTo(-11 * s, -21 * s); g.lineTo(-14 * s, -27 * s); g.moveTo(11 * s, -21 * s); g.lineTo(14 * s, -27 * s); g.stroke();
+    g.fillStyle = '#d6dde0'; g.strokeStyle = '#3a2a20'; g.lineWidth = 1.4 * s;
+    g.beginPath(); g.arc(-14.5 * s, -28.5 * s, 3.2 * s, 0, 7); g.fill(); g.stroke();
+    g.beginPath(); g.arc(14.5 * s, -28.5 * s, 3.2 * s, 0, 7); g.fill(); g.stroke();
+    // tail light & plate
+    const br = brake > .05 || state === 'arrive';
+    if (br) { const lg = g.createRadialGradient(0, 29 * s, 1, 0, 29 * s, 18 * s); lg.addColorStop(0, 'rgba(255,80,50,.55)'); lg.addColorStop(1, 'rgba(255,80,50,0)'); g.fillStyle = lg; circle(0, 29 * s, 18 * s); }
+    g.fillStyle = br ? '#ff5a3c' : '#a8342a'; rrect(-8 * s, 26 * s, 16 * s, 4 * s, 2 * s); g.fill();
+    g.fillStyle = '#fffaf2'; rrect(-6 * s, 31 * s, 12 * s, 5 * s, 1 * s); g.fill();
+    g.fillStyle = '#3a2a20'; g.fillRect(-4 * s, 33 * s, 8 * s, 1 * s);
+    // grandchild rider
+    g.fillStyle = '#3a2a20'; rrect(-9 * s, -10 * s, 18 * s, 32 * s, 8 * s); g.fill();
+    g.fillStyle = '#3b6ea5'; g.beginPath(); g.ellipse(0, -7 * s, 11.5 * s, 6.5 * s, 0, 0, 7); g.fill();
+    g.strokeStyle = '#e2b08c'; g.lineWidth = 3.4 * s;
+    g.beginPath(); g.moveTo(-9 * s, -9 * s); g.lineTo(-13 * s, -20 * s); g.moveTo(9 * s, -9 * s); g.lineTo(13 * s, -20 * s); g.stroke();
+    g.fillStyle = '#fffaf2'; circle(0, -12 * s, 7.6 * s);
+    g.fillStyle = '#c2402a'; g.fillRect(-1.6 * s, -19.5 * s, 3.2 * s, 15 * s);
+    g.fillStyle = 'rgba(58,42,32,.12)'; g.beginPath(); g.arc(0, -12 * s, 7.6 * s, .2, 2.9); g.fill();
+    // grandma on the back seat
+    if (!gm) { g.save(); g.translate(0, 10 * s); drawGrandma(s, scare > 0, null); g.restore(); }
+    g.restore();
+  }
+
+  function drawScooterObj(o, x, y) { drawRider(x, y, K / 24 * .82, o.col, o.helmet, o.shirt, Math.sin(T * 2 + o.ph) * .06); }
+
+  function drawDog(o, x, y) {
+    const s = K / 24, d = o.vx > 0 ? 1 : -1, step = Math.sin(T * 14 + o.ph);
+    g.save(); g.translate(x, y); g.scale(d, 1);
+    g.fillStyle = 'rgba(45,32,22,.2)'; g.beginPath(); g.ellipse(2 * s, 4 * s, 13 * s, 6 * s, 0, 0, 7); g.fill();
+    g.fillStyle = '#b97f3e';
+    for (const [lx, ly, ph] of [[-7, -5, 1], [-7, 5, -1], [6, -5, -1], [6, 5, 1]]) { g.beginPath(); g.ellipse((lx + step * ph * 2) * s, ly * s, 2.6 * s, 1.8 * s, 0, 0, 7); g.fill(); }
+    g.strokeStyle = '#d9a35b'; g.lineWidth = 2.6 * s; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(-10 * s, 0); g.quadraticCurveTo(-15 * s, Math.sin(T * 20) * 5 * s, -16 * s, Math.sin(T * 20 + 1) * 6 * s); g.stroke();
+    g.fillStyle = '#d9a35b'; g.beginPath(); g.ellipse(-1 * s, 0, 11 * s, 5.5 * s, 0, 0, 7); g.fill();
+    g.fillStyle = '#e8bf80'; g.beginPath(); g.ellipse(-2 * s, 0, 6 * s, 2.6 * s, 0, 0, 7); g.fill();
+    g.fillStyle = '#d9a35b'; circle(11 * s, 0, 5 * s);
+    g.fillStyle = '#e8bf80'; g.beginPath(); g.ellipse(15 * s, 0, 3 * s, 2.4 * s, 0, 0, 7); g.fill();
+    g.fillStyle = '#3a2a20'; circle(17.6 * s, 0, 1.2 * s);
+    g.fillStyle = '#9a6430'; g.beginPath(); g.ellipse(9 * s, -4.5 * s, 2.4 * s, 1.5 * s, -.5, 0, 7); g.fill(); g.beginPath(); g.ellipse(9 * s, 4.5 * s, 2.4 * s, 1.5 * s, .5, 0, 7); g.fill();
+    g.restore();
+  }
+  function drawPothole(o, x, y) {
+    const r = o.hw * K;
+    g.save(); g.translate(x, y);
+    g.fillStyle = '#a19c95';
+    g.beginPath();
+    for (let k = 0; k < 10; k++) { const a = k / 10 * 6.283, rr = r * (1.08 + hash(o.ph + k) * .25); g.lineTo(Math.cos(a) * rr, Math.sin(a) * rr * .72); }
+    g.closePath(); g.fill();
+    g.fillStyle = '#4f4b47';
+    g.beginPath();
+    for (let k = 0; k < 10; k++) { const a = k / 10 * 6.283, rr = r * (.85 + hash(o.ph + k * 3) * .2); g.lineTo(Math.cos(a) * rr, Math.sin(a) * rr * .68); }
+    g.closePath(); g.fill();
+    g.fillStyle = 'rgba(160,190,205,.45)'; g.beginPath(); g.ellipse(-r * .2, r * .1, r * .45, r * .2, 0, 0, 7); g.fill();
+    g.strokeStyle = 'rgba(60,55,50,.5)'; g.lineWidth = 1.2;
+    g.beginPath(); g.moveTo(r * 1.1, 0); g.lineTo(r * 1.6, -r * .3); g.lineTo(r * 1.9, -r * .2); g.moveTo(-r * 1.1, r * .2); g.lineTo(-r * 1.5, r * .5); g.stroke();
+    g.restore();
+  }
+  function drawSnack(o, x, y) {
+    const s = K / 24, bob = Math.sin(T * 4 + o.ph) * 3 * s;
+    g.save(); g.translate(x, y);
+    const pr = 1 + Math.sin(T * 5) * .12;
+    g.strokeStyle = 'rgba(255,250,242,.7)'; g.lineWidth = 2; g.beginPath(); g.arc(0, 0, 15 * s * pr, 0, 7); g.stroke();
+    g.fillStyle = 'rgba(45,32,22,.2)'; g.beginPath(); g.ellipse(2 * s, 5 * s, 11 * s, 5 * s, 0, 0, 7); g.fill();
+    g.translate(0, bob - 4 * s);
+    g.fillStyle = '#fffaf2'; g.beginPath(); g.ellipse(0, 2 * s, 12 * s, 9 * s, 0, 0, 7); g.fill();
+    g.strokeStyle = '#3b6ea5'; g.lineWidth = 1.4 * s; g.beginPath(); g.ellipse(0, 2 * s, 10.5 * s, 7.8 * s, 0, 0, 7); g.stroke();
+    const dg = g.createRadialGradient(-2 * s, -2 * s, 1, 0, 0, 8 * s);
+    dg.addColorStop(0, '#fbeedd'); dg.addColorStop(1, '#e3c6a0');
+    g.fillStyle = dg; g.beginPath(); g.ellipse(0, 1 * s, 8 * s, 6.5 * s, 0, 0, 7); g.fill();
+    g.fillStyle = '#d0623b'; g.beginPath(); g.ellipse(.5 * s, 0, 5.5 * s, 3.8 * s, .3, 0, 7); g.fill();
+    g.fillStyle = '#6f9b4f'; circle(-1.5 * s, -1 * s, 1.2 * s); circle(1.5 * s, .5 * s, 1 * s);
+    g.fillStyle = 'rgba(255,255,255,.6)'; circle(-4 * s, -2 * s, 1.2 * s);
+    g.restore();
+  }
+  function drawStandingGrandma() {
+    if (!gm) return;
+    const s = K / 24, x = X(gm.x), y = Y(gm.m);
+    g.save(); g.translate(x, y);
+    g.fillStyle = 'rgba(45,32,22,.22)'; g.beginPath(); g.ellipse(3 * s, 5 * s, 12 * s, 9 * s, 0, 0, 7); g.fill();
+    drawGrandma(s, gm.t < .6, gm.t);
+    g.restore();
+  }
+
+  function drawBubble() {
+    if (!bubble) return;
+    const s = K / 24;
+    let ax, ay;
+    if (gm) { ax = X(gm.x); ay = Y(gm.m) - 10 * s; } else { ax = X(px); ay = PY + 4 * s; }
+    const a = clamp(Math.min(bubble.t * 4, (bubble.d - bubble.t) * 8, 1), 0, 1);
+    const pop = reduced ? 1 : .85 + .15 * Math.min(1, (bubble.d - bubble.t) * 6);
+    g.save(); g.globalAlpha = a;
+    g.font = `700 15px ${FONT}`;
+    const tw = Math.min(g.measureText(bubble.text).width, W * .6), bw = tw + 26, bh = 34;
+    const right = ax < W / 2;
+    let bx = right ? ax + 22 * s : ax - 22 * s - bw;
+    bx = clamp(bx, 8, W - bw - 8);
+    const by = ay - 46 * s - bh;
+    g.translate(bx + bw / 2, by + bh); g.scale(pop, pop); g.translate(-(bx + bw / 2), -(by + bh));
+    const loud = bubble.kind === 'loud';
+    g.fillStyle = 'rgba(58,42,32,.18)'; rrect(bx + 2, by + 4, bw, bh, 14); g.fill();
+    g.fillStyle = '#fffaf2'; rrect(bx, by, bw, bh, 14); g.fill();
+    g.beginPath(); const tx = clamp(ax, bx + 18, bx + bw - 18);
+    g.moveTo(tx - 7, by + bh - 1); g.lineTo(ax + (right ? 4 : -4), ay - 18 * s); g.lineTo(tx + 7, by + bh - 1); g.fill();
+    g.strokeStyle = loud ? '#c2402a' : 'rgba(58,42,32,.25)'; g.lineWidth = loud ? 2.5 : 1.2;
+    rrect(bx, by, bw, bh, 14); g.stroke();
+    g.fillStyle = loud ? '#c2402a' : '#3a2a20'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText(bubble.text, bx + bw / 2, by + bh / 2 + 1, W * .6);
+    g.restore();
+  }
+
+  // ---------- game objects ----------
+  function addObj(o) {
+    o.ph = rand(0, 100); o.nm = false; o.hit = false; o.v = o.v0 || 0; o.tx = o.xm;
+    obs.push(o); return o;
+  }
+  function free(xm, hw, m, hl) {
+    for (const o of obs) if (Math.abs(o.xm - xm) < o.hw + hw + .5 && Math.abs(o.m - m) < o.hl + hl + 3) return false;
+    return true;
+  }
+  function lanesBusy(m, span) {
+    const s = new Set();
+    for (const o of obs) {
+      if (o.type === 'snack' || o.type === 'xcar') continue;
+      if (Math.abs(o.m - m) < o.hl + span) for (let k = 0; k < 3; k++) if (Math.abs(LANES[k] - o.xm) < o.hw + 1.1) s.add(k);
+    }
+    return s;
+  }
+  function spawnAt(m) {
+    if (m > HOME - 120) return;
+    for (const I of inters) if (m > I.m - 28 && m < I.m + 13) return;
+    const p = dist / HOME;
+    const table = [['car', 30], ['scooter', 16], ['taxi', 10], ['pothole', 12], ['snack', 10], ['swarm', p > .08 ? 9 : 0], ['bus', p > .06 ? 8 : 0], ['dog', p > .18 ? 6 : 0]];
+    let tot = 0; for (const t of table) tot += t[1];
+    let r = Math.random() * tot, type = 'car';
+    for (const t of table) { if ((r -= t[1]) < 0) { type = t[0]; break; } }
+    const busy = lanesBusy(m, 7);
+    const freeLanes = [0, 1, 2].filter(k => !busy.has(k));
+    if (freeLanes.length < 2 && type !== 'snack' && type !== 'pothole') return;
+    const lane = pick(freeLanes.length ? freeLanes : [0, 1, 2]);
+    if (type === 'car') {
+      const xm = LANES[lane] + rand(-.3, .3);
+      if (free(xm, .9, m, 2.2)) addObj({ type, mov: true, xm, m, hw: .9, hl: 2.2, v0: rand(6.5, 9.5), col: pick(CARS) });
+    } else if (type === 'bus') {
+      const xm = LANES[Math.min(lane, 1)];
+      if (free(xm, 1.25, m + 3, 5.6) && busy.size === 0) addObj({ type, mov: true, xm, m: m + 3, hw: 1.25, hl: 5.6, v0: rand(5, 6.5), no: pick(['307', '262', '藍 25', '紅 30', '650', '1503']) });
+    } else if (type === 'taxi') {
+      const xm = RW - 1.12;
+      if (!busy.has(2) && free(xm, .9, m, 2.2)) addObj({ type, xm, m, hw: .9, hl: 2.2, v0: 0, col: '#f2c230', door: 0, said: false });
+    } else if (type === 'scooter') {
+      const xm = rand(.8, RW - .8);
+      if (free(xm, .38, m, .95)) addObj({ type, mov: true, xm, m, hw: .38, hl: .95, v0: rand(7, 10), col: pick(CARS), helmet: pick(HELMETS), shirt: pick(['#6f8f78', '#e2a03f', '#fffaf2', '#5a7fa8', '#c2402a']) });
+    } else if (type === 'swarm') {
+      if (busy.size > 0) return;
+      const left = Math.random() < .5, x0 = left ? .6 : 3.9, x1 = left ? 6 : RW - .6;
+      const n = Math.floor(rand(6, 10));
+      for (let k = 0; k < n; k++) {
+        for (let tries = 0; tries < 6; tries++) {
+          const xm = rand(x0, x1), mm = m + rand(0, 14);
+          if (free(xm, .38, mm, .95)) { addObj({ type: 'scooter', swarm: true, mov: true, xm, m: mm, hw: .38, hl: .95, v0: 8.2 + rand(-.3, .3), col: pick(CARS), helmet: pick(HELMETS), shirt: pick(['#6f8f78', '#e2a03f', '#fffaf2', '#5a7fa8', '#c2402a']) }); break; }
+        }
+      }
+      nextM += 10;
+    } else if (type === 'pothole') {
+      const xm = rand(.8, RW - .8), r = rand(.45, .65);
+      if (free(xm, r, m, r)) addObj({ type, xm, m, hw: r, hl: r * .7 });
+    } else if (type === 'snack') {
+      const xm = LANES[Math.floor(Math.random() * 3)] + rand(-.8, .8);
+      if (free(xm, .45, m, .45)) addObj({ type, xm, m, hw: .45, hl: .45 });
+    } else if (type === 'dog') {
+      if (busy.size > 1) return;
+      const d = Math.random() < .5 ? 1 : -1;
+      addObj({ type, xm: d > 0 ? -1 : RW + 1, m, hw: .6, hl: .3, vx: d * rand(1.7, 2.3), said: false });
+    }
+  }
+  function boxes(o) {
+    const b = [[o.xm - o.hw, o.xm + o.hw, o.m - o.hl, o.m + o.hl]];
+    if (o.type === 'taxi' && o.door > .25) b.push([o.xm - o.hw - 1.0 * o.door, o.xm - o.hw, o.m + .1, o.m + 1.1]);
+    return b;
+  }
+
+  // ---------- grandma talk ----------
+  function say(kind, loud = false, prio = 1) {
+    if (bubble && bubble.prio > prio && bubble.t > .5) return;
+    const list = LINES[kind]; if (!list) return;
+    let text = pick(list); if (bubble && text === bubble.text && list.length > 1) text = pick(list);
+    bubble = { text, t: 2.2, d: 2.2, kind: loud ? 'loud' : 'calm', prio };
+    if (loud) { sfx.scream(); scare = .9; }
+  }
+  function pop(text, m, xm, col = '#3a2a20') { pops.push({ text, m, xm, t: 1.1, col }); }
+
+  function loseHeart(kind) {
+    hearts = Math.max(0, hearts - 1);
+    inv = 1.8; shake = .45; crashes++;
+    say(kind, true, 3);
+    if (navigator.vibrate) try { navigator.vibrate([30, 30, 40]); } catch (e) {}
+    for (let k = 0; k < 14; k++) fx.push({ x: px + rand(-.4, .4), m: dist + rand(-.3, .6), vx: rand(-4, 4), vm: rand(-2, 4), r: rand(3, 7), t: rand(.5, .9), c: k % 3 ? 'rgba(255,250,242,.9)' : '#f2c230' });
+    if (hearts <= 0) gameOver();
+  }
+
+  // ---------- flow ----------
+  function resetRun() {
+    dist = 0; spd = 6; px = LANES[1] + .6; ptx = px; prevPx = px; lean = 0; brake = 0; keyBrake = 0; keyDir = 0;
+    hearts = 3; nag = 0; inv = 0; scare = 0; bump = 0; runT = 0;
+    obs = []; fx = []; pops = []; confetti = []; gm = null; bubble = null; bubbleCd = 0;
+    nextM = 55; prevFront = .85; swerveT = 0; chatT = 7;
+    snacks = 0; lawful = 0; nearMiss = 0; redRun = 0; crashes = 0; saidSwarm = false;
+    inters = INTERS.map((m, i) => ({ m, st: 'green', t: 0, decided: false, willRed: false, done: false, good: false, xt: 0, first: i === 0 }));
+  }
+  function start() {
+    initAudio(); resetRun();
+    $('sheet').hidden = true; $('title').hidden = true;
+    const card = $('card'); card.hidden = true; void card.offsetWidth; card.hidden = false;
+    const hint = $('hint'); hint.textContent = '左右滑動閃車・往下拉煞車'; hint.classList.remove('red'); hint.hidden = false;
+    hintT = 4;
+    state = 'play';
+    setTimeout(() => { if (state === 'play') say('idle', false, 0); }, 1200);
+  }
+  function gameOver() {
+    state = 'walk'; endT = 0; brake = 0;
+    gm = { x: px, m: dist + .4, t: 0, tx: Math.min(RW + .6, px + 2.2) };
+    bubble = { text: '停車！阿嬤自己走回家！', t: 3, d: 3, kind: 'loud', prio: 9 };
+    sfx.bad();
+  }
+  function arrive() {
+    state = 'arrive'; endT = 0; brake = 0;
+    bubble = { text: '到了到了！乖孫，進來吃飯！', t: 3, d: 3, kind: 'calm', prio: 9 };
+  }
+
+  function finish(win) {
+    state = 'result'; setEngine(false);
+    const t = Math.round(runT);
+    const d = Math.min(HOME, Math.round(dist));
+    const timeB = win ? Math.max(0, Math.round((190 - runT) * 8)) : 0;
+    const heartB = win ? hearts * 200 : 0;
+    const score = d + snacks * 80 + lawful * 50 + timeB + heartB;
+    let rk, role;
+    if (!win) { rk = 'C'; role = '阿嬤自己走回家'; }
+    else if (score >= 3000) { rk = 'S'; role = '阿嬤的驕傲'; }
+    else if (score >= 2550) { rk = 'A'; role = '孝順乖孫'; }
+    else { rk = 'B'; role = '被唸一路'; }
+    const prev = getBest(); const isNew = prev == null || score > prev;
+    if (isNew) setBest(score);
+    $('rank').textContent = rk; $('role').textContent = role; $('score').textContent = score;
+    const lines = win
+      ? `平安到家，用時 ${t} 秒。<br>肉圓 ${snacks} 份・紅燈乖乖停 ${lawful} 次・驚險擦身 ${nearMiss} 次<br>時間加分 ${timeB}・安心度加分 ${heartB}`
+      : `騎了 ${d}m，離阿嬤家還差 ${HOME - d}m。<br>撞到 ${crashes} 次・闖紅燈 ${redRun} 次・肉圓 ${snacks} 份`;
+    const bestLine = isNew ? `<br><span class="newbest">刷新個人最高紀錄</span>` : prev != null ? `<br>個人最高：${prev} 分` : '';
+    $('detail').innerHTML = lines + bestLine;
+    lastRes = { score, rk, role, win };
+    $('card').hidden = true; $('hint').hidden = true;
+    $('sheet').hidden = false;
+    if (rk === 'S') sfx.win(); else if (rk === 'C') sfx.bad(); else sfx.ok();
+    if (navigator.vibrate) try { navigator.vibrate(rk === 'S' ? [20, 40, 20] : 15); } catch (e) {}
+    if (rk === 'S' && !reduced) burst();
+  }
+  function burst() {
+    const cols = ['#c2402a', '#6f8f78', '#e7b75f', '#3a2a20', '#f2a7a0'];
+    for (let i = 0; i < 90; i++) confetti.push({ x: W / 2 + rand(-40, 40), y: H * .3, vx: rand(-260, 260), vy: rand(-520, -180), r: rand(3, 6), c: cols[i % cols.length], rot: rand(0, 6), vr: rand(-8, 8), life: rand(1.6, 2.6) });
+  }
+
+  // ---------- input ----------
+  let ptr = null;
+  function down(e) {
+    if (e.target.closest('button, a, .sheet, .title')) return;
+    initAudio();
+    if (state !== 'play') return;
+    e.preventDefault();
+    ptr = { id: e.pointerId, sx: e.clientX, sy: e.clientY, bx: ptx };
+  }
+  function move(e) {
+    if (!ptr || e.pointerId !== ptr.id || state !== 'play') return;
+    ptx = clamp(ptr.bx + (e.clientX - ptr.sx) * 1.25 / K, .55, RW - .55);
+    if (e.clientY < ptr.sy) ptr.sy = e.clientY;
+    brake = clamp((e.clientY - ptr.sy - 18) / 60, 0, 1);
+    if (hintT > 1 && (Math.abs(e.clientX - ptr.sx) > 30)) hintT = Math.min(hintT, 1);
+  }
+  function up(e) { if (ptr && e.pointerId === ptr.id) { ptr = null; brake = 0; } }
+  addEventListener('pointerdown', down, { passive: false });
+  addEventListener('pointermove', move);
+  addEventListener('pointerup', up); addEventListener('pointercancel', up);
+  addEventListener('contextmenu', e => e.preventDefault());
+  addEventListener('keydown', e => {
+    if (e.code === 'ArrowLeft') keyDir = -1; else if (e.code === 'ArrowRight') keyDir = 1; else if (e.code === 'ArrowDown' || e.code === 'Space') keyBrake = 1; else return;
+    initAudio(); e.preventDefault();
+  });
+  addEventListener('keyup', e => {
+    if ((e.code === 'ArrowLeft' && keyDir < 0) || (e.code === 'ArrowRight' && keyDir > 0)) keyDir = 0;
+    if (e.code === 'ArrowDown' || e.code === 'Space') keyBrake = 0;
+  });
+
+  $('go').addEventListener('click', start);
+  $('again').addEventListener('click', start);
+  $('share').addEventListener('click', async () => {
+    if (!lastRes) return;
+    const msg = lastRes.win
+      ? `我在《載阿嬤回家》拿到 ${lastRes.score} 分（${lastRes.rk} 級・${lastRes.role}），換你載阿嬤：`
+      : `我在《載阿嬤回家》騎到一半，阿嬤下車自己走回家了（${lastRes.score} 分）。你載得比我穩嗎？`;
+    const url = location.protocol.startsWith('http') ? location.href : '';
+    const btn = $('share');
+    try {
+      if (navigator.share) { await navigator.share({ title: '載阿嬤回家', text: msg, url: url || undefined }); return; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    try { await navigator.clipboard.writeText(url ? msg + ' ' + url : msg); btn.textContent = '已複製，去貼給朋友'; }
+    catch (e) { btn.textContent = '複製失敗'; }
+    setTimeout(() => { btn.textContent = '傳給朋友'; }, 2200);
+  });
+
+  // ---------- simulation ----------
+  function updateLights(dt) {
+    for (const I of inters) {
+      const stopM = I.m - 11, gap = stopM - (dist + .85);
+      if (!I.decided && gap < 95) { I.decided = true; I.willRed = I.first || Math.random() < .55; }
+      if (I.st === 'green' && I.willRed && !I.done && gap > 2 && gap < spd * 2.6 + 12) { I.st = 'yellow'; I.t = 1.1; }
+      else if (I.st === 'yellow') { I.t -= dt; if (I.t <= 0) { I.st = 'red'; I.t = 4.5; I.xt = .3; } }
+      else if (I.st === 'red') {
+        I.t -= dt; I.xt -= dt;
+        if (I.xt <= 0) {
+          I.xt = rand(.9, 1.5);
+          const d = Math.random() < .5 ? 1 : -1, ext = roadL / K + 3;
+          addObj({ type: 'xcar', xm: d > 0 ? -ext : RW + ext, m: I.m + (d > 0 ? -3.4 : 3.4), hw: 2.2, hl: .9, vx: d * rand(9, 12), col: Math.random() < .2 ? '#f2c230' : pick(CARS), rot: d > 0 ? Math.PI / 2 : -Math.PI / 2, v0: 1 });
+        }
+        if (I.t <= 0) { I.st = 'green'; I.done = true; }
+        if (!I.good && gap > -.5 && gap < 16 && spd < 1.2) {
+          I.good = true; lawful++; nag = Math.max(0, nag - 30); say('good', false, 2); sfx.good(); pop('+50 守規矩', dist + 2, px, '#6f8f78');
+        }
+      }
+      // red-light hint
+      if (I.st !== 'green' && gap > 0 && gap < 45 && state === 'play' && !I.good) {
+        const h = $('hint'); if (h.hidden || !h.classList.contains('red')) { h.textContent = I.st === 'red' ? '紅燈！往下拉煞車' : '黃燈了，準備停'; h.classList.add('red'); h.hidden = false; }
+        hintT = .4;
+      }
+      // crossing the line
+      const front = dist + .85;
+      if (prevFront < stopM && front >= stopM && state === 'play') {
+        if (I.st === 'red') { redRun++; sfx.whistle(); pop('闖紅燈', dist + 2, px, '#c2402a'); loseHeart('red'); }
+        else if (I.st === 'yellow') { nag += 12; say('fast', true, 2); }
+      }
+    }
+  }
+  function stopLineFor(o) {
+    const f = o.m + o.hl;
+    let lim = Infinity;
+    for (const I of inters) {
+      if (I.st === 'green') continue;
+      const line = o.type === 'scooter' ? I.m - 11.3 : I.m - 15.2;
+      const gap = line - f;
+      if (gap > -.3 && gap < 45) lim = Math.min(lim, Math.sqrt(2 * 5 * Math.max(0, gap - .2)));
+    }
+    return lim;
+  }
+
+  function step(dt) {
+    T += dt;
+    bubbleCd = Math.max(0, bubbleCd - dt);
+    if (bubble) { bubble.t -= dt; if (bubble.t <= 0) bubble = null; }
+    scare = Math.max(0, scare - dt); bump = Math.max(0, bump - dt * 4); shake = Math.max(0, shake - dt);
+
+    if (state === 'title') {
+      spd = 6; dist += spd * dt;
+      px = RW / 2 + 1.2 + Math.sin(T * .7) * 1.4; lean = Math.cos(T * .7) * .25;
+    } else if (state === 'play') {
+      runT += dt; inv = Math.max(0, inv - dt);
+      if (keyDir) ptx = clamp(ptx + keyDir * 7 * dt, .55, RW - .55);
+      const br = Math.max(brake, keyBrake);
+      const base = Math.min(17, 8.5 + dist * .0043);
+      const tgt = base * (1 - br);
+      if (spd < tgt) spd = Math.min(tgt, spd + 3.2 * dt);
+      else spd = Math.max(tgt, spd - (br > 0 ? 5 + 18 * br : 3) * dt);
+      if (br > .6 && spd > 8 && Math.random() < dt * 4) sfx.squeal();
+      dist += spd * dt;
+      prevPx = px;
+      px += (ptx - px) * Math.min(1, dt * 9);
+      const lt = clamp((ptx - px) * .3, -.45, .45);
+      lean += (lt - lean) * Math.min(1, dt * 10);
+      // swerving
+      const vx = Math.abs(px - prevPx) / Math.max(dt, .001);
+      if (vx > 6.5) swerveT += dt; else swerveT = Math.max(0, swerveT - dt * .5);
+      if (swerveT > .4) { swerveT = 0; nag += 14; say('swerve', true, 1); }
+      // nagging dynamics
+      if (spd > 14.5) nag += 2.2 * dt; else nag -= (spd < 11 ? 6 : 2.5) * dt;
+      nag = clamp(nag, 0, 120);
+      if (nag >= 100) { nag = 40; bubble = null; loseHeart('fast'); }
+      chatT -= dt;
+      if (chatT <= 0 && !bubble) { chatT = rand(6, 10); say(spd > 14 ? 'fast' : 'idle', false, 0); }
+      updateLights(dt);
+      prevFront = dist + .85;
+      // spawn
+      const ahead = dist + PY / K + 8;
+      while (nextM < ahead) { spawnAt(nextM); nextM += Math.max(9, rand(15, 24) - dist / HOME * 8); }
+      if (dist >= HOME - 4) arrive();
+      // hints
+      hintT -= dt; if (hintT <= 0 && !$('hint').hidden) { $('hint').hidden = true; $('hint').classList.remove('red'); }
+    } else if (state === 'arrive') {
+      endT += dt;
+      spd = Math.max(0, spd - 12 * dt); dist += spd * dt;
+      ptx = RW - 1.4; px += (ptx - px) * Math.min(1, dt * 3); lean *= Math.pow(.1, dt);
+      if (spd === 0 && endT > 1.6) finish(true);
+    } else if (state === 'walk') {
+      endT += dt;
+      spd = Math.max(0, spd - 14 * dt); dist += spd * dt; lean *= Math.pow(.1, dt);
+      gm.t += dt;
+      if (gm.t < .6) { gm.x += (gm.tx - gm.x) * Math.min(1, dt * 6); gm.m = Math.max(gm.m, dist + .4); }
+      else gm.m += 1.6 * dt;
+      if (endT > 2.8) finish(false);
+    } else if (state === 'result') {
+      if (gm) gm.m += 1.6 * dt;
+    }
+    if (state !== 'title') updateLightsIdle(dt);
+
+    // objects
+    const pb = [px - .38, px + .38, dist - .85, dist + .85];
+    for (const o of obs) {
+      if (o.mov) {
+        let vmax = o.v0;
+        vmax = Math.min(vmax, stopLineFor(o));
+        for (const b of obs) {
+          if (b === o || b.type === 'snack' || b.type === 'pothole' || b.type === 'dog' || b.type === 'xcar') continue;
+          if (Math.abs(b.xm - o.xm) > (b.hw + o.hw) * .9) continue;
+          const gap = (b.m - b.hl) - (o.m + o.hl);
+          if (gap > -1 && gap < 14) {
+            if (!b.mov && gap < 16 && o.type !== 'scooter') {
+              const alt = LANES.filter(l => Math.abs(l - o.xm) > 2);
+              o.tx = alt.reduce((a, l) => Math.abs(l - o.xm) < Math.abs(a - o.xm) ? l : a, alt[0]);
+            }
+            vmax = Math.min(vmax, Math.max(0, b.v + (gap - 1.2) * 1.2));
+          }
+        }
+        o.v += clamp(vmax - o.v, -9 * dt, 3 * dt); o.v = Math.max(0, o.v);
+        o.m += o.v * dt;
+        o.xm += clamp(o.tx - o.xm, -1.4 * dt, 1.4 * dt);
+        if (o.type === 'scooter') o.xm += Math.sin(T * 1.6 + o.ph) * .12 * dt;
+      }
+      if (o.type === 'dog' || o.type === 'xcar') o.xm += o.vx * dt;
+      if (state !== 'play') continue;
+      const rel = o.m - dist;
+      if (o.type === 'taxi' && rel < 15) {
+        if (!o.said && o.door === 0) { o.said = true; if (Math.random() < .6) say('taxi', true, 1); }
+        o.door = Math.min(1, o.door + dt * 2.4);
+      }
+      if (o.type === 'dog' && !o.said && rel < 24) { o.said = true; say('dog', true, 1); }
+      if (o.swarm && !saidSwarm && rel < 22) { saidSwarm = true; say('swarm', false, 1); }
+      // collisions
+      let hit = false;
+      for (const b of boxes(o)) if (b[0] < pb[1] && b[1] > pb[0] && b[2] < pb[3] && b[3] > pb[2]) hit = true;
+      if (hit) {
+        if (o.type === 'snack') { o.dead = true; snacks++; nag = Math.max(0, nag - 20); say('snack', false, 2); sfx.snack(); pop('+80 肉圓', o.m + 1, o.xm, '#c2402a'); continue; }
+        if (o.type === 'pothole') { if (!o.hit) { o.hit = true; nag += 30; bump = 1; shake = .2; sfx.bump(); say('bump', true, 2); } continue; }
+        if (inv <= 0 && !o.hit) {
+          o.hit = true; sfx.crash(); spd *= .3;
+          px = clamp(px + (px < o.xm ? -.7 : .7), .55, RW - .55); ptx = px;
+          if (o.mov) { o.m += 1.2; o.v = o.v0; }
+          pop('碰！', dist + 1.5, px, '#c2402a');
+          loseHeart('crash');
+          if (state !== 'play') break;
+        }
+      } else if (!o.nm && !o.hit && o.type !== 'snack' && o.type !== 'pothole') {
+        const dm = Math.abs(o.m - dist);
+        if (dm < o.hl + .85) {
+          let gapX = Infinity;
+          for (const b of boxes(o)) gapX = Math.min(gapX, Math.max(b[0] - pb[1], pb[0] - b[1]));
+          if (gapX > 0 && gapX < .45 && inv <= 0) {
+            o.nm = true; nearMiss++; nag += 13;
+            say('near', true, 1);
+            if (o.type !== 'dog' && Math.random() < .6) sfx.honk();
+          }
+        }
+      }
+    }
+    obs = obs.filter(o => !o.dead && o.m > dist - (H - PY) / K - 12 && o.m < dist + 160 && (o.type !== 'xcar' || Math.abs(o.xm - RW / 2) < RW / 2 + roadL / K + 6) && (o.type !== 'dog' || (o.xm > -3 && o.xm < RW + 3)));
+
+    // exhaust puffs
+    if ((state === 'play' || state === 'title') && Math.random() < dt * 14) fx.push({ x: px + rand(-.1, .1), m: dist - 1.5, vx: rand(-.6, .6), vm: -rand(.5, 1.5), r: rand(2, 4), t: .7, c: 'rgba(255,250,242,.55)', puff: true });
+    for (const f of fx) { f.x += f.vx * dt; f.m += f.vm * dt; f.t -= dt; if (f.puff) f.r += dt * 6; }
+    fx = fx.filter(f => f.t > 0);
+    for (const p of pops) { p.t -= dt; p.m += dt * 1.5; }
+    pops = pops.filter(p => p.t > 0);
+    for (const c of confetti) { c.vy += 700 * dt; c.x += c.vx * dt; c.y += c.vy * dt; c.vx *= .99; c.rot += c.vr * dt; c.life -= dt; }
+    confetti = confetti.filter(c => c.life > 0 && c.y < H + 20);
+
+    setEngine(state === 'play' || state === 'arrive');
+    if (state === 'play') updateHud();
+  }
+  function updateLightsIdle(dt) {
+    if (state === 'play') return;
+    for (const I of inters) if (I.st === 'yellow' || I.st === 'red') { I.t -= dt; if (I.t <= 0) { if (I.st === 'yellow') { I.st = 'red'; I.t = 4.5; } else { I.st = 'green'; I.done = true; } } }
+  }
+
+  let hudCache = {};
+  function updateHud() {
+    const left = Math.max(0, Math.ceil(HOME - dist)), kmh = Math.round(spd * 3.6);
+    if (hudCache.left !== left) { $('left').textContent = left; $('prog').style.width = (100 - left / HOME * 100).toFixed(1) + '%'; hudCache.left = left; }
+    if (hudCache.kmh !== kmh) { $('kmh').textContent = kmh + ' km/h'; hudCache.kmh = kmh; }
+    if (hudCache.hearts !== hearts) { [...$('hearts').querySelectorAll('svg')].forEach((s, i) => s.classList.toggle('off', i >= hearts)); hudCache.hearts = hearts; }
+    const n = Math.round(Math.min(100, nag));
+    if (hudCache.nag !== n) { $('nag').style.width = n + '%'; $('nagRow').classList.toggle('hot', n > 70); hudCache.nag = n; }
+  }
+
+  // ---------- render ----------
+  function draw() {
+    g.setTransform(DPR, 0, 0, DPR, 0, 0);
+    g.clearRect(0, 0, W, H);
+    if (shake > 0 && !reduced) g.translate(rand(-3, 3) * shake * 5, rand(-2, 2) * shake * 5);
+    g.fillStyle = '#e8dccb'; g.fillRect(-10, -10, W + 20, H + 20);
+    drawRoad();
+    drawSides();
+    drawIntersections();
+    // speed streaks
+    if (spd > 13 && state === 'play' && !reduced) {
+      g.strokeStyle = `rgba(255,255,255,${Math.min(.35, (spd - 13) * .08)})`; g.lineWidth = 2;
+      for (let k = 0; k < 6; k++) {
+        const x = roadL + hash(k * 3.3) * (roadR - roadL), y = ((T * 900 + k * 173) % (H + 200)) - 100;
+        g.beginPath(); g.moveTo(x, y); g.lineTo(x, y + 60); g.stroke();
+      }
+    }
+    // ground objects first, then vehicles by depth
+    for (const o of obs) if (o.type === 'pothole') drawPothole(o, X(o.xm), Y(o.m));
+    for (const f of fx) if (f.puff) { g.fillStyle = f.c; g.globalAlpha = clamp(f.t / .7, 0, 1); circle(X(f.x), Y(f.m), f.r); g.globalAlpha = 1; }
+    for (const o of obs) if (o.type === 'snack') drawSnack(o, X(o.xm), Y(o.m));
+    const movers = obs.filter(o => o.type !== 'pothole' && o.type !== 'snack').sort((a, b) => b.m - a.m);
+    let drewP = false;
+    for (const o of movers) {
+      if (!drewP && o.m < dist) { drawPlayer(); drewP = true; }
+      const x = X(o.xm), y = Y(o.m);
+      if (y < -200 || y > H + 200) continue;
+      if (o.type === 'car' || o.type === 'taxi' || o.type === 'xcar') drawCar(o, x, y);
+      else if (o.type === 'bus') drawBus(o, x, y);
+      else if (o.type === 'scooter') drawScooterObj(o, x, y);
+      else if (o.type === 'dog') drawDog(o, x, y);
+    }
+    if (!drewP) drawPlayer();
+    drawStandingGrandma();
+    drawLights();
+    for (const f of fx) if (!f.puff) { g.fillStyle = f.c; g.globalAlpha = clamp(f.t * 2, 0, 1); circle(X(f.x), Y(f.m), f.r); g.globalAlpha = 1; }
+    for (const p of pops) {
+      g.globalAlpha = clamp(p.t * 2, 0, 1);
+      g.font = `900 18px "Noto Serif TC", serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.lineWidth = 4; g.strokeStyle = '#fffaf2'; g.strokeText(p.text, X(p.xm), Y(p.m));
+      g.fillStyle = p.col; g.fillText(p.text, X(p.xm), Y(p.m));
+      g.globalAlpha = 1;
+    }
+    drawBubble();
+    for (const c of confetti) {
+      g.save(); g.translate(c.x, c.y); g.rotate(c.rot); g.globalAlpha = clamp(c.life, 0, 1);
+      g.fillStyle = c.c; g.fillRect(-c.r, -c.r * .5, c.r * 2, c.r); g.restore();
+    }
+  }
+
+  let last = 0;
+  function frame(t) {
+    const dt = Math.min(.05, (t - last) / 1000 || 0); last = t;
+    step(dt); draw();
+    requestAnimationFrame(frame);
+  }
+
+  addEventListener('resize', fit);
+  fit();
+  resetRun(); spd = 6;
+  const b = getBest();
+  $('bestTitle').textContent = b == null ? '還沒載過阿嬤' : `個人最高紀錄 ${b} 分`;
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
